@@ -5,7 +5,7 @@
       <div class="md:flex py-2">
         <div class="w-1/5">
           <label
-            for="my-modal-3"
+            for="my-modal"
             class="btn w-32 btn-secondary modal-button shadow-md"
             ><span class="text-xs">New Item</span></label
           >
@@ -13,11 +13,11 @@
         <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4">
           <label class="mr-4">Jumlah Data </label>
           <select
-            v-model="currentLimit"
+            v-model="itemStore.currentLimit"
             class="select select-bordered max-w-xs"
           >
             <option
-              :selected="currentLimit == length ? true : false"
+              :selected="itemStore.currentLimit == length ? true : false"
               v-for="length in length"
               :key="length"
             >
@@ -30,7 +30,7 @@
           <div class="form-control">
             <div class="input-group">
               <input
-                v-model="search"
+                v-model="itemStore.searchName"
                 @keyup.enter="searchData"
                 type="text"
                 placeholder="Search…"
@@ -57,7 +57,7 @@
         </div>
       </div>
 
-      <div class="flex mt-2 overflow-x-auto">
+      <div class="flex mt-2 md:overflow-visible overflow-y-auto">
         <table class="table table-compact w-full">
           <!-- head -->
           <thead>
@@ -130,7 +130,7 @@
                       <li>
                         <a> Detail </a>
                       </li>
-                      <li><a>Hapus</a></li>
+                      <li><a @click="onDelete(item.id, index)">Hapus</a></li>
                     </ul>
                   </div>
                 </td>
@@ -172,19 +172,25 @@ import { useItemStore } from '../../stores/store'
 export default {
   setup() {
     const itemStore = useItemStore()
-    const search = ref('')
     const dataApi = ref()
-    const length = ref([10, 20, 30, 40, 50])
-    const count = ref([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
-    const currentLimit = ref(10)
+    const length = ref([5, 10, 20, 30, 40, 50])
+
+    itemStore.$subscribe((mutation, state) => {
+      if (mutation.events.key == 'currentLimit') {
+        getData()
+        console.info(mutation)
+      }
+    })
+
+    function getData(page = '') {
+      itemStore.getItemData(page)
+    }
 
     // expose to template and other options API hooks
     return {
-      search,
+      getData,
       dataApi,
       length,
-      count,
-      currentLimit,
       itemStore,
     }
   },
@@ -197,12 +203,7 @@ export default {
     dataTable() {
       return this.itemStore.items
     },
-    searchName() {
-      if (this.search == '' || null) {
-        return ''
-      }
-      return '&name=' + this.search
-    },
+
     isDataEmpty() {
       return this.dataTable.length < 1 ? true : false
     },
@@ -214,6 +215,30 @@ export default {
     },
   },
   methods: {
+    onDelete(id, index) {
+      this.$swal
+        .fire({
+          title: 'Anda yakin?',
+          text: 'Menghapus Item yang masih bersaldo akan menghilangkan dilaporan!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete!',
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            const b = this.itemStore.deleteItemData(id, index)
+            if (b)
+              return this.$swal.fire(
+                'Deleted!',
+                'Your file has been deleted.',
+                'success'
+              )
+            return this.$swal('error')
+          }
+        })
+    },
     searchData() {
       return this.getData()
     },
@@ -223,44 +248,9 @@ export default {
       }
       return 'dropdown-top dropdown-left'
     },
-    getData(page = '') {
-      this.itemStore.getItemData(this.currentLimit, this.searchName, page)
-    },
-    // previousPage() {
-    //   this.$axios
-    //     .get(
-    //       `/items?limit=${this.currentLimit}${this.searchName}&page=${
-    //         this.itemStore.currentPage - 1
-    //       }`
-    //       // {
-    //       //   headers: {
-    //       //     Authorization: `${this.token.token_type} ${this.token.access_token}`,
-    //       //   },
-    //       // }
-    //     )
-    //     .then((res) => {
-    //       this.dataApi = res.data.data
-    //     })
-    // },
-    // nextPage() {
-    //   this.$axios
-    //     .get(
-    //       `/items?limit=${this.currentLimit}${this.searchName}&page=${
-    //         this.itemStore.currentPage + 1
-    //       }`
-    //       // {
-    //       //   headers: {
-    //       //     Authorization: `${this.token.token_type} ${this.token.access_token}`,
-    //       //   },
-    //       // }
-    //     )
-    //     .then((res) => {
-    //       this.dataApi = res.data.data
-    //     })
-    // },
   },
   created() {
-    this.getData(this.search)
+    this.getData(this.itemStore.searchName)
   },
 }
 </script>

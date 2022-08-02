@@ -1,10 +1,23 @@
 import { defineStore } from 'pinia'
-
 import { axiosIns } from '../services/axios'
+import { useToast } from 'vue-toastification'
 
+const toast = useToast()
+
+// ITEM STORE
 export const useItemStore = defineStore('itemStore', {
   state: () => {
-    return { responsItems: {}, itemTypes: [], itemUnits: [], isLoading: true }
+    return {
+      responsItems: {},
+      itemTypes: [],
+      itemUnits: [],
+      isLoading: true,
+      isDeleteLoading: false,
+      modalSubmitLoading: false,
+      modalToggle: false,
+      currentLimit: 10,
+      searchName: '',
+    }
   },
   getters: {
     items(state) {
@@ -22,13 +35,52 @@ export const useItemStore = defineStore('itemStore', {
     to(state) {
       return state.responsItems.to
     },
+    searchQuery(state) {
+      if (state.searchName == '' || null) {
+        return ''
+      }
+      return '&name=' + state.searchName
+    },
   },
   actions: {
-    async getItemData(currentLimit, searchName, page = '') {
+    async storeItemData(data) {
+      this.modalSubmitLoading = true
+      try {
+        const response = await axiosIns.post(
+          `/items`,
+          data
+          // {
+          //   headers: {
+          //     Authorization: `${this.token.token_type} ${this.token.access_token}`,
+          //   },
+          // }
+        )
+        this.modalToggle = false
+        this.modalSubmitLoading = false
+        toast.success('My toast content', {
+          timeout: 2000,
+        })
+        this.getItemData()
+      } catch (error) {}
+      this.modalSubmitLoading = false
+    },
+    async deleteItemData(id, index) {
+      this.isDeleteLoading = true
+      try {
+        await axiosIns.delete(`/items/${id}`)
+        this.responsItems.data.splice(index, 1)
+        toast.error('Data telah di Delete', {
+          timeout: 2000,
+        })
+        return true
+      } catch (error) {}
+      this.isDeleteLoading = false
+    },
+    async getItemData(page = '') {
       this.isLoading = true
       try {
         const response = await axiosIns.get(
-          `/items?limit=${currentLimit}${searchName}${page}`
+          `/items?limit=${this.currentLimit}${this.searchQuery}${page}`
           // {
           //   headers: {
           //     Authorization: `${this.token.token_type} ${this.token.access_token}`,
@@ -60,6 +112,7 @@ export const useItemStore = defineStore('itemStore', {
   },
 })
 
+//WAREHOUSE STORE
 export const useWarehouse = defineStore('warehouseStore', {
   state: () => {
     return { listData: [] }

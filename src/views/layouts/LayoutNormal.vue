@@ -11,6 +11,7 @@ export default {
 <template>
   <div class="md:flex flex-col justify-between">
     <NavBar />
+
     <MainContent />
     <Footer class="self-end" />
   </div>

@@ -1,7 +1,9 @@
 <template>
   <section>
     <div class="md:flex">
-      <div class="card md:w-1/3 w-full bg-neutral shadow-xl mr-10 self-start">
+      <div
+        class="flex-col md:w-1/4 w-full mr-10 self-start card bg-neutral shadow-xl"
+      >
         <div class="card-body">
           <h2 class="card-title">Filter Data</h2>
           <div class="justify-center my-4">
@@ -47,9 +49,17 @@
               Filter
             </button>
           </div>
+
+          <div class="divider"></div>
+          <h2 class="card-title">Laporan Persediaan</h2>
+          <div class="card-actions justify-end">
+            <button class="btn btn-secondary w-32 hover:btn-primary">
+              Download
+            </button>
+          </div>
         </div>
       </div>
-      <div class="md:w-2/3 mt-10 md:mt-0 justify-self-end">
+      <div class="md:w-3/4 mt-10 md:mt-0 justify-self-end">
         <ItemTable />
       </div>
     </div>
