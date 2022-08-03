@@ -11,10 +11,13 @@
               <label class="label">
                 <span class="label-text">Gudang</span>
               </label>
-              <select class="select select-bordered">
+              <select
+                v-model="itemStore.currentWarehouse"
+                class="select select-bordered"
+              >
                 <option
                   :value="item.id"
-                  v-for="item in warehouseStore.listData"
+                  v-for="item in itemStore.listWarehouse"
                   :key="item"
                 >
                   {{ item.name.toUpperCase() }}
@@ -28,6 +31,7 @@
               </label>
               <div class="flex justify-between items-center">
                 <input
+                  v-model="itemStore.fromDate"
                   id="date"
                   type="date"
                   placeholder="Type here"
@@ -35,6 +39,7 @@
                 />
                 <label class="">s.d</label>
                 <input
+                  v-model="itemStore.toDate"
                   id="date"
                   type="date"
                   placeholder="Type here"
@@ -70,22 +75,24 @@
 <script>
 import ItemTable from './ItemTable.vue'
 import ModalNewItem from './ModalNewItem.vue'
-import { useItemStore, useWarehouse } from '@/stores/store'
+import { useItemStore } from '@/stores/store'
 
 export default {
   setup() {
-    const warehouseStore = useWarehouse()
     const itemStore = useItemStore()
 
     //CALL ITEM DATA
     itemStore.getItemTypeData()
     itemStore.getItemUnitData()
+    itemStore.getWarehousesData()
 
-    //CALL WAREHOUSE DATA
-    warehouseStore.getData()
-
+    itemStore.$subscribe((mutation, state) => {
+      if (mutation.events.key == 'currentWarehouse') {
+        itemStore.getItemData()
+      }
+    })
     return {
-      warehouseStore,
+      itemStore,
     }
   },
   components: { ItemTable, ModalNewItem },

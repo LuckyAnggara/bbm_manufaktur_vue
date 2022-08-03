@@ -56,6 +56,24 @@
                 </option>
               </select>
             </div>
+            <div class="form-control my-2">
+              <label class="label">
+                <span class="label-text">Gudang</span>
+              </label>
+              <select
+                :disabled="itemStore.modalSubmitLoading"
+                v-model="dataForm.warehouse_id"
+                class="select select-bordered"
+              >
+                <option
+                  :value="warehouse.id"
+                  v-for="warehouse in itemStore.warehouses"
+                  :key="warehouse"
+                >
+                  {{ warehouse.name.toUpperCase() }}
+                </option>
+              </select>
+            </div>
             <div class="card-actions justify-end mt-10">
               <button
                 :disabled="itemStore.modalSubmitLoading"
@@ -103,6 +121,7 @@ export default {
       name: null,
       unit_id: 1,
       type_id: 1,
+      warehouse_id: 1,
     })
 
     function onSubmit() {
@@ -114,6 +133,7 @@ export default {
       dataForm.value.name = null
       dataForm.value.unit_id = 1
       dataForm.value.type_id = 1
+      dataForm.value.warehouse_id = 1
     }
 
     // expose to template and other options API hooks
@@ -124,7 +144,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(useItemStore, ['itemTypes', 'itemUnits']),
+    ...mapState(useItemStore, ['itemTypes', 'itemUnits', 'warehouses']),
   },
 }
 </script>

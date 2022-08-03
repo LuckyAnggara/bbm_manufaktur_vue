@@ -11,6 +11,10 @@ export const useItemStore = defineStore('itemStore', {
       responsItems: {},
       itemTypes: [],
       itemUnits: [],
+      warehouses: [],
+      currentWarehouse: 0,
+      fromDate: '',
+      toDate: '',
       isLoading: true,
       isDeleteLoading: false,
       modalSubmitLoading: false,
@@ -40,6 +44,21 @@ export const useItemStore = defineStore('itemStore', {
         return ''
       }
       return '&name=' + state.searchName
+    },
+    warehousesQuery(state) {
+      if (state.currentWarehouse == '' || null || 0) {
+        return ''
+      }
+      return '&warehouse_id=' + state.currentWarehouse
+    },
+    listWarehouse(state) {
+      return [{ id: 0, name: 'semua' }].concat(state.warehouses)
+    },
+    fromToDate(state) {
+      if (state.fromDate == '' && state.toDate == '') {
+        return ''
+      }
+      return '&from_date=' + state.fromDate + '&to_date=' + state.toDate
     },
   },
   actions: {
@@ -80,7 +99,7 @@ export const useItemStore = defineStore('itemStore', {
       this.isLoading = true
       try {
         const response = await axiosIns.get(
-          `/items?limit=${this.currentLimit}${this.searchQuery}${page}`
+          `/items?limit=${this.currentLimit}${this.searchQuery}${page}${this.warehousesQuery}${this.fromToDate}`
           // {
           //   headers: {
           //     Authorization: `${this.token.token_type} ${this.token.access_token}`,
@@ -109,20 +128,10 @@ export const useItemStore = defineStore('itemStore', {
         alert(error)
       }
     },
-  },
-})
-
-//WAREHOUSE STORE
-export const useWarehouse = defineStore('warehouseStore', {
-  state: () => {
-    return { listData: [] }
-  },
-  getters: {},
-  actions: {
-    async getData() {
+    async getWarehousesData() {
       try {
         const response = await axiosIns.get(`/warehouses`)
-        this.listData = response.data.data.data
+        this.warehouses = response.data.data.data
       } catch (error) {
         alert(error)
       }

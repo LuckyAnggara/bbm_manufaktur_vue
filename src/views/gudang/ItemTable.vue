@@ -66,6 +66,7 @@
               <th>Nama</th>
               <th>Unit</th>
               <th>Tipe</th>
+              <th>Gudang</th>
               <th>Saldo</th>
               <th>Action</th>
             </tr>
@@ -73,7 +74,7 @@
 
           <tbody>
             <tr v-if="itemStore.isLoading">
-              <td colspan="6" class="text-center">
+              <td colspan="7" class="text-center">
                 <div role="status">
                   <svg
                     class="inline mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600"
@@ -94,17 +95,16 @@
                 </div>
               </td>
             </tr>
-            <tr v-else v-for="(item, index) in dataTable" :key="item">
-              <template v-if="isDataEmpty">
-                <td colspan="6" class="text-center">
-                  <a>Tidak ada data</a>
-                </td>
-              </template>
-              <template v-else>
+            <template v-else>
+              <tr v-if="itemStore.items.length == 0">
+                <td colspan="7" class="text-center">Tidak ada data</td>
+              </tr>
+              <tr v-else v-for="(item, index) in itemStore.items" :key="item">
                 <td class="text-center">{{ itemStore.from + index }}</td>
                 <td>{{ item.name.toUpperCase() }}</td>
                 <td>{{ item.unit.name.toUpperCase() }}</td>
                 <td>{{ item.type.name.toUpperCase() }}</td>
+                <td>{{ item.warehouse.name.toUpperCase() }}</td>
                 <td>{{ item.balance }}</td>
                 <td>
                   <div class="mx-2 dropdown" :class="position(index)">
@@ -134,8 +134,8 @@
                     </ul>
                   </div>
                 </td>
-              </template>
-            </tr>
+              </tr>
+            </template>
           </tbody>
         </table>
       </div>
@@ -178,7 +178,6 @@ export default {
     itemStore.$subscribe((mutation, state) => {
       if (mutation.events.key == 'currentLimit') {
         getData()
-        console.info(mutation)
       }
     })
 
@@ -200,13 +199,6 @@ export default {
     },
   },
   computed: {
-    dataTable() {
-      return this.itemStore.items
-    },
-
-    isDataEmpty() {
-      return this.dataTable.length < 1 ? true : false
-    },
     previousPage() {
       return '&page=' + (this.itemStore.currentPage - 1)
     },
