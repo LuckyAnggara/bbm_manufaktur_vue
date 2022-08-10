@@ -1,61 +1,7 @@
 <template>
   <div class="card flex bg-neutral flex-col">
     <div class="card-body shadow-xl rounded-xl">
-      <h2 class="card-title mb-2 text-2xl">Data Persediaan</h2>
-      <div class="md:flex py-2">
-        <div class="w-1/5">
-          <label
-            for="my-modal"
-            class="btn w-32 btn-secondary modal-button shadow-md"
-            ><span class="text-xs">New Item</span></label
-          >
-        </div>
-        <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4">
-          <label class="mr-4">Jumlah Data </label>
-          <select
-            v-model="itemStore.currentLimit"
-            class="select select-bordered max-w-xs"
-          >
-            <option
-              :selected="itemStore.currentLimit == length ? true : false"
-              v-for="length in length"
-              :key="length"
-            >
-              {{ length }}
-            </option>
-          </select>
-        </div>
-
-        <div class="justify-end mx-1 md:w-1/2 w-full">
-          <div class="form-control">
-            <div class="input-group">
-              <input
-                v-model="itemStore.searchName"
-                @keyup.enter="searchData"
-                type="text"
-                placeholder="Search…"
-                class="input input-bordered w-full"
-              />
-              <button class="btn btn-square btn-outline" @click="searchData">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <h2 class="card-title mb-2 text-2xl">Data Mutasi {{ id }}</h2>
 
       <div class="flex mt-2 md:overflow-visible overflow-y-auto">
         <table class="table table-compact w-full">
@@ -73,7 +19,7 @@
           </thead>
 
           <tbody>
-            <tr v-if="itemStore.isLoading">
+            <tr v-if="mutationStore.isLoading">
               <td colspan="7" class="text-center">
                 <div role="status">
                   <svg
@@ -96,11 +42,15 @@
               </td>
             </tr>
             <template v-else>
-              <tr v-if="itemStore.items.length == 0">
+              <tr v-if="mutationStore.items.length == 0">
                 <td colspan="7" class="text-center">Tidak ada data</td>
               </tr>
-              <tr v-else v-for="(item, index) in itemStore.items" :key="item">
-                <td class="text-center">{{ itemStore.from + index }}</td>
+              <tr
+                v-else
+                v-for="(item, index) in mutationStore.items"
+                :key="item"
+              >
+                <td class="text-center">{{ mutationStore.from + index }}</td>
                 <td>{{ item.name.toUpperCase() }}</td>
                 <td>{{ item.unit.name.toUpperCase() }}</td>
                 <td>{{ item.type.name.toUpperCase() }}</td>
@@ -128,7 +78,7 @@
                       class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52"
                     >
                       <li>
-                        <a @click="detail(item.id)"> Detail </a>
+                        <a> Detail </a>
                       </li>
                       <li><a @click="onDelete(item.id, index)">Hapus</a></li>
                     </ul>
@@ -139,113 +89,50 @@
           </tbody>
         </table>
       </div>
-      <div
+      <!-- <div
         class="btn-group mx-auto mt-4 mb-1 justify-center"
-        v-if="!itemStore.isLoading"
+        v-if="!mutationStore.isLoading"
       >
         <button
           class="btn btn-outline"
           @click="getData(previousPage)"
-          :disabled="itemStore.currentPage == 1 ? true : false"
+          :disabled="mutationStore.currentPage == 1 ? true : false"
         >
           «
         </button>
         <button class="btn btn-outline">
-          Page {{ itemStore.currentPage }}
+          Page {{ mutationStore.currentPage }}
         </button>
         <button
           class="btn btn-outline"
           @click="getData(nextPage)"
-          :disabled="itemStore.lastPage == itemStore.currentPage ? true : false"
+          :disabled="mutationStore.lastPage == mutationStore.currentPage ? true : false"
         >
           »
         </button>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from 'vue'
-import { useItemStore } from '../../stores/store'
+import { useMutationStore } from '../../stores/store'
 
 export default {
   setup() {
-    const itemStore = useItemStore()
-    const dataApi = ref()
-    const length = ref([5, 10, 20, 30, 40, 50])
-
-    itemStore.$subscribe((mutation, state) => {
-      if (mutation.events.key == 'currentLimit') {
-        getData()
-      }
-    })
-
-    function getData(page = '') {
-      itemStore.getItemData(page)
-    }
+    const mutationStore = useMutationStore()
 
     // expose to template and other options API hooks
     return {
-      getData,
-      dataApi,
-      length,
-      itemStore,
+      mutationStore,
     }
   },
-  watch: {
-    currentLimit() {
-      this.getData()
-    },
-  },
   computed: {
-    previousPage() {
-      return '&page=' + (this.itemStore.currentPage - 1)
-    },
-    nextPage() {
-      return '&page=' + (this.itemStore.currentPage + 1)
+    id() {
+      return this.$route.params.id
     },
   },
-  methods: {
-    detail(id) {
-      this.$router.push({ name: 'mutation', params: { id: id } })
-    },
-    onDelete(id, index) {
-      this.$swal
-        .fire({
-          title: 'Anda yakin?',
-          text: 'Menghapus Item yang masih bersaldo akan menghilangkan dilaporan!',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete!',
-        })
-        .then((result) => {
-          if (result.isConfirmed) {
-            const b = this.itemStore.deleteItemData(id, index)
-            if (b)
-              return this.$swal.fire(
-                'Deleted!',
-                'Your file has been deleted.',
-                'success'
-              )
-            return this.$swal('error')
-          }
-        })
-    },
-    searchData() {
-      return this.getData()
-    },
-    position(index) {
-      if (index < 2) {
-        return 'dropdown-end'
-      }
-      return 'dropdown-top dropdown-left'
-    },
-  },
-  created() {
-    this.getData(this.itemStore.searchName)
-  },
+  methods: {},
+  created() {},
 }
 </script>

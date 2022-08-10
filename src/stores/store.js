@@ -138,3 +138,48 @@ export const useItemStore = defineStore('itemStore', {
     },
   },
 })
+
+// MUTATION STORE
+
+// ITEM STORE
+export const useMutationStore = defineStore('mutationStore', {
+  state: () => {
+    return {
+      responseData: [],
+      fromDate: null,
+      toDate: null,
+      currentId: '',
+      isLoading: true,
+    }
+  },
+  getters: {
+    data(state) {
+      return state.responseData.data
+    },
+    fromToDate(state) {
+      if (state.fromDate == '' && state.toDate == '') {
+        return ''
+      }
+      return '&from_date=' + state.fromDate + '&to_date=' + state.toDate
+    },
+  },
+  actions: {
+    async getMutationData() {
+      this.isLoading = true
+      try {
+        const response = await axiosIns.get(
+          `/mutation/${this.currentId}${this.fromToDate}`
+          // {
+          //   headers: {
+          //     Authorization: `${this.token.token_type} ${this.token.access_token}`,
+          //   },
+          // }
+        )
+        this.responseData = response.data.data
+      } catch (error) {
+        alert(error)
+      }
+      this.isLoading = false
+    },
+  },
+})
