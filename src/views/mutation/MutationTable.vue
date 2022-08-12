@@ -1,7 +1,9 @@
 <template>
   <div class="card flex bg-neutral flex-col">
     <div class="card-body shadow-xl rounded-xl">
-      <h2 class="card-title mb-2 text-2xl">Data Mutasi {{ id }}</h2>
+      <h2 class="card-title mb-2 text-2xl" v-if="!mutationStore.isLoading">
+        {{ mutationStore.title }}
+      </h2>
 
       <div class="flex mt-2 md:overflow-visible overflow-y-auto">
         <table class="table table-compact w-full">
@@ -9,18 +11,17 @@
           <thead>
             <tr>
               <th></th>
-              <th>Nama</th>
-              <th>Unit</th>
-              <th>Tipe</th>
-              <th>Gudang</th>
+              <th>Tanggal</th>
+              <th>Keterangan</th>
+              <th>Debit</th>
+              <th>Kredit</th>
               <th>Saldo</th>
-              <th>Action</th>
             </tr>
           </thead>
 
           <tbody>
             <tr v-if="mutationStore.isLoading">
-              <td colspan="7" class="text-center">
+              <td colspan="6" class="text-center">
                 <div role="status">
                   <svg
                     class="inline mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600"
@@ -42,75 +43,25 @@
               </td>
             </tr>
             <template v-else>
-              <tr v-if="mutationStore.items.length == 0">
-                <td colspan="7" class="text-center">Tidak ada data</td>
+              <tr v-if="mutationStore.dataMutation.length == 0">
+                <td colspan="6" class="text-center">Tidak ada data</td>
               </tr>
               <tr
                 v-else
-                v-for="(item, index) in mutationStore.items"
+                v-for="(item, index) in mutationStore.dataMutation"
                 :key="item"
               >
-                <td class="text-center">{{ mutationStore.from + index }}</td>
-                <td>{{ item.name.toUpperCase() }}</td>
-                <td>{{ item.unit.name.toUpperCase() }}</td>
-                <td>{{ item.type.name.toUpperCase() }}</td>
-                <td>{{ item.warehouse.name.toUpperCase() }}</td>
+                <td class="text-center">{{ index + 1 }}</td>
+                <td>{{ $moment(item.created_at).format('DD MMMM YYYY') }}</td>
+                <td>{{ item.notes.toUpperCase() }}</td>
+                <td>{{ item.debit }}</td>
+                <td>{{ item.kredit }}</td>
                 <td>{{ item.balance }}</td>
-                <td>
-                  <div class="mx-2 dropdown" :class="position(index)">
-                    <button class="btn btn-sm btn-square btn-ghost">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        class="inline-block w-5 h-5 stroke-current"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-                        ></path>
-                      </svg>
-                    </button>
-                    <ul
-                      tabindex="0"
-                      class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52"
-                    >
-                      <li>
-                        <a> Detail </a>
-                      </li>
-                      <li><a @click="onDelete(item.id, index)">Hapus</a></li>
-                    </ul>
-                  </div>
-                </td>
               </tr>
             </template>
           </tbody>
         </table>
       </div>
-      <!-- <div
-        class="btn-group mx-auto mt-4 mb-1 justify-center"
-        v-if="!mutationStore.isLoading"
-      >
-        <button
-          class="btn btn-outline"
-          @click="getData(previousPage)"
-          :disabled="mutationStore.currentPage == 1 ? true : false"
-        >
-          «
-        </button>
-        <button class="btn btn-outline">
-          Page {{ mutationStore.currentPage }}
-        </button>
-        <button
-          class="btn btn-outline"
-          @click="getData(nextPage)"
-          :disabled="mutationStore.lastPage == mutationStore.currentPage ? true : false"
-        >
-          »
-        </button>
-      </div> -->
     </div>
   </div>
 </template>
@@ -127,12 +78,20 @@ export default {
       mutationStore,
     }
   },
-  computed: {
-    id() {
-      return this.$route.params.id
-    },
-  },
+  // computed: {
+  //   data() {
+  //     if (!this.$route.params) return this.$route.params
+  //   },
+  // },
+
   methods: {},
-  created() {},
+  created() {
+    if (this.$route.params) {
+      this.mutationStore.$patch({
+        currentId: this.$route.params.id,
+      })
+      this.mutationStore.getMutationData()
+    }
+  },
 }
 </script>

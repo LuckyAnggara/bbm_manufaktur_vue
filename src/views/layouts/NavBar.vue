@@ -4,11 +4,16 @@
       <span class="text-lg font-bold"> BBM Manufaktur </span>
     </div>
     <div class="flex-none hidden px-2 mx-2 lg:flex">
-      <ul class="text-md menu menu-horizontal p-0">
-        <li class="mx-1"><a>Dashboard</a></li>
-        <li class="mx-1"><a class="bg-base-200">Gudang</a></li>
-        <li class="mx-1"><a>Production</a></li>
-        <li class="mx-1"><a>Laporan</a></li>
+      <ul
+        class="text-md menu menu-horizontal p-0"
+        v-for="item in navMenu"
+        :key="item"
+      >
+        <li class="mx-1">
+          <router-link :active-class="'bg-base-200'" :to="{ name: item.route }">
+            <a>{{ item.title }}</a>
+          </router-link>
+        </li>
       </ul>
       <div class="mx-2 dropdown dropdown-end">
         <label tabindex="0" class="btn btn-ghost btn-circle avatar">
@@ -33,3 +38,14 @@
     </div>
   </div>
 </template>
+<script>
+import navMenu from '../../services/menu'
+
+export default {
+  setup() {
+    return {
+      navMenu,
+    }
+  },
+}
+</script>

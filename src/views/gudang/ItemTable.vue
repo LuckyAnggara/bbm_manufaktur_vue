@@ -128,7 +128,7 @@
                       class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52"
                     >
                       <li>
-                        <a @click="detail(item.id)"> Detail </a>
+                        <a @click="detail(item)"> Detail </a>
                       </li>
                       <li><a @click="onDelete(item.id, index)">Hapus</a></li>
                     </ul>
@@ -207,8 +207,8 @@ export default {
     },
   },
   methods: {
-    detail(id) {
-      this.$router.push({ name: 'mutation', params: { id: id } })
+    detail(data) {
+      this.$router.push({ name: 'mutation', params: data })
     },
     onDelete(id, index) {
       this.$swal

@@ -13,7 +13,7 @@
               </label>
               <div class="flex justify-between items-center">
                 <input
-                  v-model="itemStore.fromDate"
+                  v-model="mutationStore.fromDate"
                   id="date"
                   type="date"
                   placeholder="Type here"
@@ -21,7 +21,7 @@
                 />
                 <label class="">s.d</label>
                 <input
-                  v-model="itemStore.toDate"
+                  v-model="mutationStore.toDate"
                   id="date"
                   type="date"
                   placeholder="Type here"
@@ -32,13 +32,18 @@
           </div>
 
           <div class="card-actions justify-end">
-            <button class="btn btn-secondary w-32 hover:btn-primary">
+            <button
+              @click="filterData()"
+              class="btn btn-secondary w-32 hover:btn-primary"
+            >
               Filter
             </button>
           </div>
 
           <div class="divider"></div>
-          <h2 class="card-title">Laporan Persediaan</h2>
+          <h2 class="card-title">
+            Laporan Persediaan {{ mutationStore.data.name.toUpperCase() }}
+          </h2>
           <div class="card-actions justify-end">
             <button class="btn btn-secondary w-32 hover:btn-primary">
               Download
@@ -55,24 +60,18 @@
 
 <script>
 import MutationTable from '../mutation/MutationTable.vue'
-import { useItemStore } from '@/stores/store'
+import { useMutationStore } from '@/stores/store'
 
 export default {
   setup() {
-    const itemStore = useItemStore()
-
-    //CALL ITEM DATA
-    itemStore.getItemTypeData()
-    itemStore.getItemUnitData()
-    itemStore.getWarehousesData()
-
-    itemStore.$subscribe((mutation, state) => {
-      if (mutation.events.key == 'currentWarehouse') {
-        itemStore.getItemData()
-      }
-    })
+    const mutationStore = useMutationStore()
+    mutationStore.$reset()
+    function filterData() {
+      mutationStore.getMutationData()
+    }
     return {
-      itemStore,
+      filterData,
+      mutationStore,
     }
   },
   components: { MutationTable },

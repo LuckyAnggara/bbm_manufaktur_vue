@@ -146,21 +146,33 @@ export const useMutationStore = defineStore('mutationStore', {
   state: () => {
     return {
       responseData: [],
-      fromDate: null,
-      toDate: null,
+      fromDate: '',
+      toDate: '',
       currentId: '',
       isLoading: true,
     }
   },
   getters: {
+    dataMutation(state) {
+      return state.responseData.mutation
+    },
     data(state) {
-      return state.responseData.data
+      return state.responseData
+    },
+    title(state) {
+      if (state.fromDate == '' && state.toDate == '') {
+        return `Data Persediaan ${state.data.name.toUpperCase()}`
+      } else {
+        return `Data Persediaan ${state.data.name.toUpperCase()} Dari tanggal ${
+          state.fromDate
+        } s.d ${state.toDate}`
+      }
     },
     fromToDate(state) {
       if (state.fromDate == '' && state.toDate == '') {
         return ''
       }
-      return '&from_date=' + state.fromDate + '&to_date=' + state.toDate
+      return '?from_date=' + state.fromDate + '&to_date=' + state.toDate
     },
   },
   actions: {
@@ -168,7 +180,7 @@ export const useMutationStore = defineStore('mutationStore', {
       this.isLoading = true
       try {
         const response = await axiosIns.get(
-          `/mutation/${this.currentId}${this.fromToDate}`
+          `/mutations/${this.currentId}${this.fromToDate}`
           // {
           //   headers: {
           //     Authorization: `${this.token.token_type} ${this.token.access_token}`,
