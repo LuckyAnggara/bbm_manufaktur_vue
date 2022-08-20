@@ -4,7 +4,9 @@
       class="card md:w-72 w-full bg-neutral hover:bg-secondary hover:cursor-pointer shadow-xl"
     >
       <div class="card-body items-center hover:text-white">
-        <h2 class="card-title">Perencanaan</h2>
+        <router-link :to="{ name: 'produksi-order' }">
+          <h2 class="card-title">Production Order</h2>
+        </router-link>
       </div>
     </div>
 

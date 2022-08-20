@@ -1,5 +1,6 @@
 import GudangScreen from '../views/gudang/GudangScreen.vue'
 import ProductionScreen from '../views/produksi/ProductionScreen.vue'
+import POScreen from '../views/produksi/ProductionOrder/POScreen.vue'
 import MutationScreen from '../views/mutation/MutationScreen.vue'
 import LoginScreen from '../views/LoginScreen.vue'
 
@@ -32,6 +33,15 @@ export const routes = [
     },
   },
   {
+    path: '/produksi/order',
+    name: 'produksi-order',
+    component: POScreen,
+    meta: {
+      title: 'Production Order',
+      layout: 'layout-normal',
+    },
+  },
+  {
     path: '/gudang',
     name: 'laporan',
     component: GudangScreen,
@@ -48,6 +58,5 @@ export const routes = [
       title: 'Mutasi Item',
       layout: 'layout-normal',
     },
-    alias: '/gudang',
   },
 ]
