@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { axiosIns } from '../services/axios'
 import { useToast } from 'vue-toastification'
+import { toHandlers } from 'vue'
 
 const toast = useToast()
 
@@ -8,7 +9,7 @@ const toast = useToast()
 export const useItemStore = defineStore('itemStore', {
   state: () => {
     return {
-      responsItems: {},
+      responsItem: {},
       itemTypes: [],
       itemUnits: [],
       warehouses: [],
@@ -24,20 +25,24 @@ export const useItemStore = defineStore('itemStore', {
     }
   },
   getters: {
-    items(state) {
-      return state.responsItems.data
+    items: (state) => {
+      return state.responsItem.data
+    },
+    itemByType: (state) => {
+      return (typeId) =>
+        state.responsItem.data.filter((item) => item.type_id == typeId)
     },
     currentPage(state) {
-      return state.responsItems.current_page
+      return state.responsItem.current_page
     },
     lastPage(state) {
-      return state.responsItems.last_page
+      return state.responsItem.last_page
     },
     from(state) {
-      return state.responsItems.from
+      return state.responsItem.from
     },
     to(state) {
-      return state.responsItems.to
+      return state.responsItem.to
     },
     searchQuery(state) {
       if (state.searchName == '' || null) {
@@ -87,7 +92,7 @@ export const useItemStore = defineStore('itemStore', {
       this.isDeleteLoading = true
       try {
         await axiosIns.delete(`/items/${id}`)
-        this.responsItems.data.splice(index, 1)
+        this.responsItem.data.splice(index, 1)
         toast.error('Data telah di Delete', {
           timeout: 2000,
         })
@@ -106,7 +111,7 @@ export const useItemStore = defineStore('itemStore', {
           //   },
           // }
         )
-        this.responsItems = response.data.data
+        this.responsItem = response.data.data
       } catch (error) {
         alert(error)
       }
@@ -192,6 +197,174 @@ export const useMutationStore = defineStore('mutationStore', {
         alert(error)
       }
       this.isLoading = false
+    },
+  },
+})
+
+// PRODUCTION ORDER STORE
+
+export const useProductionOrderStore = defineStore('productionOrderStore', {
+  state: () => {
+    return {
+      responseListData: {},
+      currentId: null,
+      currentData: null,
+      isLoading: false,
+      currentLimit: 10,
+      searchName: '',
+      fromDate: '',
+      toDate: '',
+      isDataEmpty: false,
+      isDeleteLoading: false,
+      responseSingleData: null,
+      storeLoading: false,
+      dataOrder: {
+        order_date: null,
+        customer_name: null,
+        pic_name: null,
+        notes: null,
+        target_date: null,
+        output: [],
+        input: [],
+      },
+      editOrder: null,
+    }
+  },
+  getters: {
+    listData(state) {
+      return state.responseListData.data
+    },
+    currentPage(state) {
+      return state.responseListData.current_page
+    },
+    lastPage(state) {
+      return state.responseListData.last_page
+    },
+    from(state) {
+      return state.responseListData.from
+    },
+    to(state) {
+      return state.responseListData.to
+    },
+    searchQuery(state) {
+      if (state.searchName == '' || null) {
+        return ''
+      }
+      return '&name=' + state.searchName
+    },
+    fromToDate(state) {
+      if (state.fromDate == '' && state.toDate == '') {
+        return ''
+      }
+      return '&from_date=' + state.fromDate + '&to_date=' + state.toDate
+    },
+    inputData(state) {
+      state.dataOrder.input.forEach((x) => {
+        x.estimate_quantity = 0
+      })
+      return state.dataOrder.input
+    },
+    outputData(state) {
+      state.dataOrder.output.forEach((x) => {
+        x.target_quantity = 0
+      })
+      return state.dataOrder.output
+    },
+    inputDataEdit(state) {
+      state.dataOrder.input.forEach((x) => {
+        x.name = x.item.name
+      })
+      return state.dataOrder.input
+    },
+    outputDataEdit(state) {
+      state.dataOrder.output.forEach((x) => {
+        x.name = x.item.name
+      })
+      return state.dataOrder.input
+    },
+  },
+  actions: {
+    deleteInputData(index) {
+      this.input.splice(index, 1)
+    },
+    deleteOutputData(index) {
+      this.output.splice(index, 1)
+    },
+    async getAllData(page = '') {
+      this.isLoading = true
+      try {
+        const response = await axiosIns.get(
+          `/production-order?limit=${this.currentLimit}${this.searchQuery}${this.fromToDate}`
+          // {
+          //   headers: {
+          //     Authorization: `${this.token.token_type} ${this.token.access_token}`,
+          //   },
+          // }
+        )
+        this.responseListData = response.data.data
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isLoading = false
+      }
+    },
+    async getProductionOrderData() {
+      this.isLoading = true
+      try {
+        const response = await axiosIns.get(
+          `/production-order/${this.currentId}`
+          // {
+          //   headers: {
+          //     Authorization: `${this.token.token_type} ${this.token.access_token}`,
+          //   },
+          // }
+        )
+        this.currentData = response.data.data
+      } catch (error) {
+        this.isDataEmpty = true
+        this.isLoading = false
+      } finally {
+        this.isLoading = false
+      }
+    },
+    async storeProductionOrder(data) {
+      this.storeLoading = true
+      try {
+        const response = await axiosIns.post(
+          `/production-order`,
+          this.dataOrder
+        )
+        this.responseSingleData = response.data.data
+        this.currentId = response.data.data.id
+        // this.storeLoading = false
+        toast.success('Produksi Order berhasil di tambahkan', {
+          timeout: 1000,
+        })
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.storeLoading = false
+      }
+    },
+    async deleteProductionOrderData(id, index) {
+      this.isDeleteLoading = true
+      try {
+        await axiosIns.delete(`/production-order/${id}`)
+        if (index > 0) {
+          this.responseListData.data.splice(index, 1)
+        }
+        if (index == 0) {
+          this.responseListData.data.shift()
+        }
+        toast.error('Data telah di hapus!', {
+          timeout: 2000,
+        })
+        return true
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isDeleteLoading = false
+      }
     },
   },
 })
