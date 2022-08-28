@@ -9,10 +9,12 @@ import { routes } from './services/router'
 import Toast from 'vue-toastification'
 import VueSweetalert2 from 'vue-sweetalert2'
 import moment from 'moment'
+import VueHtmlToPaper from 'vue-html-to-paper'
 import 'sweetalert2/dist/sweetalert2.min.css'
 import 'vue-toastification/dist/index.css'
 
 import '@sweetalert2/themes/dark/dark.css'
+import { html } from 'daisyui/dist/base'
 
 moment.updateLocale('en', {
   months: [
@@ -55,12 +57,19 @@ const router = createRouter({
   routes,
 })
 
+const pirntOptions = {
+  name: '_blank',
+  specs: ['fullscreen=yes', 'titlebar=yes', 'scrollbars=yes'],
+  styles: [],
+}
+
 createApp(App)
 const app = createApp(App)
 const pinia = createPinia()
 
 app.config.globalProperties.$moment = moment
 app.config.globalProperties.$axios = axiosIns
+app.config.globalProperties.$print = VueHtmlToPaper
 app.use(pinia)
 app.use(router)
 app.use(VueSweetalert2)

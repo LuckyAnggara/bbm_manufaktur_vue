@@ -1,23 +1,18 @@
 <template>
   <div class="card flex bg-neutral flex-col">
     <div class="card-body shadow-xl rounded-xl">
-      <h2 class="card-title mb-2 text-2xl">Data Persediaan</h2>
+      <h2 class="card-title mb-2 text-2xl">Data Production Order</h2>
       <div class="md:flex py-2">
-        <div class="w-1/5">
-          <label
-            for="my-modal"
-            class="btn w-32 btn-secondary modal-button shadow-md"
-            ><span class="text-xs">New Item</span></label
-          >
-        </div>
         <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4">
           <label class="mr-4">Jumlah Data </label>
           <select
-            v-model="itemStore.currentLimit"
+            v-model="productionOrderStore.currentLimit"
             class="select select-bordered max-w-xs"
           >
             <option
-              :selected="itemStore.currentLimit == length ? true : false"
+              :selected="
+                productionOrderStore.currentLimit == length ? true : false
+              "
               v-for="length in length"
               :key="length"
             >
@@ -30,7 +25,7 @@
           <div class="form-control">
             <div class="input-group">
               <input
-                v-model="itemStore.searchName"
+                v-model="productionOrderStore.searchName"
                 @keyup.enter="searchData"
                 type="text"
                 placeholder="Search…"
@@ -63,18 +58,19 @@
           <thead>
             <tr>
               <th></th>
-              <th>Nama</th>
-              <th>Unit</th>
-              <th>Tipe</th>
-              <th>Gudang</th>
-              <th>Saldo</th>
+              <th>Nomor Produksi</th>
+              <th>Nama Pelanggan</th>
+              <th>Penanggung Jawab</th>
+              <th>Tanggal Order</th>
+              <th>Tamggal Selesai</th>
+              <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr v-if="itemStore.isLoading">
-              <td colspan="7" class="text-center">
+            <tr v-if="productionOrderStore.isLoading">
+              <td colspan="8" class="text-center">
                 <div role="status">
                   <svg
                     class="inline mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600"
@@ -96,16 +92,29 @@
               </td>
             </tr>
             <template v-else>
-              <tr v-if="itemStore.items.length == 0">
-                <td colspan="7" class="text-center">Tidak ada data</td>
+              <tr v-if="productionOrderStore.listData.length == 0">
+                <td colspan="8" class="text-center">Tidak ada data</td>
               </tr>
-              <tr v-else v-for="(item, index) in itemStore.items" :key="item">
-                <td class="text-center">{{ itemStore.from + index }}</td>
-                <td>{{ item.name.toUpperCase() }}</td>
-                <td>{{ item.unit.name.toUpperCase() }}</td>
-                <td>{{ item.type.name.toUpperCase() }}</td>
-                <td>{{ item.warehouse.name.toUpperCase() }}</td>
-                <td>{{ item.balance }}</td>
+              <tr
+                v-else
+                v-for="(data, index) in productionOrderStore.listData"
+                :key="data"
+              >
+                <td class="text-center">
+                  {{ productionOrderStore.from + index }}
+                </td>
+                <td>{{ data.sequence }}</td>
+                <td>{{ data.customer_name }}</td>
+                <td>{{ data.pic_name }}</td>
+                <td>
+                  {{ $moment(data.order_date).format('DD MMMM YYYY') }}
+                </td>
+                <td>
+                  {{ $moment(data.target_date).format('DD MMMM YYYY') }}
+                </td>
+                <td>
+                  {{ data.status }}
+                </td>
                 <td>
                   <div class="mx-2 dropdown" :class="position(index)">
                     <button class="btn btn-sm btn-square btn-ghost">
@@ -130,9 +139,15 @@
                       class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52"
                     >
                       <li>
-                        <a @click="detail(item)"> Detail </a>
+                        <a @click="onDetail(data.id)"> Detail </a>
                       </li>
-                      <li><a @click="onDelete(item.id, index)">Hapus</a></li>
+                      <li>
+                        <a @click="onEdit(data.id)"> Edit </a>
+                      </li>
+                      <li>
+                        <a @click="onDetail(data.id)"> Update </a>
+                      </li>
+                      <li><a @click="onDelete(data.id, index)">Hapus</a></li>
                     </ul>
                   </div>
                 </td>
@@ -143,22 +158,26 @@
       </div>
       <div
         class="btn-group mx-auto mt-4 mb-1 justify-center"
-        v-if="!itemStore.isLoading"
+        v-if="!productionOrderStore.isLoading"
       >
         <button
           class="btn btn-outline"
           @click="getData(previousPage)"
-          :disabled="itemStore.currentPage == 1 ? true : false"
+          :disabled="productionOrderStore.currentPage == 1 ? true : false"
         >
           «
         </button>
         <button class="btn btn-outline">
-          Page {{ itemStore.currentPage }}
+          Page {{ productionOrderStore.currentPage }}
         </button>
         <button
           class="btn btn-outline"
           @click="getData(nextPage)"
-          :disabled="itemStore.lastPage == itemStore.currentPage ? true : false"
+          :disabled="
+            productionOrderStore.lastPage == productionOrderStore.currentPage
+              ? true
+              : false
+          "
         >
           »
         </button>
@@ -169,70 +188,68 @@
 
 <script>
 import { ref } from 'vue'
-import { useItemStore } from '../../stores/store'
+import { useProductionOrderStore } from '../../../../stores/store'
 
 export default {
   setup() {
-    const itemStore = useItemStore()
-    const dataApi = ref()
+    const productionOrderStore = useProductionOrderStore()
     const length = ref([5, 10, 20, 30, 40, 50])
-
-    itemStore.$subscribe((mutation, state) => {
-      if (mutation.events.key == 'currentLimit') {
-        getData()
-      }
-    })
+    // productionOrderStore.$subscribe((mutation, state) => {
+    //   if (mutation.events.key == 'currentLimit') {
+    //     getData()
+    //   }
+    // })
 
     function getData(page = '') {
-      itemStore.getItemData(page)
+      productionOrderStore.getAllData(page)
     }
 
     // expose to template and other options API hooks
     return {
       getData,
-      dataApi,
       length,
-      itemStore,
+      productionOrderStore,
     }
   },
-  watch: {
+  computed: {
     currentLimit() {
       this.getData()
     },
-  },
-  computed: {
     previousPage() {
-      return '&page=' + (this.itemStore.currentPage - 1)
+      return '&page=' + (this.productionOrderStore.currentPage - 1)
     },
     nextPage() {
-      return '&page=' + (this.itemStore.currentPage + 1)
+      return '&page=' + (this.productionOrderStore.currentPage + 1)
     },
   },
   methods: {
-    detail(data) {
-      this.$router.push({ name: 'mutation', params: data })
+    onDetail(id) {
+      this.$router.push({
+        name: 'produksi-order-finish',
+        params: { id: id },
+      })
+    },
+    onEdit(id) {
+      this.$router.push({
+        name: 'produksi-order-edit',
+        params: { id: id },
+      })
     },
     onDelete(id, index) {
+      console.info(index)
       this.$swal
         .fire({
           title: 'Anda yakin?',
-          text: 'Menghapus Item yang masih bersaldo akan menghilangkan dilaporan!',
+          text: 'Data ini akan di hapus!',
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
-          confirmButtonText: 'Yes, delete!',
+          confirmButtonText: 'Ya, Hapus!',
         })
         .then((result) => {
           if (result.isConfirmed) {
-            const b = this.itemStore.deleteItemData(id, index)
-            if (b)
-              return this.$swal.fire(
-                'Deleted!',
-                'Your file has been deleted.',
-                'success'
-              )
-            return this.$swal('error')
+            this.productionOrderStore.deleteProductionOrderData(id, index)
           }
         })
     },
@@ -247,7 +264,7 @@ export default {
     },
   },
   created() {
-    this.getData(this.itemStore.searchName)
+    this.getData(this.productionOrderStore.searchName)
   },
 }
 </script>
