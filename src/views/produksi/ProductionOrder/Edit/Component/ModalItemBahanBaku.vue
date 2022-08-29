@@ -91,10 +91,9 @@
                     <!-- this hidden checkbox controls the state -->
                     <input
                       type="checkbox"
-                      v-model.lazy="productionOrderStore.editOrder.input"
+                      v-model="productionOrderStore.editOrder.input"
                       :value="item"
                     />
-
                     <!-- volume on icon -->
                     <svg
                       class="swap-off fill-current"

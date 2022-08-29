@@ -75,7 +75,7 @@
                   <label class="input-group">
                     <span class="w-1/4">Tanggal Order</span>
                     <input
-                      :value="productionOrderStore.editOrder.order_date"
+                      v-model="productionOrderStore.editOrder.order_date"
                       type="date"
                       placeholder="Type here"
                       class="input input-bordered w-3/4"
@@ -329,6 +329,17 @@
               </div>
             </div>
           </div>
+
+          <small
+            >Created at
+            {{
+              $moment(productionOrderStore.editOrder.created_at).format(
+                'DD MMMM YYYY'
+              )
+            }}
+            - oleh
+            {{ productionOrderStore.editOrder.user.name.toUpperCase() }}</small
+          >
         </div>
       </template>
     </template>
@@ -364,26 +375,7 @@ export default {
     ]
     itemStore.getItemData()
     function nextTab() {
-      console.info(this.tabIndex)
-      if (this.tabIndex == 1 && productionOrderStore.inputData.length < 1) {
-        swal
-          .fire({
-            title: 'Peringatan',
-            text: 'Data bahan baku belum tidak tersedia!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Lanjutkan',
-          })
-          .then((result) => {
-            if (result.isConfirmed) {
-              this.tabIndex++
-            }
-          })
-      } else {
-        this.tabIndex++
-      }
+      this.tabIndex++
     }
 
     function prevTab() {
@@ -391,34 +383,22 @@ export default {
     }
 
     async function onSubmit() {
-      await productionOrderStore.storeProductionOrder(dataForm.value)
+      await productionOrderStore.updateProductionOrder()
       router.push({
         name: 'produksi-order-finish',
-        params: { id: productionOrderStore.currentId },
+        params: { id: 1 },
       })
-
-      // swal
-      //   .fire({
-      //     title: 'Proses?',
-      //     text: 'Produksi akan di proses!',
-      //     icon: 'warning',
-      //     showCancelButton: true,
-      //     confirmButtonColor: '#3085d6',
-      //     cancelButtonColor: '#d33',
-      //     confirmButtonText: 'Proses!',
-      //   })
-      //   .then((result) => {})
     }
 
     function deleteInputData(index) {
-      productionOrderStore.deleteInputData(index)
+      productionOrderStore.deleteInputEditData(index)
       toast.warning('Bahan baku di hapus', {
         timeout: 1000,
       })
     }
 
     function deleteOutputData(index) {
-      productionOrderStore.deleteOutputData(index)
+      productionOrderStore.deleteOutputEditData(index)
       toast.warning('Barang jadi di hapus', {
         timeout: 1000,
       })

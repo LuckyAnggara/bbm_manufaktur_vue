@@ -288,18 +288,30 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     },
     outputDataEdit(state) {
       state.editOrder.output.forEach((x) => {
-        x.name = x.item.name
-        x.unit = x.item.unit
+        if (!x.target_quantity) {
+          x.target_quantity = 0
+        }
+        if (x.item) {
+          x.id = x.item.id
+          x.name = x.item.name
+          x.unit = x.item.unit
+        }
       })
       return state.editOrder.output
     },
   },
   actions: {
+    deleteInputEditData(index) {
+      this.editOrder.input.splice(index, 1)
+    },
+    deleteOutputEditData(index) {
+      this.editOrder.output.splice(index, 1)
+    },
     deleteInputData(index) {
-      this.input.splice(index, 1)
+      this.dataOrder.input.splice(index, 1)
     },
     deleteOutputData(index) {
-      this.output.splice(index, 1)
+      this.dataOrder.output.splice(index, 1)
     },
     async getAllData(page = '') {
       this.isLoading = true
@@ -352,6 +364,23 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         this.currentId = response.data.data.id
         // this.storeLoading = false
         toast.success('Produksi Order berhasil di tambahkan', {
+          timeout: 1000,
+        })
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.storeLoading = false
+      }
+    },
+    async updateProductionOrder() {
+      this.storeLoading = true
+      try {
+        const response = await axiosIns.put(
+          `/production-order/${this.editOrder.id}`,
+          this.editOrder
+        )
+        // this.storeLoading = false
+        toast.success('Produksi Order berhasil di ubah', {
           timeout: 1000,
         })
       } catch (error) {

@@ -17,7 +17,6 @@
     "pinia": "^2.0.17",
     "sweetalert2": "^11.4.24",
     "vue": "^3.2.37",
-    "vue-html-to-paper": "^1.4.4",
     "vue-router": "^4.1.3",
     "vue-sweetalert2": "^5.0.5",
     "vue-toastification": "^2.0.0-rc.5"

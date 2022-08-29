@@ -109,7 +109,7 @@
         </div>
 
         <div class="md:flex justify-between">
-          <div class="md:mb-0 mb-4" style="max-width: 800px" id="printArea">
+          <div class="md:mb-0 mb-4 w-2/5 mr-5" id="printArea">
             <div class="card card-compact w-full bg-neutral shadow-xl p-8">
               <h2 class="card-title">Kertas Kerja Produksi</h2>
               <div class="card-body">
@@ -176,20 +176,14 @@
                   </div>
                 </div>
 
-                <div class="flex justify-between mb-8 px-3">
+                <div class="flex justify-end mb-8 px-3">
                   <div class="text-1xl leading-none w-1/4 text-start">
                     <span class="">Catatan</span> :
                   </div>
-                  <div class="text-1xl leading-none w-3/4 text-end">
-                    <div class="text-justify px-0 leading-tight">
-                      <small class="text-xs"
-                        >Nullam auctor, tellus sit amet eleifend interdum, quam
-                        nisl luctus quam, a tincidunt nisi eros ac dui.
-                        Curabitur leo ipsum, bibendum sit amet suscipit sed,
-                        gravida non lectus. Nunc porttitor lacus sapien, nec
-                        congue quam cursus nec. Quisque vel vehicula ipsum.
-                        Donec condimentum dolor est, ut interdum augue blandit
-                        luctus.
+                  <div class="text-1xl leading-none w-3/4">
+                    <div class="text-end px-0 leading-tight">
+                      <small class="text-xs">
+                        <pre>{{ dataOrder.notes }}</pre>
                       </small>
                     </div>
                   </div>
@@ -206,7 +200,7 @@
 
                 <div class="flex justify-between items-center mt-4 px-3">
                   <div class="text-1xl leading-none w-1/2 text-center">
-                    <span class="">Administrator</span>
+                    <span class="">Maker</span>
                   </div>
                   <div class="text-1xl leading-none w-1/2 text-center">
                     <span class="">Bagian Produksi</span>
@@ -215,7 +209,9 @@
 
                 <div class="flex justify-between items-center mt-12 px-3">
                   <div class="text-1xl leading-none w-1/2 text-center">
-                    <span class="">Lucky</span>
+                    <span class="">{{
+                      productionOrderStore.currentData.user.name.toUpperCase()
+                    }}</span>
                   </div>
                   <div class="text-1xl leading-none w-1/2 text-center">
                     <span class="">Kalula</span>
@@ -261,9 +257,7 @@
                           {{ timeline.status }}
                         </h3>
                         <p class="leading-tight text-justify w-full">
-                          {{
-                            $moment(timeline.created_at).format('DD MMMM YYYY')
-                          }}
+                          {{ $moment(timeline.created_at).format('LLL') }}
                           ( {{ timeline.user.name.toUpperCase() }} )
                         </p>
                       </div>
