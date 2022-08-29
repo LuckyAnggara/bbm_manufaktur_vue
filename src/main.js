@@ -4,17 +4,15 @@ import './index.css'
 import './style.css'
 import App from './App.vue'
 import { axiosIns } from './services/axios'
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { routes } from './services/router'
 import Toast from 'vue-toastification'
 import VueSweetalert2 from 'vue-sweetalert2'
 import moment from 'moment'
-import VueHtmlToPaper from 'vue-html-to-paper'
 import 'sweetalert2/dist/sweetalert2.min.css'
 import 'vue-toastification/dist/index.css'
 
 import '@sweetalert2/themes/dark/dark.css'
-import { html } from 'daisyui/dist/base'
 
 moment.updateLocale('en', {
   months: [
@@ -53,7 +51,7 @@ moment().format('L')
 const router = createRouter({
   mode: 'history',
   linkExactActiveClass: 'active',
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes,
 })
 
@@ -69,7 +67,6 @@ const pinia = createPinia()
 
 app.config.globalProperties.$moment = moment
 app.config.globalProperties.$axios = axiosIns
-app.config.globalProperties.$print = VueHtmlToPaper
 app.use(pinia)
 app.use(router)
 app.use(VueSweetalert2)

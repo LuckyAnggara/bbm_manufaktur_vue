@@ -382,12 +382,26 @@ export default {
       this.tabIndex--
     }
 
-    async function onSubmit() {
-      await productionOrderStore.updateProductionOrder()
-      router.push({
-        name: 'produksi-order-finish',
-        params: { id: 1 },
-      })
+    function onSubmit() {
+      swal
+        .fire({
+          title: 'Proses?',
+          text: 'Produksi akan di proses!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Proses!',
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            productionOrderStore.updateProductionOrder()
+            router.push({
+              name: 'produksi-order-finish',
+              params: { id: productionOrderStore.currentId },
+            })
+          }
+        })
     }
 
     function deleteInputData(index) {

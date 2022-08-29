@@ -113,7 +113,7 @@
                   {{ $moment(data.target_date).format('DD MMMM YYYY') }}
                 </td>
                 <td>
-                  {{ data.status }}
+                  <div class="badge badge-primary">{{ data.status }}</div>
                 </td>
                 <td>
                   <div class="mx-2 dropdown" :class="position(index)">
@@ -145,7 +145,7 @@
                         <a @click="onEdit(data.id)"> Edit </a>
                       </li>
                       <li>
-                        <a @click="onDetail(data.id)"> Update </a>
+                        <a @click="onUpdate(data)"> Update </a>
                       </li>
                       <li><a @click="onDelete(data.id, index)">Hapus</a></li>
                     </ul>
@@ -234,6 +234,36 @@ export default {
         name: 'produksi-order-edit',
         params: { id: id },
       })
+    },
+    async onUpdate(data) {
+      const { value: status } = await this.$swal.fire({
+        title: 'Select field validation',
+        input: 'select',
+        inputOptions: {
+          'NEW ORDER': 'NEW ORDER',
+          'WORK IN PROGRESS': 'WORK IN PROGRESS',
+          DONE: 'DONE',
+          WAREHOUSE: 'WAREHOUSE',
+          SHIPPING: 'SHIPPING',
+        },
+        inputPlaceholder: 'Pilih status Produksi',
+        showCancelButton: true,
+        inputValidator: (value) => {
+          return new Promise((resolve) => {
+            if (value !== data.status) {
+              resolve()
+            } else {
+              resolve(`Status sekarang adalah ${data.status}`)
+            }
+          })
+        },
+      })
+
+      if (status) {
+        await this.productionOrderStore.updateStatus(status, data.id)
+        this.$swal.fire(`Status diubah menjadi ${status}`)
+        this.getData(this.productionOrderStore.searchName)
+      }
     },
     onDelete(id, index) {
       console.info(index)

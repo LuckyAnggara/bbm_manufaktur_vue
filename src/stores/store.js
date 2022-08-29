@@ -313,6 +313,27 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     deleteOutputData(index) {
       this.dataOrder.output.splice(index, 1)
     },
+    async updateStatus(status, id = null) {
+      this.isLoading = true
+      try {
+        const response = await axiosIns.post(
+          `/production-order/update-status`,
+          {
+            id: id == null ? this.currentData.id : id,
+            status: status,
+          }
+        )
+        // this.storeLoading = false
+        toast.success('Status berhasil di update', {
+          timeout: 1000,
+        })
+        this.responseListData = response.data.data
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isLoading = false
+      }
+    },
     async getAllData(page = '') {
       this.isLoading = true
       try {

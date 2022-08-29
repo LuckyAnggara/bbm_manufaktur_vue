@@ -18,7 +18,7 @@
           >
             <option
               :selected="itemStore.currentLimit == length ? true : false"
-              v-for="length in length"
+              v-for="length in lengths"
               :key="length"
             >
               {{ length }}
@@ -99,7 +99,11 @@
               <tr v-if="itemStore.items.length == 0">
                 <td colspan="7" class="text-center">Tidak ada data</td>
               </tr>
-              <tr v-else v-for="(item, index) in itemStore.items" :key="item">
+              <tr
+                v-else
+                v-for="(item, index) in itemStore.items"
+                :key="item.id"
+              >
                 <td class="text-center">{{ itemStore.from + index }}</td>
                 <td>{{ item.name.toUpperCase() }}</td>
                 <td>{{ item.unit.name.toUpperCase() }}</td>
@@ -175,7 +179,7 @@ export default {
   setup() {
     const itemStore = useItemStore()
     const dataApi = ref()
-    const length = ref([5, 10, 20, 30, 40, 50])
+    const lengths = ref([5, 10, 20, 30, 40, 50])
 
     itemStore.$subscribe((mutation, state) => {
       if (mutation.events.key == 'currentLimit') {
@@ -191,7 +195,7 @@ export default {
     return {
       getData,
       dataApi,
-      length,
+      lengths,
       itemStore,
     }
   },

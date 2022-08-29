@@ -318,7 +318,6 @@ export default {
     ]
     itemStore.getItemData()
     function nextTab() {
-      console.info(this.tabIndex)
       if (this.tabIndex == 1 && productionOrderStore.inputData.length < 1) {
         swal
           .fire({
