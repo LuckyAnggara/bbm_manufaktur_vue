@@ -75,8 +75,7 @@
                   <label class="input-group">
                     <span class="w-1/4">Tanggal Order</span>
                     <input
-                      v-model="productionOrderStore.dataOrder.order_date"
-                      id="date"
+                      :value="productionOrderStore.editOrder.order_date"
                       type="date"
                       placeholder="Type here"
                       class="input input-bordered w-3/4"
@@ -88,7 +87,7 @@
                   <label class="input-group">
                     <span class="w-1/4">Nama Pelanggan</span>
                     <input
-                      v-model="productionOrderStore.dataOrder.customer_name"
+                      v-model="productionOrderStore.editOrder.customer_name"
                       type="text"
                       class="input input-bordered w-3/4"
                     />
@@ -98,7 +97,7 @@
                   <label class="input-group">
                     <span class="w-1/4">Penanggung Jawab</span>
                     <input
-                      v-model="productionOrderStore.dataOrder.pic_name"
+                      v-model="productionOrderStore.editOrder.pic_name"
                       type="text"
                       class="input input-bordered w-3/4"
                     />
@@ -108,7 +107,7 @@
                   <label class="input-group">
                     <span class="w-1/4">Catatan</span>
                     <textarea
-                      v-model="productionOrderStore.dataOrder.notes"
+                      v-model="productionOrderStore.editOrder.notes"
                       class="textarea textarea-bordered w-3/4"
                       placeholder="Bio"
                     ></textarea>
@@ -119,7 +118,7 @@
                   <label class="input-group">
                     <span class="w-1/4">Tanggal Penyelesaian</span>
                     <input
-                      v-model="productionOrderStore.dataOrder.target_date"
+                      v-model="productionOrderStore.editOrder.target_date"
                       id="date"
                       type="date"
                       placeholder="Type here"
@@ -162,14 +161,16 @@
                   </thead>
 
                   <tbody>
-                    <tr v-if="productionOrderStore.inputData.length < 1">
+                    <tr v-if="productionOrderStore.inputDataEdit.length < 1">
                       <td colspan="4" class="text-center">
                         <span>Tidak ada data.</span>
                       </td>
                     </tr>
                     <tr
                       v-else
-                      v-for="(item, index) in productionOrderStore.inputData"
+                      v-for="(
+                        item, index
+                      ) in productionOrderStore.inputDataEdit"
                       :key="item"
                     >
                       <td class="text-center"></td>
@@ -252,14 +253,16 @@
                   </thead>
 
                   <tbody>
-                    <tr v-if="productionOrderStore.outputData.length < 1">
+                    <tr v-if="productionOrderStore.outputDataEdit.length < 1">
                       <td colspan="5" class="text-center">
                         <span>Tidak ada data.</span>
                       </td>
                     </tr>
                     <tr
                       v-else
-                      v-for="(item, index) in productionOrderStore.outputData"
+                      v-for="(
+                        item, index
+                      ) in productionOrderStore.outputDataEdit"
                       :key="item"
                     >
                       <td class="text-center"></td>
@@ -340,8 +343,8 @@ import { inject, onBeforeUnmount, onBeforeMount, ref } from 'vue'
 import { useToast } from 'vue-toastification'
 import { useItemStore, useProductionOrderStore } from '../../../../stores/store'
 import { useRouter, useRoute } from 'vue-router'
-import ModalItemBahanBaku from '../Component/ModalItemBahanBaku.vue'
-import ModalItemBarangJadi from '../Component/ModalItemBarangJadi.vue'
+import ModalItemBahanBaku from './Component/ModalItemBahanBaku.vue'
+import ModalItemBarangJadi from './Component/ModalItemBarangJadi.vue'
 
 export default {
   setup() {
@@ -425,8 +428,7 @@ export default {
         productionOrderStore.$patch({
           currentId: route.params.id,
         })
-        productionOrderStore.getProductionOrderData()
-        productionOrderStore.setEditData()
+        productionOrderStore.getProductionOrderData(true)
       }
     })
 

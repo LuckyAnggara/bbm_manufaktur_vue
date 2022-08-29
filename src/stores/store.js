@@ -227,7 +227,10 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         output: [],
         input: [],
       },
-      editOrder: null,
+      editOrder: {
+        output: [],
+        input: [],
+      },
     }
   },
   getters: {
@@ -271,16 +274,24 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
       return state.dataOrder.output
     },
     inputDataEdit(state) {
-      state.dataOrder.input.forEach((x) => {
-        x.name = x.item.name
+      state.editOrder.input.forEach((x) => {
+        if (!x.estimate_quantity) {
+          x.estimate_quantity = 0
+        }
+        if (x.item) {
+          x.id = x.item.id
+          x.name = x.item.name
+          x.unit = x.item.unit
+        }
       })
-      return state.dataOrder.input
+      return state.editOrder.input
     },
     outputDataEdit(state) {
-      state.dataOrder.output.forEach((x) => {
+      state.editOrder.output.forEach((x) => {
         x.name = x.item.name
+        x.unit = x.item.unit
       })
-      return state.dataOrder.input
+      return state.editOrder.output
     },
   },
   actions: {
@@ -308,7 +319,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         this.isLoading = false
       }
     },
-    async getProductionOrderData() {
+    async getProductionOrderData(edit = false) {
       this.isLoading = true
       try {
         const response = await axiosIns.get(
@@ -319,6 +330,9 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
           //   },
           // }
         )
+        if (edit == true) {
+          this.editOrder = response.data.data
+        }
         this.currentData = response.data.data
       } catch (error) {
         this.isDataEmpty = true

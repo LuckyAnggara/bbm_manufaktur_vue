@@ -166,7 +166,10 @@
 
 <script>
 import { onMounted, computed } from 'vue'
-import { useItemStore, useProductionOrderStore } from '../../../../stores/store'
+import {
+  useItemStore,
+  useProductionOrderStore,
+} from '../../../../../stores/store'
 import { useToast } from 'vue-toastification'
 
 export default {

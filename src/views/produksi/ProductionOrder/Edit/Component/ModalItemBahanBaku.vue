@@ -91,7 +91,7 @@
                     <!-- this hidden checkbox controls the state -->
                     <input
                       type="checkbox"
-                      v-model.lazy="productionOrderStore.dataOrder.input"
+                      v-model.lazy="productionOrderStore.editOrder.input"
                       :value="item"
                     />
 
@@ -169,7 +169,10 @@
 <script>
 import { onMounted, computed } from 'vue'
 import { useToast } from 'vue-toastification'
-import { useItemStore, useProductionOrderStore } from '../../../../stores/store'
+import {
+  useItemStore,
+  useProductionOrderStore,
+} from '../../../../../stores/store'
 
 export default {
   setup() {

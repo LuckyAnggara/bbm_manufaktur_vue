@@ -291,8 +291,8 @@ import { inject, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useToast } from 'vue-toastification'
 import { useItemStore, useProductionOrderStore } from '../../../../stores/store'
 import { useRouter } from 'vue-router'
-import ModalItemBahanBaku from '../Component/ModalItemBahanBaku.vue'
-import ModalItemBarangJadi from '../Component/ModalItemBarangJadi.vue'
+import ModalItemBahanBaku from './Component/ModalItemBahanBaku.vue'
+import ModalItemBarangJadi from './Component/ModalItemBarangJadi.vue'
 
 export default {
   setup() {
