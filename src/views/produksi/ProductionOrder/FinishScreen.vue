@@ -55,7 +55,7 @@
         <div class="md:flex md:gap-x-4 grid grid-cols-2 gap-2">
           <button
             v-show="dataOrder.status == 'NEW ORDER'"
-            class="btn gap-2 btn-primary w-32 hover:btn-secondary mb-4"
+            class="btn gap-2 btn-primary hover:btn-secondary w-32 mb-4"
             @click="onEdit"
           >
             <svg
@@ -75,8 +75,8 @@
           </button>
 
           <button
-            class="btn gap-2 btn-secondary w-32 hover:btn-primary mb-4"
-            @click="onUpdate"
+            class="btn gap-2 w-32 btn-primary hover:btn-secondary mb-4"
+            @click="onUpdateStatus"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -91,11 +91,11 @@
                 d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 002.25-2.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v2.25A2.25 2.25 0 006 10.5zm0 9.75h2.25A2.25 2.25 0 0010.5 18v-2.25a2.25 2.25 0 00-2.25-2.25H6a2.25 2.25 0 00-2.25 2.25V18A2.25 2.25 0 006 20.25zm9.75-9.75H18a2.25 2.25 0 002.25-2.25V6A2.25 2.25 0 0018 3.75h-2.25A2.25 2.25 0 0013.5 6v2.25a2.25 2.25 0 002.25 2.25z"
               />
             </svg>
-            Update
+            Status
           </button>
 
           <button
-            class="btn gap-2 btn-error w-32 hover:btn-primary mb-4 text-white"
+            class="btn gap-2 w-32 btn-primary hover:btn-secondary mb-4 text-white"
             @click="onDelete"
           >
             <svg
@@ -130,8 +130,27 @@
             </svg>
             Print
           </button>
-        </div>
 
+          <button
+            class="btn gap-2 btn-primary hover:btn-secondary w-32 mb-4"
+            @click="onUpdate"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M13.5 16.875h3.375m0 0h3.375m-3.375 0V13.5m0 3.375v3.375M6 10.5h2.25a2.25 2.25 0 002.25-2.25V6a2.25 2.25 0 00-2.25-2.25H6A2.25 2.25 0 003.75 6v2.25A2.25 2.25 0 006 10.5zm0 9.75h2.25A2.25 2.25 0 0010.5 18v-2.25a2.25 2.25 0 00-2.25-2.25H6a2.25 2.25 0 00-2.25 2.25V18A2.25 2.25 0 006 20.25zm9.75-9.75H18a2.25 2.25 0 002.25-2.25V6A2.25 2.25 0 0018 3.75h-2.25A2.25 2.25 0 0013.5 6v2.25a2.25 2.25 0 002.25 2.25z"
+              />
+            </svg>
+            Update
+          </button>
+        </div>
         <div class="md:flex justify-between">
           <div class="md:mb-0 mb-4 w-2/5 mr-5" id="printArea">
             <div class="card card-compact w-full bg-neutral shadow-xl p-8">
@@ -337,9 +356,15 @@ export default {
         params: { id: this.dataOrder.id },
       })
     },
-    async onUpdate() {
+    onUpdate() {
+      this.$router.push({
+        name: 'produksi-order-update',
+        params: { id: this.dataOrder.id },
+      })
+    },
+    async onUpdateStatus() {
       const { value: status } = await this.$swal.fire({
-        title: 'Select field validation',
+        title: 'Update status order',
         input: 'select',
         inputOptions: {
           'NEW ORDER': 'NEW ORDER',
@@ -348,7 +373,7 @@ export default {
           WAREHOUSE: 'WAREHOUSE',
           SHIPPING: 'SHIPPING',
         },
-        inputPlaceholder: 'Pilih status Produksi',
+        inputPlaceholder: 'Pilih status produksi',
         showCancelButton: true,
         inputValidator: (value) => {
           return new Promise((resolve) => {

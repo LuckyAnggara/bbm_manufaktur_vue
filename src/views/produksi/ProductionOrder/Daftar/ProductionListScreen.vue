@@ -226,6 +226,7 @@ export default {
     onDetail(id) {
       this.$router.push({
         name: 'produksi-order-finish',
+        // name: 'produksi-order-detail',
         params: { id: id },
       })
     },
