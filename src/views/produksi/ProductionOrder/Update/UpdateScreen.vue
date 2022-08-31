@@ -9,6 +9,17 @@
         </h2>
 
         <h2>Hasil Produksi</h2>
+
+        <div class="flex flex-row-reverse py-2">
+          <div>
+            <label
+              for="my-modal"
+              class="btn w-32 btn-secondary modal-button shadow-md hover:scale-110"
+              ><span class="text-xs">New Item</span></label
+            >
+          </div>
+        </div>
+
         <div class="flex mt-2 md:overflow-visible overflow-y-auto mb-5">
           <table class="table table-compact w-full">
             <!-- head -->
@@ -63,7 +74,7 @@
                 <td>
                   <button
                     :disabled="productionOrderStore.storeLoading"
-                    class="btn btn-sm btn-square btn-outline"
+                    class="btn btn-sm btn-square btn-outline hover:scale-125"
                     @click="deleteOutputData(index)"
                   >
                     <svg
