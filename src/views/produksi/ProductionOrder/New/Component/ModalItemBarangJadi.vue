@@ -50,6 +50,7 @@
               <tr>
                 <th></th>
                 <th>Nama</th>
+                <th>Satuan</th>
                 <th class="text-center">Action</th>
               </tr>
             </thead>
@@ -84,6 +85,7 @@
               >
                 <td class="text-center">{{ itemStore.from + index }}</td>
                 <td>{{ item.name.toUpperCase() }}</td>
+                <td>{{ item.unit.name.toUpperCase() }}</td>
                 <td class="text-center">
                   <label class="swap">
                     <!-- this hidden checkbox controls the state -->

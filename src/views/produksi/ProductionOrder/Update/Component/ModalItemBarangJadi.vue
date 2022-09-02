@@ -14,6 +14,19 @@
         <div class="md:flex py-2">
           <div class="justify-end mx-1 md:w-1/2 w-full">
             <div class="form-control">
+              <select
+                v-model="itemStore.currentType"
+                class="select select-bordered"
+              >
+                <option :value="item.id" v-for="item in itemTypes" :key="item">
+                  {{ item.name.toUpperCase() }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="justify-end mx-1 md:w-1/2 w-full">
+            <div class="form-control">
               <div class="input-group input-group-sm">
                 <input
                   v-model="itemStore.searchName"
@@ -50,13 +63,15 @@
               <tr>
                 <th></th>
                 <th>Nama</th>
+                <th>Satuan</th>
+                <th>Tipe</th>
                 <th class="text-center">Action</th>
               </tr>
             </thead>
 
             <tbody>
               <tr v-if="itemStore.isLoading">
-                <td colspan="4" class="text-center">
+                <td colspan="5" class="text-center">
                   <div role="status">
                     <svg
                       class="inline mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600"
@@ -79,17 +94,21 @@
               </tr>
               <tr
                 v-else
-                v-for="(item, index) in itemStore.itemByType(2)"
+                v-for="(item, index) in itemStore.itemByType(
+                  itemStore.currentType
+                )"
                 :key="item"
               >
                 <td class="text-center">{{ itemStore.from + index }}</td>
                 <td>{{ item.name.toUpperCase() }}</td>
+                <td>{{ item.unit.name.toUpperCase() }}</td>
+                <td>{{ item.type.name.toUpperCase() }}</td>
                 <td class="text-center">
                   <label class="swap">
                     <!-- this hidden checkbox controls the state -->
                     <input
                       type="checkbox"
-                      v-model.lazy="productionOrderStore.editOrder.output"
+                      v-model.lazy="productionOrderStore.outputDataUpdate"
                       :value="item"
                     />
 
@@ -230,6 +249,10 @@ export default {
       itemStore,
     }
   },
-  computed: {},
+  computed: {
+    itemTypes() {
+      return [{ id: 0, name: 'SEMUA' }, ...this.itemStore.itemTypes]
+    },
+  },
 }
 </script>

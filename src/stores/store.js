@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { axiosIns } from '../services/axios'
 import { useToast } from 'vue-toastification'
-import { toHandlers } from 'vue'
+import Swal from 'sweetalert2/dist/sweetalert2'
 
 const toast = useToast()
 
@@ -13,7 +13,8 @@ export const useItemStore = defineStore('itemStore', {
       itemTypes: [],
       itemUnits: [],
       warehouses: [],
-      currentWarehouse: 0,
+      currentWarehouse: '',
+      currentType: 0,
       fromDate: '',
       toDate: '',
       isLoading: true,
@@ -29,8 +30,10 @@ export const useItemStore = defineStore('itemStore', {
       return state.responsItem.data
     },
     itemByType: (state) => {
-      return (typeId) =>
-        state.responsItem.data.filter((item) => item.type_id == typeId)
+      return (typeId) => {
+        if (typeId == 0) return state.responsItem.data
+        return state.responsItem.data.filter((item) => item.type_id == typeId)
+      }
     },
     currentPage(state) {
       return state.responsItem.current_page
@@ -218,6 +221,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
       isDeleteLoading: false,
       responseSingleData: null,
       storeLoading: false,
+      outputDataUpdate: [],
       dataOrder: {
         order_date: null,
         customer_name: null,
@@ -307,6 +311,9 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     deleteOutputEditData(index) {
       this.editOrder.output.splice(index, 1)
     },
+    deleteOutputUpdateData(index) {
+      this.currentData.output.splice(index, 1)
+    },
     deleteInputData(index) {
       this.dataOrder.input.splice(index, 1)
     },
@@ -347,7 +354,15 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         )
         this.responseListData = response.data.data
       } catch (error) {
-        alert(error)
+        Swal.fire({
+          title: 'Error!',
+          text: error,
+          icon: 'error',
+          confirmButtonText: 'Ok',
+        })
+        this.responseListData = {
+          data: [],
+        }
       } finally {
         this.isLoading = false
       }
@@ -385,6 +400,25 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         this.currentId = response.data.data.id
         // this.storeLoading = false
         toast.success('Produksi Order berhasil di tambahkan', {
+          timeout: 1000,
+        })
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.storeLoading = false
+      }
+    },
+    async storeUpdateProductionOrder() {
+      this.storeLoading = true
+      const outputData = { outputUpdate: this.outputDataUpdate }
+      this.editOrder.push(outputData)
+      try {
+        const response = await axiosIns.put(
+          `/production-order/update/${this.editOrder.id}`,
+          this.editOrder
+        )
+        // this.storeLoading = false
+        toast.success('Produksi Order berhasil di ubah', {
           timeout: 1000,
         })
       } catch (error) {
