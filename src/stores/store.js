@@ -2,8 +2,10 @@ import { defineStore } from 'pinia'
 import { axiosIns } from '../services/axios'
 import { useToast } from 'vue-toastification'
 import Swal from 'sweetalert2/dist/sweetalert2'
+import { useRouter } from 'vue-router'
 
 const toast = useToast()
+const router = useRouter()
 
 // ITEM STORE
 export const useItemStore = defineStore('itemStore', {
@@ -205,7 +207,6 @@ export const useMutationStore = defineStore('mutationStore', {
 })
 
 // PRODUCTION ORDER STORE
-
 export const useProductionOrderStore = defineStore('productionOrderStore', {
   state: () => {
     return {
@@ -219,6 +220,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
       toDate: '',
       isDataEmpty: false,
       isDeleteLoading: false,
+      isUpdateLoading: false,
       responseSingleData: null,
       storeLoading: false,
       outputDataUpdate: [],
@@ -409,22 +411,21 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
       }
     },
     async storeUpdateProductionOrder() {
-      this.storeLoading = true
-      const outputData = { outputUpdate: this.outputDataUpdate }
-      this.editOrder.push(outputData)
+      this.isUpdateLoading = true
       try {
-        const response = await axiosIns.put(
-          `/production-order/update/${this.editOrder.id}`,
-          this.editOrder
-        )
+        const response = await axiosIns.post(`/production-order/update-data`, {
+          data_order: this.currentData,
+          update_order: this.outputDataUpdate,
+        })
         // this.storeLoading = false
         toast.success('Produksi Order berhasil di ubah', {
           timeout: 1000,
         })
+        return response
       } catch (error) {
         alert(error)
       } finally {
-        this.storeLoading = false
+        this.isUpdateLoading = false
       }
     },
     async updateProductionOrder() {

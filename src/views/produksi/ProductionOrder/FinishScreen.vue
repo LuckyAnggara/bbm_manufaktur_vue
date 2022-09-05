@@ -153,8 +153,11 @@
         </div>
         <div class="md:flex justify-between">
           <div class="md:mb-0 mb-4 w-2/5 mr-5" id="printArea">
-            <div class="card card-compact w-full bg-neutral shadow-xl p-8">
-              <h2 class="card-title">Kertas Kerja Produksi</h2>
+            <div class="card card-compact w-full bg-neutral shadow-xl p-5">
+              <h2 class="text-3xl mb-5 px-2">Kertas Kerja Produksi</h2>
+              <h2 class="card-title px-2">
+                Status Pekerjaan : {{ dataOrder.status }}
+              </h2>
               <div class="card-body">
                 <div class="flex items-center justify-between mb-8 px-3">
                   <div>
@@ -205,7 +208,11 @@
                 >
                   <div>{{ output.item.name }}</div>
                   <div class="text-right font-medium">
-                    {{ output.target_quantity }}
+                    {{
+                      dataOrder.status == 'DONE'
+                        ? output.real_quantity
+                        : output.target_quantity
+                    }}
                     {{ output.item.unit.name }}
                   </div>
                 </div>
@@ -267,7 +274,7 @@
             <body class="bg-neutral rounded-xl pb-5">
               <div class="p-4 mt-4">
                 <h1 class="text-4xl text-center font-semibold mb-6">
-                  Status pekerjaan
+                  Timeline Pekerjaan
                 </h1>
                 <div class="container">
                   <div
@@ -341,9 +348,30 @@ export default {
       productionOrderStore,
     }
   },
+
   computed: {
     dataOrder() {
       return this.productionOrderStore.currentData
+    },
+    statusUpdate() {
+      if (this.dataOrder.status == 'NEW ORDER')
+        return {
+          'WORK IN PROGRESS': 'WORK IN PROGRESS',
+        }
+      if (this.dataOrder.status == 'WORK IN PROGRESS')
+        return {
+          'NEW ORDER': 'NEW ORDER',
+        }
+      if (
+        this.dataOrder.status == 'DONE' ||
+        this.dataOrder.status == 'WAREHOUSE' ||
+        this.dataOrder.status == 'SHIPPING'
+      )
+        return {
+          DONE: 'DONE',
+          WAREHOUSE: 'WAREHOUSE',
+          SHIPPING: 'SHIPPING',
+        }
     },
   },
   methods: {
@@ -366,13 +394,7 @@ export default {
       const { value: status } = await this.$swal.fire({
         title: 'Update status order',
         input: 'select',
-        inputOptions: {
-          'NEW ORDER': 'NEW ORDER',
-          'WORK IN PROGRESS': 'WORK IN PROGRESS',
-          DONE: 'DONE',
-          WAREHOUSE: 'WAREHOUSE',
-          SHIPPING: 'SHIPPING',
-        },
+        inputOptions: this.statusUpdate,
         inputPlaceholder: 'Pilih status produksi',
         showCancelButton: true,
         inputValidator: (value) => {

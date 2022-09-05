@@ -57,7 +57,7 @@
 
                   <td>
                     <input
-                      :disabled="productionOrderStore.storeLoading"
+                      :disabled="productionOrderStore.isUpdateLoading"
                       v-model="item.target_quantity"
                       type="number"
                       placeholder="0"
@@ -67,7 +67,7 @@
 
                   <td>
                     <input
-                      :disabled="productionOrderStore.storeLoading"
+                      :disabled="productionOrderStore.isUpdateLoading"
                       v-model="item.real_quantity"
                       type="number"
                       placeholder="0"
@@ -126,8 +126,8 @@
 
                   <td>
                     <input
-                      :disabled="productionOrderStore.storeLoading"
-                      v-model="item.target_quantity"
+                      :disabled="productionOrderStore.isUpdateLoading"
+                      v-model="item.real_quantity"
                       type="number"
                       placeholder="0"
                       class="input input-bordered input-sm w-1/2 max-w-xs"
@@ -136,7 +136,7 @@
 
                   <td>
                     <button
-                      :disabled="productionOrderStore.storeLoading"
+                      :disabled="productionOrderStore.isUpdateLoading"
                       class="btn btn-sm btn-square btn-outline hover:scale-125"
                       @click="deleteOutputData(index)"
                     >
@@ -164,10 +164,15 @@
 
           <div class="flex flex-row-reverse py-2">
             <button
+              v-if="!productionOrderStore.isUpdateLoading"
               class="btn gap-2 btn-primary hover:btn-secondary w-32 mb-4 hover:scale-110"
               @click="onSubmit"
             >
               Submit
+            </button>
+
+            <button v-else class="btn btn-accent text-white loading">
+              Prosesing
             </button>
           </div>
         </div>
@@ -209,8 +214,8 @@ export default {
       this.tabIndex--
     }
 
-    function onSubmit() {
-      swal
+    async function onSubmit() {
+      await swal
         .fire({
           title: 'Proses Produksi Selesai?',
           text: 'Status produksi akan menjadi SELESAI!',
@@ -219,10 +224,25 @@ export default {
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: 'Proses!',
+          showLoaderOnConfirm: true,
+          preConfirm: (value) => {
+            return productionOrderStore
+              .storeUpdateProductionOrder()
+              .then((resp) => {
+                if (resp.status == 200) {
+                  console.info(value)
+                  return resp
+                }
+                throw new Error(resp)
+              })
+          },
         })
         .then((result) => {
           if (result.isConfirmed) {
-            productionOrderStore.storeUpdateProductionOrder()
+            router.push({
+              name: 'produksi-order-finish',
+              params: { id: productionOrderStore.currentData.id },
+            })
           }
         })
     }
