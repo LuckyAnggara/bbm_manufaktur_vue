@@ -1,6 +1,5 @@
-import GudangScreen from '../views/gudang/GudangScreen.vue'
-
-import { productionOrderRoute } from './router/ProductionOrderRoute'
+import { productionOrderRoutes } from './router/ProductionOrderRoute'
+import { gudangRoutes } from './router/GudangRoute'
 import MutationScreen from '../views/mutation/MutationScreen.vue'
 import LoginScreen from '../views/LoginScreen.vue'
 
@@ -14,33 +13,7 @@ export const routes = [
       layout: 'layout-full',
     },
   },
-  {
-    path: '/dashboard',
-    name: 'dashboard',
-    component: GudangScreen,
-    meta: {
-      title: 'Dashboard',
-      layout: 'layout-normal',
-    },
-  },
-  {
-    path: '/gudang',
-    name: 'gudang',
-    component: GudangScreen,
-    meta: {
-      title: 'Gudang',
-      layout: 'layout-normal',
-    },
-  },
-  {
-    path: '/gudang',
-    name: 'laporan',
-    component: GudangScreen,
-    meta: {
-      title: 'Gudang',
-      layout: 'layout-normal',
-    },
-  },
+
   {
     path: '/gudang/mutasi/:id',
     name: 'mutation',
@@ -50,5 +23,6 @@ export const routes = [
       layout: 'layout-normal',
     },
   },
-  ...productionOrderRoute,
+  ...productionOrderRoutes,
+  ...gudangRoutes,
 ]

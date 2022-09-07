@@ -112,7 +112,7 @@
 <script>
 import { mapState } from 'pinia'
 import { ref } from 'vue'
-import { useItemStore } from '../../stores/store'
+import { useItemStore } from '../../../stores/store'
 
 export default {
   setup() {

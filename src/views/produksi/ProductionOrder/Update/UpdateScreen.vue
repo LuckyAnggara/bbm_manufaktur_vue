@@ -230,7 +230,6 @@ export default {
               .storeUpdateProductionOrder()
               .then((resp) => {
                 if (resp.status == 200) {
-                  console.info(value)
                   return resp
                 }
                 throw new Error(resp)

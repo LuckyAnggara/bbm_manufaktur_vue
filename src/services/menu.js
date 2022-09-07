@@ -13,6 +13,6 @@ export default [
   },
   {
     title: 'Laporan',
-    route: 'laporan',
+    route: 'gudang',
   },
 ]

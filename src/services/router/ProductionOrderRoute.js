@@ -5,7 +5,7 @@ import EditScreen from '../../views/produksi/ProductionOrder/Edit/EditScreen.vue
 import FinishScreen from '../../views/produksi/ProductionOrder/FinishScreen.vue'
 import ProductionListScreen from '../../views/produksi/ProductionOrder/Daftar/ProductionListScreen.vue'
 
-export const productionOrderRoute = [
+export const productionOrderRoutes = [
   {
     path: '/produksi',
     name: 'produksi',

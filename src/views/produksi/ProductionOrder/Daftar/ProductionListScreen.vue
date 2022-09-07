@@ -1,5 +1,5 @@
 <template>
-  <div class="card flex bg-neutral flex-col">
+  <div class="card flex bg-neutral flex-col h-5/6">
     <div class="card-body shadow-xl rounded-xl">
       <h2 class="card-title mb-2 text-2xl">Data Production Order</h2>
       <div class="md:flex py-2">
@@ -157,7 +157,7 @@
         </table>
       </div>
       <div
-        class="btn-group mx-auto mt-4 mb-1 justify-center"
+        class="btn-group mx-auto mt-4 mb-20 justify-center"
         v-if="!productionOrderStore.isLoading"
       >
         <button
@@ -199,6 +199,7 @@ export default {
     //     getData()
     //   }
     // })
+    const dataOrder = ref({})
 
     function getData(page = '') {
       productionOrderStore.getAllData(page)
@@ -206,6 +207,7 @@ export default {
 
     // expose to template and other options API hooks
     return {
+      dataOrder,
       getData,
       length,
       productionOrderStore,
@@ -220,6 +222,26 @@ export default {
     },
     nextPage() {
       return '&page=' + (this.productionOrderStore.currentPage + 1)
+    },
+    statusUpdate() {
+      if (this.dataOrder.status == 'NEW ORDER')
+        return {
+          'WORK IN PROGRESS': 'WORK IN PROGRESS',
+        }
+      if (this.dataOrder.status == 'WORK IN PROGRESS')
+        return {
+          'NEW ORDER': 'NEW ORDER',
+        }
+      if (
+        this.dataOrder.status == 'DONE' ||
+        this.dataOrder.status == 'WAREHOUSE' ||
+        this.dataOrder.status == 'SHIPPING'
+      )
+        return {
+          DONE: 'DONE',
+          WAREHOUSE: 'WAREHOUSE',
+          SHIPPING: 'SHIPPING',
+        }
     },
   },
   methods: {
@@ -236,17 +258,13 @@ export default {
         params: { id: id },
       })
     },
+
     async onUpdate(data) {
+      this.dataOrder = data
       const { value: status } = await this.$swal.fire({
-        title: 'Select field validation',
+        title: 'Ubah status pengerjaan',
         input: 'select',
-        inputOptions: {
-          'NEW ORDER': 'NEW ORDER',
-          'WORK IN PROGRESS': 'WORK IN PROGRESS',
-          DONE: 'DONE',
-          WAREHOUSE: 'WAREHOUSE',
-          SHIPPING: 'SHIPPING',
-        },
+        inputOptions: this.statusUpdate,
         inputPlaceholder: 'Pilih status Produksi',
         showCancelButton: true,
         inputValidator: (value) => {
@@ -266,24 +284,29 @@ export default {
         this.getData(this.productionOrderStore.searchName)
       }
     },
-    onDelete(id, index) {
-      console.info(index)
-      this.$swal
-        .fire({
-          title: 'Anda yakin?',
-          text: 'Data ini akan di hapus!',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Ya, Hapus!',
-        })
-        .then((result) => {
-          if (result.isConfirmed) {
-            this.productionOrderStore.deleteProductionOrderData(id, index)
-          }
-        })
+    async onDelete(id, index) {
+      await this.$swal.fire({
+        title: 'Anda yakin?',
+        text: 'Data ini akan di hapus!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Hapus!',
+        showLoaderOnConfirm: true,
+        preConfirm: (value) => {
+          return this.productionOrderStore
+            .deleteProductionOrderData(id, index)
+            .then((resp) => {
+              if (resp.status == 200) {
+                return resp
+              }
+              throw new Error(resp)
+            })
+        },
+      })
     },
+
     searchData() {
       return this.getData()
     },

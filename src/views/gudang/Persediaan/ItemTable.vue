@@ -64,9 +64,8 @@
             <tr>
               <th></th>
               <th>Nama</th>
-              <th>Unit</th>
               <th>Tipe</th>
-              <th>Gudang</th>
+              <th>Unit</th>
               <th>Saldo</th>
               <th>Action</th>
             </tr>
@@ -74,7 +73,7 @@
 
           <tbody>
             <tr v-if="itemStore.isLoading">
-              <td colspan="7" class="text-center">
+              <td colspan="6" class="text-center">
                 <div role="status">
                   <svg
                     class="inline mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600"
@@ -97,7 +96,7 @@
             </tr>
             <template v-else>
               <tr v-if="itemStore.items.length == 0">
-                <td colspan="7" class="text-center">Tidak ada data</td>
+                <td colspan="6" class="text-center">Tidak ada data</td>
               </tr>
               <tr
                 v-else
@@ -106,9 +105,10 @@
               >
                 <td class="text-center">{{ itemStore.from + index }}</td>
                 <td>{{ item.name.toUpperCase() }}</td>
-                <td>{{ item.unit.name.toUpperCase() }}</td>
                 <td>{{ item.type.name.toUpperCase() }}</td>
-                <td>{{ item.warehouse.name.toUpperCase() }}</td>
+                <!-- <td>{{ item.warehouse.name.toUpperCase() }}</td> -->
+                <td>{{ item.unit.name.toUpperCase() }}</td>
+
                 <td>{{ item.balance }}</td>
                 <td>
                   <div class="mx-2 dropdown" :class="position(index)">
@@ -173,7 +173,7 @@
 
 <script>
 import { ref } from 'vue'
-import { useItemStore } from '../../stores/store'
+import { useItemStore } from '../../../stores/store'
 
 export default {
   setup() {

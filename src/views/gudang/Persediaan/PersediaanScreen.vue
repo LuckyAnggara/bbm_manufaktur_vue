@@ -9,11 +9,29 @@
           <div class="justify-center my-4">
             <div class="form-control">
               <label class="label">
+                <span class="label-text">Gudang</span>
+              </label>
+              <select
+                v-model="itemStore.currentWarehouse"
+                class="select select-bordered"
+              >
+                <option
+                  :value="item.id"
+                  v-for="item in itemStore.listWarehouse"
+                  :key="item"
+                >
+                  {{ item.name.toUpperCase() }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-control">
+              <label class="label">
                 <span class="label-text">Tanggal Data</span>
               </label>
               <div class="flex justify-between items-center">
                 <input
-                  v-model="mutationStore.fromDate"
+                  v-model="itemStore.fromDate"
                   id="date"
                   type="date"
                   placeholder="Type here"
@@ -21,7 +39,7 @@
                 />
                 <label class="">s.d</label>
                 <input
-                  v-model="mutationStore.toDate"
+                  v-model="itemStore.toDate"
                   id="date"
                   type="date"
                   placeholder="Type here"
@@ -32,10 +50,7 @@
           </div>
 
           <div class="card-actions justify-end">
-            <button
-              @click="filterData()"
-              class="btn btn-secondary w-32 hover:btn-primary"
-            >
+            <button class="btn btn-secondary w-32 hover:btn-primary">
               Filter
             </button>
           </div>
@@ -50,36 +65,36 @@
         </div>
       </div>
       <div class="md:w-3/4 mt-10 md:mt-0 justify-self-end">
-        <MutationTable />
+        <ItemTable />
       </div>
     </div>
+    <ModalNewItem />
   </section>
 </template>
 
 <script>
-import MutationTable from '../mutation/MutationTable.vue'
-import { useMutationStore } from '@/stores/store'
+import ItemTable from './ItemTable.vue'
+import ModalNewItem from './ModalNewItem.vue'
+import { useItemStore } from '@/stores/store'
 
 export default {
   setup() {
-    const mutationStore = useMutationStore()
-    mutationStore.$reset()
-    function filterData() {
-      mutationStore.getMutationData()
-    }
+    const itemStore = useItemStore()
+
+    //CALL ITEM DATA
+    itemStore.getItemTypeData()
+    itemStore.getItemUnitData()
+    itemStore.getWarehousesData()
+
+    itemStore.$subscribe((mutation, state) => {
+      if (mutation.events.key == 'currentWarehouse') {
+        itemStore.getItemData()
+      }
+    })
     return {
-      filterData,
-      mutationStore,
+      itemStore,
     }
   },
-  created() {
-    if (this.$route.params) {
-      this.mutationStore.$patch({
-        currentId: this.$route.params.id,
-      })
-      this.mutationStore.getMutationData()
-    }
-  },
-  components: { MutationTable },
+  components: { ItemTable, ModalNewItem },
 }
 </script>

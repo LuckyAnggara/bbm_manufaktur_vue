@@ -78,20 +78,5 @@ export default {
       mutationStore,
     }
   },
-  // computed: {
-  //   data() {
-  //     if (!this.$route.params) return this.$route.params
-  //   },
-  // },
-
-  methods: {},
-  created() {
-    if (this.$route.params) {
-      this.mutationStore.$patch({
-        currentId: this.$route.params.id,
-      })
-      this.mutationStore.getMutationData()
-    }
-  },
 }
 </script>

@@ -132,6 +132,7 @@
           </button>
 
           <button
+            v-if="dataOrder.status == 'WORK IN PROGRESS'"
             class="btn gap-2 btn-primary hover:btn-secondary w-32 mb-4"
             @click="onUpdate"
           >
@@ -149,6 +150,27 @@
               />
             </svg>
             Update
+          </button>
+
+          <button
+            v-if="dataOrder.status == 'DONE'"
+            class="btn gap-2 btn-primary hover:btn-secondary mb-4"
+            @click="onWarehouse"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0012 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75z"
+              />
+            </svg>
+            Warehouse
           </button>
         </div>
         <div class="md:flex justify-between">
@@ -328,10 +350,13 @@
 
 <script>
 import { computed } from '@vue/runtime-core'
-import { useProductionOrderStore } from '../../../stores/store'
+import { useItemStore, useProductionOrderStore } from '../../../stores/store'
 export default {
   setup() {
     const productionOrderStore = useProductionOrderStore()
+    const itemStore = useItemStore()
+
+    itemStore.getWarehousesData()
 
     const randomBg = computed(() => {
       const array = [
@@ -344,6 +369,7 @@ export default {
     })
 
     return {
+      itemStore,
       randomBg,
       productionOrderStore,
     }
@@ -373,6 +399,7 @@ export default {
           SHIPPING: 'SHIPPING',
         }
     },
+    warehouses() {},
   },
   methods: {
     async aw() {
@@ -416,9 +443,8 @@ export default {
         this.productionOrderStore.getProductionOrderData()
       }
     },
-
-    onDelete() {
-      this.$swal
+    async onDelete() {
+      await this.$swal
         .fire({
           title: 'Anda yakin?',
           text: 'Data ini akan di hapus!',
@@ -427,12 +453,50 @@ export default {
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: 'Ya, Hapus!',
+          showLoaderOnConfirm: true,
+          preConfirm: (value) => {
+            return this.productionOrderStore
+              .deleteProductionOrderData(this.dataOrder.id)
+              .then((resp) => {
+                if (resp.status == 200) {
+                  return resp
+                }
+                throw new Error(resp)
+              })
+          },
         })
         .then((result) => {
           if (result.isConfirmed) {
-            this.productionOrderStore.deleteProductionOrderData(
-              this.dataOrder.id
-            )
+            this.$router.push({
+              name: 'produksi-order-list',
+            })
+          }
+        })
+    },
+    async onWarehouse() {
+      await this.$swal
+        .fire({
+          title: 'Kirim barang ke Gudang?',
+          text: 'Sistem akan memasukan ke Gudang Pabrik',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Ya, Kirim!',
+          showLoaderOnConfirm: true,
+          preConfirm: (value) => {
+            return this.productionOrderStore
+              .warehouseProductionOrder()
+              .then((resp) => {
+                if (resp.status == 200) {
+                  return resp
+                }
+                console.info('aa')
+              })
+          },
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
             this.$router.push({
               name: 'produksi-order-list',
             })

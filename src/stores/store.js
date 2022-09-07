@@ -159,7 +159,7 @@ export const useMutationStore = defineStore('mutationStore', {
       fromDate: '',
       toDate: '',
       currentId: '',
-      isLoading: true,
+      isLoading: false,
     }
   },
   getters: {
@@ -191,17 +191,14 @@ export const useMutationStore = defineStore('mutationStore', {
       try {
         const response = await axiosIns.get(
           `/mutations/${this.currentId}${this.fromToDate}`
-          // {
-          //   headers: {
-          //     Authorization: `${this.token.token_type} ${this.token.access_token}`,
-          //   },
-          // }
         )
         this.responseData = response.data.data
+        return response
       } catch (error) {
         alert(error)
+      } finally {
+        this.isLoading = false
       }
-      this.isLoading = false
     },
   },
 })
@@ -445,10 +442,28 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         this.storeLoading = false
       }
     },
+    async warehouseProductionOrder() {
+      this.isUpdateLoading = true
+      try {
+        const response = await axiosIns.post(
+          `/production-order/update-warehouse`,
+          this.currentData
+        )
+        // this.storeLoading = false
+        toast.success('Data Item berhasil di pindahkan ke Gudang', {
+          timeout: 2000,
+        })
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isUpdateLoading = false
+      }
+    },
     async deleteProductionOrderData(id, index) {
       this.isDeleteLoading = true
       try {
-        await axiosIns.delete(`/production-order/${id}`)
+        const response = axiosIns.delete(`/production-order/${id}`)
         if (index > 0) {
           this.responseListData.data.splice(index, 1)
         }
@@ -458,7 +473,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         toast.error('Data telah di hapus!', {
           timeout: 2000,
         })
-        return true
+        return response
       } catch (error) {
         alert(error)
       } finally {
