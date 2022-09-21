@@ -2,11 +2,48 @@ import { defineStore } from 'pinia'
 import { axiosIns } from '../services/axios'
 import { useToast } from 'vue-toastification'
 import Swal from 'sweetalert2/dist/sweetalert2'
-import { useRouter } from 'vue-router'
 
 const toast = useToast()
-const router = useRouter()
 
+// AUTH STORE
+
+export const useAuthStore = defineStore('authStore', {
+  state: () => {
+    return {
+      token: null,
+      username: null,
+      password: null,
+      isLoading: false,
+      userData: null,
+    }
+  },
+  actions: {
+    async login() {
+      this.isLoading = true
+      try {
+        const response = await axiosIns.post(`/login`, {
+          username: this.username,
+          password: this.password,
+        })
+        const data = response.data
+        if (response.status == 200) {
+          toast.success(data.message, {
+            timeout: 2000,
+          })
+          localStorage.setItem('token', data.data.token)
+
+          return response
+        }
+      } catch (error) {
+        toast.error(error.message, {
+          timeout: 2000,
+        })
+      } finally {
+        this.isLoading = false
+      }
+    },
+  },
+})
 // ITEM STORE
 export const useItemStore = defineStore('itemStore', {
   state: () => {

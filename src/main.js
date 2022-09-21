@@ -13,6 +13,7 @@ import 'sweetalert2/dist/sweetalert2.min.css'
 import 'vue-toastification/dist/index.css'
 
 import '@sweetalert2/themes/dark/dark.css'
+import { isUserLoggedIn } from './services/auth'
 
 moment.updateLocale('en', {
   months: [
@@ -53,6 +54,13 @@ const router = createRouter({
   linkExactActiveClass: 'active',
   history: createWebHashHistory(),
   routes,
+})
+
+router.beforeResolve(async (to, _, next) => {
+  const isLoggedIn = isUserLoggedIn()
+  // const userData = getUserData()
+  if (to.name !== 'login' && !isLoggedIn) next({ name: 'login' })
+  else next()
 })
 
 const pirntOptions = {

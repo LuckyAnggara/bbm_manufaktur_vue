@@ -2,11 +2,12 @@ import { productionOrderRoutes } from './router/ProductionOrderRoute'
 import { gudangRoutes } from './router/GudangRoute'
 import MutationScreen from '../views/mutation/MutationScreen.vue'
 import LoginScreen from '../views/LoginScreen.vue'
+import { getUserData, isUserLoggedIn } from './auth'
 
 export const routes = [
   {
     path: '/login',
-    name: 'dashboard',
+    name: 'login',
     component: LoginScreen,
     meta: {
       title: 'Login',
@@ -26,3 +27,18 @@ export const routes = [
   ...productionOrderRoutes,
   ...gudangRoutes,
 ]
+
+export const getNavigation = () => {
+  const isLoggedIn = isUserLoggedIn()
+  const userData = getUserData()
+  if (isLoggedIn) {
+    if (userData.role == 'USER') {
+      return user
+    } else if (userData.role == 'ADMIN') {
+      return admin
+    }
+  } else {
+    return nonUser
+  }
+  // return localStorage.getItem('userData') && localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName)
+}
