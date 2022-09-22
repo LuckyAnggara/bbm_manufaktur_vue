@@ -6,12 +6,20 @@
  * e.g. If you are using cookies to store the application please update this function
  */
 // eslint-disable-next-line arrow-body-style
+
+import { useAuthStore } from '../stores/store'
+
 export const isUserLoggedIn = () => {
   return localStorage.getItem('userData')
   // return localStorage.getItem('userData') && localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName)
 }
 
 export const getUserData = () => JSON.parse(localStorage.getItem('userData'))
+export const getTokenData = () => {
+  const authStore = useAuthStore()
+
+  authStore.getToken
+}
 
 /**
  * This function is used for demo purpose route navigation
@@ -21,6 +29,6 @@ export const getUserData = () => JSON.parse(localStorage.getItem('userData'))
  * NOTE: If you have different pages to navigate based on user ability then this function can be useful. However, you need to update it.
  * @param {String} userRole Role of user
  */
-export const getHomeRouteForLoggedInUser = userRole => {
+export const getHomeRouteForLoggedInUser = (userRole) => {
   return { name: 'home' }
 }

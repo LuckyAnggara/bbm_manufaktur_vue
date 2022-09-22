@@ -32,7 +32,9 @@
             </a>
           </li>
           <li><a>Settings</a></li>
-          <li><a>Logout</a></li>
+          <li>
+            <a @click="logout">Logout</a>
+          </li>
         </ul>
       </div>
     </div>
@@ -40,10 +42,24 @@
 </template>
 <script>
 import navMenu from '../../services/menu'
+import { useAuthStore } from '../../stores/store'
+import { useRouter } from 'vue-router'
 
 export default {
   setup() {
+    const authStore = useAuthStore()
+    const router = useRouter()
+
+    async function logout() {
+      const response = await authStore.logout()
+      console.info(response)
+      if (response) {
+        router.push({ name: 'login' })
+      }
+    }
     return {
+      logout,
+      authStore,
       navMenu,
     }
   },
