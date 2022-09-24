@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { axiosIns } from '../services/axios'
+import axiosIns from '../services/axios'
 import { useToast } from 'vue-toastification'
 import Swal from 'sweetalert2/dist/sweetalert2'
 
@@ -22,6 +22,10 @@ export const useAuthStore = defineStore('authStore', {
     userData() {
       JSON.parse(localStorage.getItem('userData'))
     },
+    isLogin() {
+      if (JSON.parse(localStorage.getItem('userData'))) return true
+      return false
+    },
   },
   actions: {
     async login() {
@@ -39,8 +43,6 @@ export const useAuthStore = defineStore('authStore', {
           console.info('yes')
           localStorage.setItem('token', JSON.stringify(data.data))
           await this.cekUser(data.data)
-          console.info('yes2')
-
           return response
         }
       } catch (error) {
@@ -51,13 +53,9 @@ export const useAuthStore = defineStore('authStore', {
         this.isLoading = false
       }
     },
-    async cekUser(token) {
+    async cekUser() {
       try {
-        const response = await axiosIns.get('/user', {
-          headers: {
-            Authorization: `${token.token_type} ${token.access_token}`,
-          },
-        })
+        const response = await axiosIns.get('/user')
         if (response.status == 200) {
           localStorage.setItem('userData', JSON.stringify(response.data))
         }
@@ -149,11 +147,7 @@ export const useItemStore = defineStore('itemStore', {
     async storeItemData(data) {
       this.modalSubmitLoading = true
       try {
-        const response = await axiosIns.post(`/items`, data, {
-          headers: {
-            Authorization: `${auth.token.token_type} ${auth.token.access_token}`,
-          },
-        })
+        const response = await axiosIns.post(`/items`, data)
         this.modalToggle = false
         this.modalSubmitLoading = false
         toast.success('My toast content', {
@@ -166,11 +160,7 @@ export const useItemStore = defineStore('itemStore', {
     async deleteItemData(id, index) {
       this.isDeleteLoading = true
       try {
-        await axiosIns.delete(`/items/${id}`, {
-          headers: {
-            Authorization: `${auth.token.token_type} ${auth.token.access_token}`,
-          },
-        })
+        await axiosIns.delete(`/items/${id}`)
         this.responsItem.data.splice(index, 1)
         toast.error('Data telah di Delete', {
           timeout: 2000,
@@ -183,12 +173,7 @@ export const useItemStore = defineStore('itemStore', {
       this.isLoading = true
       try {
         const response = await axiosIns.get(
-          `/items?limit=${this.currentLimit}${this.searchQuery}${page}${this.warehousesQuery}${this.fromToDate}`,
-          {
-            headers: {
-              Authorization: `${auth.token.token_type} ${auth.token.access_token}`,
-            },
-          }
+          `/items?limit=${this.currentLimit}${this.searchQuery}${page}${this.warehousesQuery}${this.fromToDate}`
         )
         this.responsItem = response.data.data
       } catch (error) {
@@ -198,11 +183,7 @@ export const useItemStore = defineStore('itemStore', {
     },
     async getItemTypeData() {
       try {
-        const response = await axiosIns.get(`/item-types`, {
-          headers: {
-            Authorization: `${auth.token.token_type} ${auth.token.access_token}`,
-          },
-        })
+        const response = await axiosIns.get(`/item-types`)
         this.itemTypes = response.data.data.data
       } catch (error) {
         alert(error)
@@ -210,11 +191,7 @@ export const useItemStore = defineStore('itemStore', {
     },
     async getItemUnitData() {
       try {
-        const response = await axiosIns.get(`/item-units`, {
-          headers: {
-            Authorization: `${auth.token.token_type} ${auth.token.access_token}`,
-          },
-        })
+        const response = await axiosIns.get(`/item-units`)
         this.itemUnits = response.data.data.data
       } catch (error) {
         alert(error)
@@ -222,11 +199,7 @@ export const useItemStore = defineStore('itemStore', {
     },
     async getWarehousesData() {
       try {
-        const response = await axiosIns.get(`/warehouses`, {
-          headers: {
-            Authorization: `${auth.token.token_type} ${auth.token.access_token}`,
-          },
-        })
+        const response = await axiosIns.get(`/warehouses`)
         this.warehouses = response.data.data.data
       } catch (error) {
         alert(error)
@@ -276,12 +249,7 @@ export const useMutationStore = defineStore('mutationStore', {
       this.isLoading = true
       try {
         const response = await axiosIns.get(
-          `/mutations/${this.currentId}${this.fromToDate}`,
-          {
-            headers: {
-              Authorization: `${auth.token.token_type} ${auth.token.access_token}`,
-            },
-          }
+          `/mutations/${this.currentId}${this.fromToDate}`
         )
         this.responseData = response.data.data
         return response
@@ -418,11 +386,6 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
           {
             id: id == null ? this.currentData.id : id,
             status: status,
-          },
-          {
-            headers: {
-              Authorization: `${auth.token.token_type} ${auth.token.access_token}`,
-            },
           }
         )
         // this.storeLoading = false
@@ -440,12 +403,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
       this.isLoading = true
       try {
         const response = await axiosIns.get(
-          `/production-order?limit=${this.currentLimit}${this.searchQuery}${this.fromToDate}`,
-          {
-            headers: {
-              Authorization: `${auth.token.token_type} ${auth.token.access_token}`,
-            },
-          }
+          `/production-order?limit=${this.currentLimit}${this.searchQuery}${this.fromToDate}`
         )
         this.responseListData = response.data.data
       } catch (error) {
@@ -466,12 +424,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
       this.isLoading = true
       try {
         const response = await axiosIns.get(
-          `/production-order/${this.currentId}`,
-          {
-            headers: {
-              Authorization: `${auth.token.token_type} ${auth.token.access_token}`,
-            },
-          }
+          `/production-order/${this.currentId}`
         )
         if (edit == true) {
           this.editOrder = response.data.data
@@ -489,12 +442,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
       try {
         const response = await axiosIns.post(
           `/production-order`,
-          this.dataOrder,
-          {
-            headers: {
-              Authorization: `${auth.token.token_type} ${auth.token.access_token}`,
-            },
-          }
+          this.dataOrder
         )
         this.responseSingleData = response.data.data
         this.currentId = response.data.data.id
@@ -511,18 +459,10 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     async storeUpdateProductionOrder() {
       this.isUpdateLoading = true
       try {
-        const response = await axiosIns.post(
-          `/production-order/update-data`,
-          {
-            data_order: this.currentData,
-            update_order: this.outputDataUpdate,
-          },
-          {
-            headers: {
-              Authorization: `${auth.token.token_type} ${auth.token.access_token}`,
-            },
-          }
-        )
+        const response = await axiosIns.post(`/production-order/update-data`, {
+          data_order: this.currentData,
+          update_order: this.outputDataUpdate,
+        })
         // this.storeLoading = false
         toast.success('Produksi Order berhasil di ubah', {
           timeout: 1000,
@@ -539,12 +479,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
       try {
         const response = await axiosIns.put(
           `/production-order/${this.editOrder.id}`,
-          this.editOrder,
-          {
-            headers: {
-              Authorization: `${auth.token.token_type} ${auth.token.access_token}`,
-            },
-          }
+          this.editOrder
         )
         // this.storeLoading = false
         toast.success('Produksi Order berhasil di ubah', {
@@ -561,12 +496,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
       try {
         const response = await axiosIns.post(
           `/production-order/update-warehouse`,
-          this.currentData,
-          {
-            headers: {
-              Authorization: `${auth.token.token_type} ${auth.token.access_token}`,
-            },
-          }
+          this.currentData
         )
         // this.storeLoading = false
         toast.success('Data Item berhasil di pindahkan ke Gudang', {

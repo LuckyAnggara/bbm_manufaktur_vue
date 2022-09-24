@@ -1,9 +1,9 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import { createPinia, storeToRefs } from 'pinia'
 import './index.css'
 import './style.css'
 import App from './App.vue'
-import { axiosIns } from './services/axios'
+import axiosIns from './services/axios'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { routes } from './services/router'
 import Toast from 'vue-toastification'
@@ -14,6 +14,7 @@ import 'vue-toastification/dist/index.css'
 
 import '@sweetalert2/themes/dark/dark.css'
 import { isUserLoggedIn } from './services/auth'
+import { useAuthStore } from './stores/store'
 
 moment.updateLocale('en', {
   months: [
@@ -57,9 +58,11 @@ const router = createRouter({
 })
 
 router.beforeResolve(async (to, _, next) => {
+  const auth = useAuthStore()
   const isLoggedIn = isUserLoggedIn()
   // const userData = getUserData()
-  if (to.name !== 'login' && !isLoggedIn) next({ name: 'login' })
+  // if (to.name !== 'login' && !isLoggedIn) next({ name: 'login' })
+  if (to.name !== 'login' && !auth.isLogin) next({ name: 'login' })
   else next()
 })
 
