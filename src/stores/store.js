@@ -87,7 +87,7 @@ export const useItemStore = defineStore('itemStore', {
       itemTypes: [],
       itemUnits: [],
       warehouses: [],
-      currentWarehouse: '',
+      currentWarehouse: 0,
       currentType: 0,
       fromDate: '',
       toDate: '',
@@ -210,15 +210,22 @@ export const useItemStore = defineStore('itemStore', {
 
 // MUTATION STORE
 
-// ITEM STORE
 export const useMutationStore = defineStore('mutationStore', {
   state: () => {
     return {
+      storeLoading: false,
       responseData: [],
       fromDate: '',
       toDate: '',
       currentId: '',
       isLoading: false,
+      listDebitItem: [],
+      listKreditItem: [],
+      masuk: {},
+      incomingItem: {
+        data: {},
+        detail: [],
+      },
     }
   },
   getters: {
@@ -245,6 +252,9 @@ export const useMutationStore = defineStore('mutationStore', {
     },
   },
   actions: {
+    deleteListDebit(index) {
+      this.listDebitItem.splice(index, 1)
+    },
     async getMutationData() {
       this.isLoading = true
       try {
@@ -257,6 +267,23 @@ export const useMutationStore = defineStore('mutationStore', {
         alert(error)
       } finally {
         this.isLoading = false
+      }
+    },
+    async storeIncomingItem() {
+      console.info('aa')
+      this.storeLoading = true
+      try {
+        const response = await axiosIns.post(
+          `mutation-incoming/store`,
+          this.incomingItem
+        )
+        toast.success('Mutasi barang masuk berhasil diproses', {
+          timeout: 1000,
+        })
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.storeLoading = false
       }
     },
   },

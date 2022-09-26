@@ -1,6 +1,6 @@
 import PersediaanScreen from '../../views/gudang/Persediaan/PersediaanScreen.vue'
 import GudangScreen from '../../views/gudang/GudangScreen.vue'
-import MasukScreen from '../../views/gudang/Mutasi/MasukScreen.vue'
+import MasukScreen from '../../views/gudang/Mutasi/Masuk/MasukScreen.vue'
 
 export const gudangRoutes = [
   {
