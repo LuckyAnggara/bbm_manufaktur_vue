@@ -270,6 +270,7 @@ export const useMutationStore = defineStore('mutationStore', {
       }
     },
     async storeIncomingItem() {
+<<<<<<< HEAD
       console.info('aa')
       this.storeLoading = true
       try {
@@ -277,6 +278,11 @@ export const useMutationStore = defineStore('mutationStore', {
           `mutation-incoming/store`,
           this.incomingItem
         )
+=======
+      this.storeLoading = true
+      try {
+        const response = await axiosIns.post(`/mutation/incoming`, incomingItem)
+>>>>>>> aa2c25ef77005fe9c60c8f7d8f7f86ee515c5e20
         toast.success('Mutasi barang masuk berhasil diproses', {
           timeout: 1000,
         })
