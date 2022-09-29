@@ -154,11 +154,13 @@
 import { useMutationStore } from '../../../../stores/store'
 import ModalItem from './Component/ModalItem.vue'
 import { useToast } from 'vue-toastification'
+import { inject } from 'vue'
 
 export default {
   setup() {
     const toast = useToast()
     const mutationStore = useMutationStore()
+    const swal = inject('$swal')
 
     function deleteData(index) {
       mutationStore.deleteListDebit(index)
@@ -167,10 +169,45 @@ export default {
       })
     }
 
-    function submit() {
-      console.info('aaa')
-      mutationStore.storeIncomingItem()
+    // function submit() {
+    //   mutationStore.storeIncomingItem()
+    // }
+
+    async function submit() {
+      if (mutationStore.incomingItem.detail.length < 1) {
+        swal.fire('Oops!', 'Data item kosong', 'error')
+      } else {
+        await swal
+          .fire({
+            title: 'Proses?',
+            text: 'Data item akan berubah',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Proses!',
+            showLoaderOnConfirm: true,
+            preConfirm: (value) => {
+              return mutationStore.storeIncomingItem().then((resp) => {
+                if (resp.status == 200) {
+                  return resp
+                }
+                throw new Error(resp)
+              })
+            },
+          })
+          .then((result) => {
+            if (result.isConfirmed) {
+              swal.fire('Berhasil!', 'success')
+              // router.push({
+              //   name: 'produksi-order-finish',
+              //   params: { id: productionOrderStore.currentData.id },
+              // })
+            }
+          })
+      }
     }
+
     return {
       submit,
       deleteData,

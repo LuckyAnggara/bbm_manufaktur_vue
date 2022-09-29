@@ -53,7 +53,9 @@
               >
                 <td class="text-center">{{ index + 1 }}</td>
                 <td>{{ $moment(item.created_at).format('DD MMMM YYYY') }}</td>
-                <td>{{ item.notes.toUpperCase() }}</td>
+                <td>
+                  {{ item.notes == null ? '-' : item.notes.toUpperCase() }}
+                </td>
                 <td>{{ item.debit }}</td>
                 <td>{{ item.kredit }}</td>
                 <td>{{ item.balance }}</td>
