@@ -1,6 +1,7 @@
 import PersediaanScreen from '../../views/gudang/Persediaan/PersediaanScreen.vue'
 import GudangScreen from '../../views/gudang/GudangScreen.vue'
 import MasukScreen from '../../views/gudang/Mutasi/Masuk/MasukScreen.vue'
+import MutasiScreen from '../../views/gudang/Mutasi/MutasiScreen.vue'
 
 export const gudangRoutes = [
   {
@@ -26,7 +27,16 @@ export const gudangRoutes = [
     name: 'gudang-persediaan',
     component: PersediaanScreen,
     meta: {
-      title: 'Persediaan',
+      title: 'Data Persediaan Barang',
+      layout: 'layout-normal',
+    },
+  },
+  {
+    path: '/gudang/barang/mutasi',
+    name: 'gudang-barang-mutasi',
+    component: MutasiScreen,
+    meta: {
+      title: 'Master Mutasi Persediaan',
       layout: 'layout-normal',
     },
   },

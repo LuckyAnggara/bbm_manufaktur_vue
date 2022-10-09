@@ -30,7 +30,7 @@
 
         <div>
           <input type="checkbox" name="remember" id="remember" />
-          <label class="text-sm font-light" for="remember">Remember me</label>
+          <label class="text-sm font-light" for="remember"> Remember me</label>
         </div>
 
         <!-- <div class="card-actions justify-end mt-10"> -->

@@ -8,7 +8,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import { routes } from './services/router'
 import Toast from 'vue-toastification'
 import VueSweetalert2 from 'vue-sweetalert2'
-import moment from 'moment'
+import moment from 'moment-timezone'
 import 'sweetalert2/dist/sweetalert2.min.css'
 import 'vue-toastification/dist/index.css'
 
@@ -16,6 +16,7 @@ import '@sweetalert2/themes/dark/dark.css'
 import { isUserLoggedIn } from './services/auth'
 import { useAuthStore } from './stores/store'
 
+moment.tz.setDefault('Asia/Jakarta')
 moment.updateLocale('en', {
   months: [
     'Januari',
@@ -76,7 +77,7 @@ createApp(App)
 const app = createApp(App)
 const pinia = createPinia()
 
-app.config.globalProperties.$moment = moment
+app.config.globalProperties.$moment = moment.tz
 app.config.globalProperties.$axios = axiosIns
 app.use(pinia)
 app.use(router)

@@ -11,7 +11,7 @@ export const productionOrderRoutes = [
     name: 'produksi',
     component: ProductionScreen,
     meta: {
-      title: 'Gudang',
+      title: 'Production',
       layout: 'layout-normal',
     },
   },

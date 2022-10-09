@@ -213,8 +213,11 @@ export const useItemStore = defineStore('itemStore', {
 export const useMutationStore = defineStore('mutationStore', {
   state: () => {
     return {
+      currentLimit: 10,
+      searchName: '',
       storeLoading: false,
       responseData: [],
+      responseMasterData: [],
       fromDate: '',
       toDate: '',
       currentId: '',
@@ -229,6 +232,12 @@ export const useMutationStore = defineStore('mutationStore', {
     }
   },
   getters: {
+    searchQuery(state) {
+      if (state.searchName == '' || null) {
+        return ''
+      }
+      return '&name=' + state.searchName
+    },
     dataMutation(state) {
       return state.responseData.mutation
     },
@@ -250,10 +259,39 @@ export const useMutationStore = defineStore('mutationStore', {
       }
       return '?from_date=' + state.fromDate + '&to_date=' + state.toDate
     },
+    currentPage(state) {
+      return state.responseMasterData.current_page
+    },
+    lastPage(state) {
+      return state.responseMasterData.last_page
+    },
+    from(state) {
+      return state.responseMasterData.from
+    },
+    to(state) {
+      return state.responseMasterData.to
+    },
+    dataMasterMutation(state) {
+      return state.responseMasterData.data
+    },
   },
   actions: {
     deleteListDebit(index) {
       this.listDebitItem.splice(index, 1)
+    },
+    async getMasterMutationData() {
+      this.isLoading = true
+      try {
+        const response = await axiosIns.get(
+          `/mutations/master?limit=${this.currentLimit}${this.searchQuery}`
+        )
+        this.responseMasterData = response.data.data
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isLoading = false
+      }
     },
     async getMutationData() {
       this.isLoading = true

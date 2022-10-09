@@ -15,6 +15,17 @@
       class="btn btn-lg btn-wide hover:scale-110"
       @click="
         router.push({
+          name: 'gudang-barang-mutasi',
+        })
+      "
+    >
+      Master Mutasi Persediaan
+    </button>
+
+    <button
+      class="btn btn-lg btn-wide hover:scale-110"
+      @click="
+        router.push({
           name: 'gudang-barang-masuk',
         })
       "
