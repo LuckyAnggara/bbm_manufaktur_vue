@@ -60,10 +60,10 @@ const router = createRouter({
 
 router.beforeResolve(async (to, _, next) => {
   const auth = useAuthStore()
-  const isLoggedIn = isUserLoggedIn()
+  const isLogin = JSON.parse(localStorage.getItem('userData'))
   // const userData = getUserData()
   // if (to.name !== 'login' && !isLoggedIn) next({ name: 'login' })
-  if (to.name !== 'login' && !auth.isLogin) next({ name: 'login' })
+  if (to.name !== 'login' && !isLogin) next({ name: 'login' })
   else next()
 })
 

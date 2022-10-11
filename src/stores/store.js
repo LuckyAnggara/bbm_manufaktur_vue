@@ -20,7 +20,7 @@ export const useAuthStore = defineStore('authStore', {
       return JSON.parse(localStorage.getItem('token'))
     },
     userData() {
-      JSON.parse(localStorage.getItem('userData'))
+      return JSON.parse(localStorage.getItem('userData'))
     },
     isLogin() {
       if (JSON.parse(localStorage.getItem('userData'))) return true
@@ -37,32 +37,20 @@ export const useAuthStore = defineStore('authStore', {
         })
         const data = response.data
         if (response.status == 200) {
+          localStorage.setItem('token', JSON.stringify(data.data.token))
+          localStorage.setItem('userData', JSON.stringify(data.data.user))
           toast.success(data.message, {
             timeout: 2000,
           })
-          console.info('yes')
-          localStorage.setItem('token', JSON.stringify(data.data))
-          await this.cekUser(data.data)
-          return response
+          return true
         }
       } catch (error) {
         toast.error(error.message, {
           timeout: 2000,
         })
+        this.isLoading = false
       } finally {
         this.isLoading = false
-      }
-    },
-    async cekUser() {
-      try {
-        const response = await axiosIns.get('/user')
-        if (response.status == 200) {
-          localStorage.setItem('userData', JSON.stringify(response.data))
-        }
-      } catch (error) {
-        toast.error(error.message, {
-          timeout: 2000,
-        })
       }
     },
     async logout() {
@@ -229,6 +217,10 @@ export const useMutationStore = defineStore('mutationStore', {
         data: {},
         detail: [],
       },
+      exitItem: {
+        data: {},
+        detail: [],
+      },
     }
   },
   getters: {
@@ -279,6 +271,9 @@ export const useMutationStore = defineStore('mutationStore', {
     deleteListDebit(index) {
       this.listDebitItem.splice(index, 1)
     },
+    deleteListKredit(index) {
+      this.listKreditItem.splice(index, 1)
+    },
     async getMasterMutationData() {
       this.isLoading = true
       try {
@@ -315,6 +310,23 @@ export const useMutationStore = defineStore('mutationStore', {
           this.incomingItem
         )
         toast.success('Mutasi barang masuk berhasil diproses', {
+          timeout: 1000,
+        })
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.storeLoading = false
+      }
+    },
+    async storeExitItem() {
+      this.storeLoading = true
+      try {
+        const response = await axiosIns.post(
+          `mutation-exit/store`,
+          this.exitItem
+        )
+        toast.success('Mutasi barang keluar berhasil diproses', {
           timeout: 1000,
         })
         return response

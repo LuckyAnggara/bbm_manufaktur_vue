@@ -83,9 +83,7 @@ export default {
     const authStore = useAuthStore()
     async function login() {
       const response = await authStore.login()
-      if (response) {
-        router.push({ name: 'dashboard' })
-      }
+      router.push({ name: 'dashboard' })
     }
     return {
       login,

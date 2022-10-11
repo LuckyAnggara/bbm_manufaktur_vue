@@ -37,7 +37,7 @@
       class="btn btn-lg btn-wide hover:scale-110"
       @click="
         router.push({
-          name: 'gudang-barang-masuk',
+          name: 'gudang-barang-keluar',
         })
       "
     >
