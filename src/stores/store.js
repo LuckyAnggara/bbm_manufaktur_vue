@@ -203,6 +203,7 @@ export const useMutationStore = defineStore('mutationStore', {
     return {
       currentLimit: 10,
       searchName: '',
+      typeData: 'debit',
       storeLoading: false,
       responseData: [],
       responseMasterData: [],
@@ -229,6 +230,12 @@ export const useMutationStore = defineStore('mutationStore', {
         return ''
       }
       return '&name=' + state.searchName
+    },
+    typeQuery(state) {
+      if (state.typeData == 'debit' || null) {
+        return ''
+      }
+      return '&type-data=' + state.typeData
     },
     dataMutation(state) {
       return state.responseData.mutation
@@ -274,11 +281,11 @@ export const useMutationStore = defineStore('mutationStore', {
     deleteListKredit(index) {
       this.listKreditItem.splice(index, 1)
     },
-    async getMasterMutationData() {
+    async getMasterMutationData(page = '') {
       this.isLoading = true
       try {
         const response = await axiosIns.get(
-          `/mutations/master?limit=${this.currentLimit}${this.searchQuery}`
+          `/mutations/master?limit=${this.currentLimit}${this.searchQuery}${page}${this.typeQuery}`
         )
         this.responseMasterData = response.data.data
         return response

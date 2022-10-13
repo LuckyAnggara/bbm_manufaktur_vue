@@ -4,6 +4,58 @@
       <div class="bg-neutral text-neutral-content rounded-lg">
         <div class="card-body">
           <h2 class="card-title">Master Mutasi Persediaan</h2>
+          <div class="md:flex py-2">
+            <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4">
+              <label class="mr-4">Jumlah Data </label>
+              <select
+                v-model="mutationStore.currentLimit"
+                class="select select-bordered max-w-xs"
+              >
+                <option
+                  :selected="
+                    mutationStore.currentLimit == length ? true : false
+                  "
+                  v-for="length in lengths"
+                  :key="length"
+                >
+                  {{ length }}
+                </option>
+              </select>
+            </div>
+
+            <div class="justify-end mx-1 md:w-1/2 w-full">
+              <div class="form-control">
+                <div class="input-group">
+                  <input
+                    v-model="mutationStore.searchName"
+                    @keyup.enter="searchData"
+                    type="text"
+                    placeholder="Search…"
+                    class="input input-bordered w-full"
+                  />
+                  <button
+                    class="btn btn-square btn-outline"
+                    @click="searchData"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <div class="flex mt-2 md:overflow-visible overflow-y-auto mb-5">
             <table class="table table-compact w-full">
@@ -144,26 +196,45 @@
 <script>
 import { useMutationStore } from '../../../stores/store'
 import { useToast } from 'vue-toastification'
-import { inject } from 'vue'
+import { inject, ref } from 'vue'
+import { computed } from '@vue/reactivity'
 
 export default {
   setup() {
     const toast = useToast()
     const mutationStore = useMutationStore()
     const swal = inject('$swal')
+    const lengths = ref([5, 10, 20, 30, 40, 50])
+
     mutationStore.getMasterMutationData()
 
+    mutationStore.$subscribe((mutation, state) => {
+      if (mutation.events.key == 'currentLimit') {
+        getData()
+      }
+    })
     function deleteData(index) {
       swal.fire('Oops!', 'Fitur tidak bisa digunakan', 'warning')
-      // mutationStore.deleteListDebit(index)
-      // toast.warning('Item dihapus', {
-      //   timeout: 1000,
-      // })
     }
 
+    function getData(page = '') {
+      mutationStore.getMasterMutationData(page)
+    }
+
+    const previousPage = computed(() => {
+      return '&page=' + (mutationStore.currentPage - 1)
+    })
+
+    const nextPage = computed(() => {
+      return '&page=' + (mutationStore.currentPage + 1)
+    })
+
     return {
-      deleteData,
       mutationStore,
+      deleteData,
+      lengths,
+      previousPage,
+      nextPage,
     }
   },
   computed: {
