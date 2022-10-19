@@ -3,6 +3,7 @@ import GudangScreen from '../../views/gudang/GudangScreen.vue'
 import MasukScreen from '../../views/gudang/Mutasi/Masuk/MasukScreen.vue'
 import KeluarScreen from '../../views/gudang/Mutasi/Keluar/KeluarScreen.vue'
 import MutasiScreen from '../../views/gudang/Mutasi/MutasiScreen.vue'
+import MutasiDetailScreen from '../../views/gudang/Mutasi/MutasiDetailScreen.vue'
 
 export const gudangRoutes = [
   {
@@ -56,6 +57,15 @@ export const gudangRoutes = [
     component: KeluarScreen,
     meta: {
       title: 'Barang Keluar',
+      layout: 'layout-normal',
+    },
+  },
+  {
+    path: '/gudang/barang/mutasi/detail/:id',
+    name: 'gudang-barang-mutasi-detail',
+    component: MutasiDetailScreen,
+    meta: {
+      title: 'Detail Mutasi Barang',
       layout: 'layout-normal',
     },
   },

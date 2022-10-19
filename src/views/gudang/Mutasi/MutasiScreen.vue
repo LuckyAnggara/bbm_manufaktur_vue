@@ -22,7 +22,7 @@
                 </option>
               </select>
             </div>
-
+            <input type="checkbox" class="toggle" v-model="toggle" checked />
             <div class="justify-end mx-1 md:w-1/2 w-full">
               <div class="form-control">
                 <div class="input-group">
@@ -117,7 +117,7 @@
                     <td class="space-x-2">
                       <button
                         class="btn btn-sm btn-square btn-outline hover:scale-110"
-                        @click="deleteData(index)"
+                        @click="detailData(index)"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -198,6 +198,7 @@ import { useMutationStore } from '../../../stores/store'
 import { useToast } from 'vue-toastification'
 import { inject, ref } from 'vue'
 import { computed } from '@vue/reactivity'
+import { useRouter } from 'vue-router'
 
 export default {
   setup() {
@@ -205,6 +206,9 @@ export default {
     const mutationStore = useMutationStore()
     const swal = inject('$swal')
     const lengths = ref([5, 10, 20, 30, 40, 50])
+    const router = useRouter()
+
+    const toggle = false
 
     mutationStore.getMasterMutationData()
 
@@ -215,6 +219,12 @@ export default {
     })
     function deleteData(index) {
       swal.fire('Oops!', 'Fitur tidak bisa digunakan', 'warning')
+    }
+    function detailData(index) {
+      router.push({
+        name: 'gudang-barang-mutasi-detail',
+        params: { id: index },
+      })
     }
 
     function getData(page = '') {
@@ -230,8 +240,10 @@ export default {
     })
 
     return {
+      toggle,
       mutationStore,
       deleteData,
+      detailData,
       lengths,
       previousPage,
       nextPage,

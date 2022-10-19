@@ -222,6 +222,9 @@ export const useMutationStore = defineStore('mutationStore', {
         data: {},
         detail: [],
       },
+      detailMutation: {
+        type: 'KELUAR',
+      },
     }
   },
   getters: {
@@ -272,6 +275,9 @@ export const useMutationStore = defineStore('mutationStore', {
     },
     dataMasterMutation(state) {
       return state.responseMasterData.data
+    },
+    dataDetailMutation(state) {
+      return state.detailMutation
     },
   },
   actions: {
@@ -341,6 +347,18 @@ export const useMutationStore = defineStore('mutationStore', {
         alert(error)
       } finally {
         this.storeLoading = false
+      }
+    },
+    getDetailMutation(id) {
+      this.isLoading = true
+      try {
+        const response = this.responseMasterData.data[id]
+        this.detailMutation = response
+        console.info(this.detailMutation)
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isLoading = false
       }
     },
   },
