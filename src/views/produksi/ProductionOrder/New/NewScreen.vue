@@ -111,6 +111,7 @@
                   <th></th>
                   <th>Nama</th>
                   <th>Quantity</th>
+                  <th>Satuan</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -137,6 +138,8 @@
                       class="input input-bordered input-sm w-1/2 max-w-xs"
                     />
                   </td>
+                  <td>{{ item.unit.name.toUpperCase() }}</td>
+
                   <td>
                     <button
                       class="btn btn-sm btn-square btn-outline"

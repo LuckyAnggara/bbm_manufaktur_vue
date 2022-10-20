@@ -44,6 +44,12 @@ export const useAuthStore = defineStore('authStore', {
           })
           return true
         }
+        if (response.status == 202) {
+          console.info(data)
+          toast.warning(data.message, {
+            timeout: 2000,
+          })
+        }
       } catch (error) {
         toast.error(error.message, {
           timeout: 2000,
@@ -54,14 +60,22 @@ export const useAuthStore = defineStore('authStore', {
       }
     },
     async logout() {
+      this.isLoading = true
       try {
-        localStorage.removeItem('userData')
-        localStorage.removeItem('token')
+        const response = await axiosIns.get(`/logout`)
+        if (response.status == 200) {
+          localStorage.removeItem('userData')
+          localStorage.removeItem('token')
+          return true
+        } else {
+          return false
+        }
       } catch (error) {
         alert(error)
+        this.isLoading = false
         return false
       } finally {
-        return true
+        this.isLoading = false
       }
     },
   },

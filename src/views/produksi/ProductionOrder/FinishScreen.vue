@@ -288,6 +288,7 @@
                   <div class="text-1xl leading-none w-1/2 text-center">
                     <input
                       type="text"
+                      v-model="dataOrder.pic_production"
                       placeholder="Ketik disini"
                       class="input input-ghost w-full max-w-xs align-middle"
                       style="text-align: center"

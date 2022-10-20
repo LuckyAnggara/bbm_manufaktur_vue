@@ -3,7 +3,6 @@ import axios from 'axios'
 // export const axiosIns = axios.create({
 //   baseURL: 'http://127.0.0.1:8000/api/',
 // })
-
 const axiosIns = axios.create({
   baseURL: 'http://127.0.0.1:8000/api/',
 })
@@ -14,7 +13,6 @@ axiosIns.interceptors.request.use((config) => {
     config.headers.Authorization = `${token.token_type} ${token.access_token}`
     config.headers['Content-Type'] = 'application/json'
   } else {
-    // Do something... Usually logout user.
   }
   return config
 })
