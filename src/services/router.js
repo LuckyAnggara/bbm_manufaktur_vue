@@ -1,5 +1,6 @@
 import { productionOrderRoutes } from './router/ProductionOrderRoute'
 import { gudangRoutes } from './router/GudangRoute'
+import { dashboardRoutes } from './router/DashboardRoute'
 import MutationScreen from '../views/mutation/MutationScreen.vue'
 import LoginScreen from '../views/LoginScreen.vue'
 import { getUserData, isUserLoggedIn } from './auth'
@@ -37,6 +38,7 @@ export const routes = [
   },
   ...productionOrderRoutes,
   ...gudangRoutes,
+  ...dashboardRoutes,
 ]
 
 export const getNavigation = () => {
