@@ -62,7 +62,7 @@
                   <textarea
                     v-model="productionOrderStore.dataOrder.notes"
                     class="textarea textarea-bordered w-3/4"
-                    placeholder="Bio"
+                    placeholder="Catatan"
                   ></textarea>
                 </label>
               </div>
@@ -118,7 +118,7 @@
 
               <tbody>
                 <tr v-if="productionOrderStore.inputData.length < 1">
-                  <td colspan="4" class="text-center">
+                  <td colspan="5" class="text-center">
                     <span>Tidak ada data.</span>
                   </td>
                 </tr>

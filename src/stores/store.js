@@ -432,9 +432,12 @@ export const useMutationStore = defineStore('mutationStore', {
 export const useProductionOrderStore = defineStore('productionOrderStore', {
   state: () => {
     return {
+      isLoadingPrint: false,
       responseListData: {},
       currentId: null,
-      currentData: null,
+      currentData: {
+        pic_production: '',
+      },
       isLoading: false,
       currentLimit: 10,
       searchName: '',
@@ -596,6 +599,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
           this.editOrder = response.data.data
         }
         this.currentData = response.data.data
+        this.currentData.pic_production = ''
       } catch (error) {
         this.isDataEmpty = true
         this.isLoading = false
@@ -694,6 +698,18 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
       } finally {
         this.isDeleteLoading = false
       }
+    },
+    async printData() {
+      this.isLoadingPrint = true
+      try {
+        const response = await axiosIns.post(
+          `/report/production2`,
+          this.currentData
+        )
+      } catch (error) {
+        console.info(error)
+      }
+      this.isLoadingPrint = false
     },
   },
 })
