@@ -50,7 +50,10 @@
           </div>
 
           <div class="card-actions justify-end">
-            <button class="btn btn-secondary w-32 hover:btn-primary">
+            <button
+              class="btn btn-secondary w-32 hover:btn-primary"
+              @click="filterData"
+            >
               Filter
             </button>
           </div>
@@ -58,7 +61,10 @@
           <div class="divider"></div>
           <h2 class="card-title">Laporan Persediaan</h2>
           <div class="card-actions justify-end">
-            <button class="btn btn-secondary w-32 hover:btn-primary">
+            <button
+              class="btn btn-secondary w-32 hover:btn-primary"
+              @click="downloadData"
+            >
               Download
             </button>
           </div>
@@ -91,7 +97,18 @@ export default {
         itemStore.getItemData()
       }
     })
+
+    function filterData() {
+      itemStore.getItemData()
+    }
+
+    function downloadData() {
+      itemStore.getDownloadData()
+    }
+
     return {
+      downloadData,
+      filterData,
       itemStore,
     }
   },

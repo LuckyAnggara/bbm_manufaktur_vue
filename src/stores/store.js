@@ -6,7 +6,6 @@ import Swal from 'sweetalert2/dist/sweetalert2'
 const toast = useToast()
 
 // AUTH STORE
-
 export const useAuthStore = defineStore('authStore', {
   state: () => {
     return {
@@ -81,6 +80,45 @@ export const useAuthStore = defineStore('authStore', {
   },
 })
 
+// DASHBOARD STORE
+export const useDashboardStore = defineStore('dashboardStore', {
+  state: () => {
+    return {
+      isLoadingGetItemCount: false,
+      isLoadingGetProductionCount: false,
+      dataItem: {
+        bahan_baku: 0,
+        barang_jadi: 0,
+        barang_lainnya: 0,
+      },
+      dataProduction: {
+        on_progress: 0,
+        done: 0,
+      },
+    }
+  },
+  actions: {
+    async getItemCount() {
+      this.isLoadingGetItemCount = true
+      try {
+        const response = await axiosIns.get(`/dashboard/items`)
+        this.isLoadingGetItemCount = false
+        this.dataItem = response.data.data
+      } catch (error) {}
+      this.isLoadingGetItemCount = false
+    },
+    async getProductionCount() {
+      this.isLoadingGetProductionCount = true
+      try {
+        const response = await axiosIns.get(`/dashboard/productions`)
+        this.isLoadingGetProductionCount = false
+        this.dataProduction = response.data.data
+      } catch (error) {}
+      this.isLoadingGetProductionCount = false
+    },
+  },
+})
+
 // ITEM STORE
 export const useItemStore = defineStore('itemStore', {
   state: () => {
@@ -94,6 +132,7 @@ export const useItemStore = defineStore('itemStore', {
       fromDate: '',
       toDate: '',
       isLoading: true,
+      isLoadingDownload: false,
       isDeleteLoading: false,
       modalSubmitLoading: false,
       modalToggle: false,
@@ -206,6 +245,17 @@ export const useItemStore = defineStore('itemStore', {
       } catch (error) {
         alert(error)
       }
+    },
+    async getDownloadData() {
+      this.isLoadingDownload = true
+      try {
+        const response = await axiosIns.get(
+          `/report/item?${this.warehousesQuery}${this.fromToDate}`
+        )
+      } catch (error) {
+        console.info(error)
+      }
+      this.isLoadingDownload = false
     },
   },
 })
