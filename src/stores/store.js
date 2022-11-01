@@ -679,6 +679,52 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         this.isUpdateLoading = false
       }
     },
+    async shippingProductionOrder(nopol) {
+      this.isUpdateLoading = true
+      try {
+        const response = await axiosIns.post(
+          `/production-order/update-shipping`,
+          {
+            id: this.currentData.id,
+            nopol: nopol,
+          }
+        )
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isUpdateLoading = false
+      }
+    },
+    async returProductionOrder() {
+      this.isUpdateLoading = true
+      try {
+        const response = await axiosIns.post(`/production-order/update-retur`, {
+          id: this.currentData.id,
+        })
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isUpdateLoading = false
+      }
+    },
+    async receiveProductionOrder() {
+      this.isUpdateLoading = true
+      try {
+        const response = await axiosIns.post(
+          `/production-order/update-receive`,
+          {
+            id: this.currentData.id,
+          }
+        )
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isUpdateLoading = false
+      }
+    },
     async deleteProductionOrderData(id, index) {
       this.isDeleteLoading = true
       try {
