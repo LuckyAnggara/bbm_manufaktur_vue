@@ -43,7 +43,10 @@
           <div class="divider"></div>
           <h2 class="card-title">Laporan Persediaan</h2>
           <div class="card-actions justify-end">
-            <button class="btn btn-secondary w-32 hover:btn-primary">
+            <button
+              class="btn btn-secondary w-32 hover:btn-primary"
+              @click="downloadData"
+            >
               Download
             </button>
           </div>
@@ -67,7 +70,11 @@ export default {
     function filterData() {
       mutationStore.getMutationData()
     }
+    function downloadData() {
+      mutationStore.getDownloadDetailMutation()
+    }
     return {
+      downloadData,
       filterData,
       mutationStore,
     }

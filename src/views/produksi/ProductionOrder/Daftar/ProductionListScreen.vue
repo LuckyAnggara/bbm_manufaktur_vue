@@ -1,7 +1,7 @@
 <template>
   <div class="card flex bg-neutral flex-col h-5/6">
     <div class="card-body shadow-xl rounded-xl">
-      <h2 class="card-title mb-2 text-2xl">Data Production Order</h2>
+      <h2 class="card-title mb-2 text-2xl">Daftar Produksi Order</h2>
       <div class="md:flex py-2">
         <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4">
           <label class="mr-4">Jumlah Data </label>

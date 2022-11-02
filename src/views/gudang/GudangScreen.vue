@@ -19,7 +19,7 @@
         })
       "
     >
-      Master Mutasi Persediaan
+      Daftar Mutasi Persediaan
     </button>
 
     <button

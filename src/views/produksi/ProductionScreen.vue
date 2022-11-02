@@ -8,7 +8,7 @@
         })
       "
     >
-      New Production Order
+      Produksi Order Baru
     </button>
 
     <button

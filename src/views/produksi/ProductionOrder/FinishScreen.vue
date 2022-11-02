@@ -76,7 +76,8 @@
 
           <button
             v-if="
-              !dataOrder.status == 'DONE' || !dataOrder.status == 'WAREHOUSE'
+              !dataOrder.status == 'DONE PRODUCTION' ||
+              !dataOrder.status == 'WAREHOUSE'
             "
             class="btn gap-2 w-32 btn-primary hover:btn-secondary"
             @click="onUpdateStatus"
@@ -99,9 +100,8 @@
 
           <button
             v-if="
-              dataOrder.status != 'SHIPPING' ||
-              !dataOrder.status == 'DONE' ||
-              !dataOrder.status == 'WAREHOUSE'
+              dataOrder.status == 'NEW ORDER' ||
+              !dataOrder.status == 'WORK IN PROGRESS'
             "
             class="btn gap-2 w-32 btn-primary hover:btn-secondary text-white"
             @click="onDelete"
@@ -185,7 +185,7 @@
           </button>
 
           <button
-            v-if="dataOrder.status == 'DONE'"
+            v-if="dataOrder.status == 'DONE PRODUCTION'"
             class="btn gap-2 btn-primary hover:btn-secondary"
             @click="onWarehouse"
           >
@@ -329,7 +329,7 @@
                   <div>{{ output.item.name }}</div>
                   <div class="text-right font-medium">
                     {{
-                      dataOrder.status == 'DONE'
+                      dataOrder.status == 'DONE PRODUCTION'
                         ? output.real_quantity
                         : output.target_quantity
                     }}
@@ -498,9 +498,9 @@ export default {
         return {
           'NEW ORDER': 'NEW ORDER',
         }
-      if (this.dataOrder.status == 'DONE')
+      if (this.dataOrder.status == 'DONE PRODUCTION')
         return {
-          DONE: 'DONE',
+          DONE: 'DONE PRODUCTION',
         }
     },
     warehouses() {},

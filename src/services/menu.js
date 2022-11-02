@@ -11,8 +11,8 @@ export default [
     title: 'Produksi',
     route: 'produksi',
   },
-  {
-    title: 'Laporan',
-    route: 'gudang',
-  },
+  // {
+  //   title: 'Laporan',
+  //   route: 'gudang',
+  // },
 ]

@@ -1,6 +1,18 @@
 <template>
   <!-- Data Barang -->
   <div class="flex flex-col gap-y-4">
+    <div class="stats shadow bg-base-300 lg:w-max w-full">
+      <div class="stat">
+        <div class="stat-title">Tanggal</div>
+        <div class="stat-value">
+          {{ $moment().format('DD MMMM YYYY') }}
+        </div>
+        <div class="stat-desc" id="clock">
+          <p class="time">{{ time }}</p>
+        </div>
+      </div>
+    </div>
+
     <div class="flex-initial lg:w-max w-full stats shadow bg-base-300">
       <div class="stat">
         <div
@@ -117,7 +129,7 @@
             />
           </svg>
         </div>
-        <div class="stat-title">Production on Progress</div>
+        <div class="stat-title">Produksi dalam Proses</div>
         <div class="stat-value text-primary">
           <span v-if="dashboardStore.isLoadingGetProductionCount">Load</span
           ><span v-else>{{ dashboardStore.dataProduction.on_progress }}</span>
@@ -147,7 +159,7 @@
             />
           </svg>
         </div>
-        <div class="stat-title">Production Completed</div>
+        <div class="stat-title">Produksi Selesai</div>
 
         <div class="stat-value text-secondary">
           <span v-if="dashboardStore.isLoadingGetProductionCount">Load</span
@@ -159,15 +171,57 @@
   </div>
 </template>
 
+<style>
+#clock {
+  font-family: 'Share Tech Mono', monospace;
+  color: #ffffff;
+  text-align: right;
+  color: #daf6ff;
+  text-shadow: 0 0 20px rgba(10, 175, 230, 1), 0 0 20px rgba(10, 175, 230, 0);
+}
+
+.time {
+  letter-spacing: 0.05em;
+  font-size: 20px;
+  padding: 5px 0;
+}
+</style>
+
 <script>
+import { ref } from '@vue/reactivity'
 import { useDashboardStore } from '../../stores/store'
 export default {
   setup() {
+    const time = ref('')
     const dashboardStore = useDashboardStore()
+
+    var timerID = setInterval(updateTime, 1000)
 
     dashboardStore.getItemCount()
     dashboardStore.getProductionCount()
+
+    function updateTime() {
+      var cd = new Date()
+      time.value =
+        zeroPadding(cd.getHours(), 2) +
+        ':' +
+        zeroPadding(cd.getMinutes(), 2) +
+        ':' +
+        zeroPadding(cd.getSeconds(), 2)
+    }
+
+    function zeroPadding(num, digit) {
+      var zero = ''
+      for (var i = 0; i < digit; i++) {
+        zero += '0'
+      }
+      return (zero + num).slice(-digit)
+    }
+
+    updateTime()
+
     return {
+      time,
       dashboardStore,
     }
   },

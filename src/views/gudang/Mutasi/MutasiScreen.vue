@@ -3,7 +3,7 @@
     <div class="w-2/3 mt-10 md:mt-0 mx-auto">
       <div class="bg-neutral text-neutral-content rounded-lg">
         <div class="card-body">
-          <h2 class="card-title">Master Mutasi Persediaan</h2>
+          <h2 class="card-title">Daftar Mutasi Persediaan</h2>
           <div class="md:flex py-2">
             <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4">
               <label class="mr-4">Jumlah Data </label>

@@ -265,6 +265,7 @@ export const useItemStore = defineStore('itemStore', {
 export const useMutationStore = defineStore('mutationStore', {
   state: () => {
     return {
+      isLoadingDownload: false,
       currentLimit: 10,
       searchName: '',
       typeData: 'debit',
@@ -424,6 +425,17 @@ export const useMutationStore = defineStore('mutationStore', {
       } finally {
         this.isLoading = false
       }
+    },
+    async getDownloadDetailMutation(id) {
+      this.isLoadingDownload = true
+      try {
+        const response = await axiosIns.get(
+          `/report/mutation?${this.fromToDate}&id=${this.data.id}`
+        )
+      } catch (error) {
+        console.info(error)
+      }
+      this.isLoadingDownload = false
     },
   },
 })
@@ -699,9 +711,12 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     async returProductionOrder() {
       this.isUpdateLoading = true
       try {
-        const response = await axiosIns.post(`/production-order/update-retur`, {
-          id: this.currentData.id,
-        })
+        const response = await axiosIns.post(
+          `/production-order/retur-shipping`,
+          {
+            id: this.currentData.id,
+          }
+        )
         return response
       } catch (error) {
         alert(error)
@@ -713,7 +728,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
       this.isUpdateLoading = true
       try {
         const response = await axiosIns.post(
-          `/production-order/update-receive`,
+          `/production-order/receive-shipping`,
           {
             id: this.currentData.id,
           }
