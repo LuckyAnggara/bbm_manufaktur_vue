@@ -61,13 +61,16 @@
 
 <script>
 import MutationTable from '../mutation/MutationTable.vue'
-import { useMutationStore } from '@/stores/store'
+import { useMutationStore, useItemStore } from '@/stores/store'
 
 export default {
   setup() {
     const mutationStore = useMutationStore()
+    const itemStore = useItemStore()
+
     mutationStore.$reset()
     function filterData() {
+      itemStore.getItemDetailData(mutationStore.currentId)
       mutationStore.getMutationData()
     }
     function downloadData() {
@@ -76,6 +79,7 @@ export default {
     return {
       downloadData,
       filterData,
+      itemStore,
       mutationStore,
     }
   },
@@ -84,6 +88,7 @@ export default {
       this.mutationStore.$patch({
         currentId: this.$route.params.id,
       })
+      this.itemStore.getItemDetailData(this.$route.params.id)
       this.mutationStore.getMutationData()
     }
   },

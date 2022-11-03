@@ -1,8 +1,8 @@
 <template>
   <div class="card flex bg-neutral flex-col">
     <div class="card-body shadow-xl rounded-xl">
-      <h2 class="card-title mb-2 text-2xl" v-if="!mutationStore.isLoading">
-        {{ mutationStore.title }}
+      <h2 class="card-title mb-2 text-2xl" v-if="!itemStore.isLoading">
+        {{ title }}
       </h2>
 
       <div class="md:flex py-2">
@@ -112,23 +112,70 @@
           </tbody>
         </table>
       </div>
+
+      <div
+        class="btn-group mx-auto mt-4 mb-1 justify-center"
+        v-if="!mutationStore.isLoading"
+      >
+        <button
+          class="btn btn-outline"
+          @click="getData(previousPage)"
+          :disabled="mutationStore.currentPage == 1 ? true : false"
+        >
+          «
+        </button>
+        <button class="btn btn-outline">
+          Page {{ mutationStore.currentPage }}
+        </button>
+        <button
+          class="btn btn-outline"
+          @click="getData(nextPage)"
+          :disabled="
+            mutationStore.lastPage == mutationStore.currentPage ? true : false
+          "
+        >
+          »
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from '@vue/reactivity'
-import { useMutationStore } from '../../stores/store'
+import { computed, ref } from '@vue/reactivity'
+import { useItemStore, useMutationStore } from '../../stores/store'
 
 export default {
   setup() {
     const lengths = ref([5, 10, 20, 30, 40, 50])
     const mutationStore = useMutationStore()
+    const itemStore = useItemStore()
 
-    // expose to template and other options API hooks
+    mutationStore.$subscribe((mutation, state) => {
+      if (mutation.events.key == 'currentLimit') {
+        getData()
+      }
+    })
+
+    function getData(page = '') {
+      mutationStore.getMutationData(page)
+    }
+
+    const title = computed(() => {
+      if (mutationStore.fromDate == '' && mutationStore.toDate == '') {
+        return `Data Persediaan ${itemStore.itemDetailData.name.toUpperCase()}`
+      } else {
+        return `Data Persediaan ${itemStore.itemDetailData.name.toUpperCase()} Dari tanggal ${
+          mutationStore.fromDate
+        } s.d ${mutationStore.toDate}`
+      }
+    })
+
     return {
       lengths,
+      itemStore,
       mutationStore,
+      title,
     }
   },
 }

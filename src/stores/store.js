@@ -138,6 +138,9 @@ export const useItemStore = defineStore('itemStore', {
       modalToggle: false,
       currentLimit: 10,
       searchName: '',
+      itemDetailData: {
+        name: null,
+      },
     }
   },
   getters: {
@@ -222,6 +225,16 @@ export const useItemStore = defineStore('itemStore', {
       }
       this.isLoading = false
     },
+    async getItemDetailData(id) {
+      this.isLoading = true
+      try {
+        const response = await axiosIns.get(`/items/${id}`)
+        this.itemDetailData = response.data.data
+      } catch (error) {
+        alert(error)
+      }
+      this.isLoading = false
+    },
     async getItemTypeData() {
       try {
         const response = await axiosIns.get(`/item-types`)
@@ -270,6 +283,7 @@ export const useMutationStore = defineStore('mutationStore', {
       searchName: '',
       typeData: 'debit',
       storeLoading: false,
+      dataItem: null,
       responseData: [],
       responseMasterData: [],
       fromDate: '',
@@ -307,19 +321,7 @@ export const useMutationStore = defineStore('mutationStore', {
       return '&type-data=' + state.typeData
     },
     dataMutation(state) {
-      return state.responseData.mutation
-    },
-    data(state) {
-      return state.responseData
-    },
-    title(state) {
-      if (state.fromDate == '' && state.toDate == '') {
-        return `Data Persediaan ${state.data.name.toUpperCase()}`
-      } else {
-        return `Data Persediaan ${state.data.name.toUpperCase()} Dari tanggal ${
-          state.fromDate
-        } s.d ${state.toDate}`
-      }
+      return state.responseData.data
     },
     fromToDate(state) {
       if (state.fromDate == '' && state.toDate == '') {
@@ -391,9 +393,11 @@ export const useMutationStore = defineStore('mutationStore', {
         toast.success('Mutasi barang masuk berhasil diproses', {
           timeout: 1000,
         })
-        return response
+        if (response.status == 200) {
+          return response
+        }
       } catch (error) {
-        alert(error)
+        return 404
       } finally {
         this.storeLoading = false
       }
