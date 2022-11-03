@@ -279,6 +279,7 @@ export const useMutationStore = defineStore('mutationStore', {
       listDebitItem: [],
       listKreditItem: [],
       masuk: {},
+      currentLimit: 10,
       incomingItem: {
         data: {},
         detail: [],

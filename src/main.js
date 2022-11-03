@@ -77,7 +77,7 @@ createApp(App)
 const app = createApp(App)
 const pinia = createPinia()
 
-app.config.globalProperties.$moment = moment.tz
+app.config.globalProperties.$moment = moment
 app.config.globalProperties.$axios = axiosIns
 app.use(pinia)
 app.use(router)
