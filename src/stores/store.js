@@ -391,9 +391,11 @@ export const useMutationStore = defineStore('mutationStore', {
         toast.success('Mutasi barang masuk berhasil diproses', {
           timeout: 1000,
         })
-        return response
+        if (response.status == 200) {
+          return response
+        }
       } catch (error) {
-        alert(error)
+        return 404
       } finally {
         this.storeLoading = false
       }

@@ -190,21 +190,30 @@ export default {
             cancelButtonColor: '#d33',
             confirmButtonText: 'Proses!',
             showLoaderOnConfirm: true,
-            preConfirm: async () => {
-              const resp = await mutationStore.storeIncomingItem()
-              if (resp.status == 200) {
-                return resp
-              }
-              throw new Error(resp)
+            preConfirm: (val) => {
+              mutationStore.storeIncomingItem().then((resp) => {
+                if (resp.status != 200) {
+                  return false
+                }
+                return true
+              })
+
+              // throw new Error(resp)
             },
+            allowOutsideClick: () => swal.isLoading(),
           })
           .then((result) => {
+            mutationStore.$reset()
+
             if (result.isConfirmed) {
-              swal.fire('Berhasil!', 'success')
-              router.push({
-                name: 'gudang-barang-mutasi',
-              })
-              mutationStore.$reset()
+              if (result.value == false) {
+                swal.fire('Oopss, ada permasalahan', 'error')
+              } else {
+                swal.fire('Berhasil!', 'success')
+                router.push({
+                  name: 'gudang-barang-mutasi',
+                })
+              }
             }
           })
       }

@@ -112,6 +112,31 @@
           </tbody>
         </table>
       </div>
+
+      <div
+        class="btn-group mx-auto mt-4 mb-1 justify-center"
+        v-if="!mutationStore.isLoading"
+      >
+        <button
+          class="btn btn-outline"
+          @click="getData(previousPage)"
+          :disabled="mutationStore.currentPage == 1 ? true : false"
+        >
+          «
+        </button>
+        <button class="btn btn-outline">
+          Page {{ mutationStore.currentPage }}
+        </button>
+        <button
+          class="btn btn-outline"
+          @click="getData(nextPage)"
+          :disabled="
+            mutationStore.lastPage == mutationStore.currentPage ? true : false
+          "
+        >
+          »
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -125,7 +150,16 @@ export default {
     const lengths = ref([5, 10, 20, 30, 40, 50])
     const mutationStore = useMutationStore()
 
-    // expose to template and other options API hooks
+    mutationStore.$subscribe((mutation, state) => {
+      if (mutation.events.key == 'currentLimit') {
+        getData()
+      }
+    })
+
+    function getData(page = '') {
+      mutationStore.getMutationData(page)
+    }
+
     return {
       lengths,
       mutationStore,
