@@ -171,6 +171,19 @@ export default {
       }
     })
 
+<<<<<<< HEAD
+=======
+    mutationStore.$subscribe((mutation, state) => {
+      if (mutation.events.key == 'currentLimit') {
+        getData()
+      }
+    })
+
+    function getData(page = '') {
+      mutationStore.getMutationData(page)
+    }
+
+>>>>>>> 4fd53e2559d6950e445d4a9c1d8f21e3699b36ed
     return {
       lengths,
       itemStore,
