@@ -109,7 +109,7 @@
                 <!-- <td>{{ item.warehouse.name.toUpperCase() }}</td> -->
                 <td>{{ item.unit.name.toUpperCase() }}</td>
 
-                <td>{{ item.balance }}</td>
+                <td>{{ numeralFormat(item.balance) }}</td>
                 <td>
                   <div class="mx-2 dropdown" :class="position(index)">
                     <button class="btn btn-sm btn-square btn-ghost">

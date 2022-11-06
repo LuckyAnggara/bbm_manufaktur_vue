@@ -104,9 +104,9 @@
                 <td>
                   {{ item.notes == null ? '-' : item.notes.toUpperCase() }}
                 </td>
-                <td>{{ item.debit }}</td>
-                <td>{{ item.kredit }}</td>
-                <td>{{ item.balance }}</td>
+                <td>{{ numeralFormat(item.debit) }}</td>
+                <td>{{ numeralFormat(item.kredit) }}</td>
+                <td>{{ numeralFormat(item.balance) }}</td>
               </tr>
             </template>
           </tbody>
@@ -171,19 +171,6 @@ export default {
       }
     })
 
-<<<<<<< HEAD
-=======
-    mutationStore.$subscribe((mutation, state) => {
-      if (mutation.events.key == 'currentLimit') {
-        getData()
-      }
-    })
-
-    function getData(page = '') {
-      mutationStore.getMutationData(page)
-    }
-
->>>>>>> 4fd53e2559d6950e445d4a9c1d8f21e3699b36ed
     return {
       lengths,
       itemStore,

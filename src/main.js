@@ -11,6 +11,7 @@ import VueSweetalert2 from 'vue-sweetalert2'
 import moment from 'moment-timezone'
 import 'sweetalert2/dist/sweetalert2.min.css'
 import 'vue-toastification/dist/index.css'
+import VueNumerals from 'vue-numerals'
 
 import '@sweetalert2/themes/dark/dark.css'
 import { isUserLoggedIn } from './services/auth'
@@ -81,6 +82,7 @@ app.config.globalProperties.$moment = moment
 app.config.globalProperties.$axios = axiosIns
 app.use(pinia)
 app.use(router)
+app.use(VueNumerals)
 app.use(VueSweetalert2)
 app.use(Toast, {
   transition: 'Vue-Toastification__bounce',

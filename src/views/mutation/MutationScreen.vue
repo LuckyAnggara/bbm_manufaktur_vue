@@ -62,6 +62,7 @@
 <script>
 import MutationTable from '../mutation/MutationTable.vue'
 import { useMutationStore, useItemStore } from '@/stores/store'
+import { ref } from 'vue'
 
 export default {
   setup() {
@@ -74,7 +75,7 @@ export default {
       mutationStore.getMutationData()
     }
     function downloadData() {
-      mutationStore.getDownloadDetailMutation()
+      mutationStore.getDownloadDetailMutation(mutationStore.currentId)
     }
     return {
       downloadData,

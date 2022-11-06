@@ -424,7 +424,6 @@ export const useMutationStore = defineStore('mutationStore', {
       try {
         const response = this.responseMasterData.data[id]
         this.detailMutation = response
-        console.info(this.detailMutation)
       } catch (error) {
         alert(error)
       } finally {
@@ -435,7 +434,7 @@ export const useMutationStore = defineStore('mutationStore', {
       this.isLoadingDownload = true
       try {
         const response = await axiosIns.get(
-          `/report/mutation?${this.fromToDate}&id=${this.data.id}`
+          `/report/mutation?${this.fromToDate}&id=${id}`
         )
       } catch (error) {
         console.info(error)
