@@ -1,5 +1,5 @@
 <template>
-  <div class="md:flex md:space-x-10 md:space-y-0 space-y-4">
+  <div class="lg:flex grid gap-4 grid-cols-1 sm:grid-cols-2">
     <button
       class="btn btn-lg btn-wide hover:scale-110"
       @click="

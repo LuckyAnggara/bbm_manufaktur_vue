@@ -11,7 +11,7 @@ export const productionOrderRoutes = [
     name: 'produksi',
     component: ProductionScreen,
     meta: {
-      title: 'Production',
+      title: 'Produksi',
       layout: 'layout-normal',
     },
   },
@@ -38,7 +38,7 @@ export const productionOrderRoutes = [
     name: 'produksi-order-new',
     component: NewScreen,
     meta: {
-      title: 'Production Order',
+      title: 'Produksi Order',
       layout: 'layout-normal',
     },
   },
@@ -47,7 +47,7 @@ export const productionOrderRoutes = [
     name: 'produksi-order-edit',
     component: EditScreen,
     meta: {
-      title: 'Production Order',
+      title: 'Produksi Order',
       layout: 'layout-normal',
     },
   },

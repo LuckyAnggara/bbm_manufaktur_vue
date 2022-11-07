@@ -278,6 +278,7 @@ export const useItemStore = defineStore('itemStore', {
 export const useMutationStore = defineStore('mutationStore', {
   state: () => {
     return {
+      currentTab: 0,
       isLoadingDownload: false,
       currentLimit: 10,
       searchName: '',
@@ -286,6 +287,7 @@ export const useMutationStore = defineStore('mutationStore', {
       dataItem: null,
       responseData: [],
       responseMasterData: [],
+      responseDetailData: {},
       fromDate: '',
       toDate: '',
       currentId: '',
@@ -344,6 +346,9 @@ export const useMutationStore = defineStore('mutationStore', {
     dataMasterMutation(state) {
       return state.responseMasterData.data
     },
+    dataDetailMasterMutation(state) {
+      return state.responseDetailData
+    },
     dataDetailMutation(state) {
       return state.detailMutation
     },
@@ -363,6 +368,19 @@ export const useMutationStore = defineStore('mutationStore', {
         )
         this.responseMasterData = response.data.data
         return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isLoading = false
+      }
+    },
+    async getDetailMasterMutation(id, type) {
+      this.isLoading = true
+      try {
+        const response = await axiosIns.get(
+          `/mutations/master/${id}?type-data=${type}`
+        )
+        this.responseDetailData = response.data.data
       } catch (error) {
         alert(error)
       } finally {

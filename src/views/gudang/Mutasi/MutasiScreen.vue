@@ -1,9 +1,23 @@
 <template>
   <section>
-    <div class="w-2/3 mt-10 md:mt-0 mx-auto">
-      <div class="bg-neutral text-neutral-content rounded-lg">
+    <div class="w-full lg:w-2/3 mt-10 md:mt-0 mx-auto">
+      <div class="tabs tabs-boxed rounded-b-none">
+        <a
+          v-for="(tab, index) in tabs"
+          :key="tab.index"
+          @click="mutationStore.currentTab = index"
+          class="tab tab-lg tab-lifted"
+          :class="{ 'tab-active': mutationStore.currentTab == index }"
+          >{{ tab.name }}</a
+        >
+      </div>
+
+      <!-- Masuk Tab -->
+      <div class="bg-neutral text-neutral-content rounded-b-lg">
         <div class="card-body">
-          <h2 class="card-title">Daftar Mutasi Persediaan</h2>
+          <h2 class="card-title">
+            Daftar Mutasi {{ tabs[mutationStore.currentTab].name }}
+          </h2>
           <div class="md:flex py-2">
             <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4">
               <label class="mr-4">Jumlah Data </label>
@@ -22,7 +36,6 @@
                 </option>
               </select>
             </div>
-            <input type="checkbox" class="toggle" v-model="toggle" checked />
             <div class="justify-end mx-1 md:w-1/2 w-full">
               <div class="form-control">
                 <div class="input-group">
@@ -117,7 +130,7 @@
                     <td class="space-x-2">
                       <button
                         class="btn btn-sm btn-square btn-outline hover:scale-110"
-                        @click="detailData(index)"
+                        @click="detailData(item.id, item.type)"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -195,39 +208,50 @@
 
 <script>
 import { useMutationStore } from '../../../stores/store'
-import { useToast } from 'vue-toastification'
 import { inject, ref } from 'vue'
 import { computed } from '@vue/reactivity'
 import { useRouter } from 'vue-router'
 
 export default {
   setup() {
-    const toast = useToast()
+    const tabs = [
+      { index: 0, name: 'Masuk' },
+      { index: 1, name: 'Keluar' },
+    ]
     const mutationStore = useMutationStore()
     const swal = inject('$swal')
     const lengths = ref([5, 10, 20, 30, 40, 50])
     const router = useRouter()
-
     const toggle = false
-
     mutationStore.getMasterMutationData()
-
     mutationStore.$subscribe((mutation, state) => {
       if (mutation.events.key == 'currentLimit') {
+        getData()
+      }
+      if (mutation.events.key == 'currentTab') {
         getData()
       }
     })
     function deleteData(index) {
       swal.fire('Oops!', 'Fitur tidak bisa digunakan', 'warning')
     }
-    function detailData(index) {
+    function detailData(id, type) {
       router.push({
         name: 'gudang-barang-mutasi-detail',
-        params: { id: index },
+        params: { id: id, type: type },
       })
     }
 
-    function getData(page = '') {
+    function searchData() {
+      return getData()
+    }
+
+    function getData(page = '', type = mutationStore.currentTab) {
+      if (type == 0) {
+        mutationStore.typeData = 'debit'
+      } else {
+        mutationStore.typeData = 'kredit'
+      }
       mutationStore.getMasterMutationData(page)
     }
 
@@ -240,6 +264,8 @@ export default {
     })
 
     return {
+      searchData,
+      tabs,
       toggle,
       mutationStore,
       deleteData,
