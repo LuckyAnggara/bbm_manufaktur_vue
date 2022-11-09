@@ -39,7 +39,8 @@ export const useAuthStore = defineStore('authStore', {
           localStorage.setItem('token', JSON.stringify(data.data.token))
           localStorage.setItem('userData', JSON.stringify(data.data.user))
           toast.success(data.message, {
-            timeout: 2000,
+            timeout: 1500,
+            position: 'top-left',
           })
           return true
         }
@@ -47,6 +48,7 @@ export const useAuthStore = defineStore('authStore', {
           console.info(data)
           toast.warning(data.message, {
             timeout: 2000,
+            position: 'top-left',
           })
         }
       } catch (error) {
@@ -63,16 +65,18 @@ export const useAuthStore = defineStore('authStore', {
       try {
         const response = await axiosIns.get(`/logout`)
         if (response.status == 200) {
-          localStorage.removeItem('userData')
-          localStorage.removeItem('token')
+          if (response.data == 'error') {
+            localStorage.clear()
+          } else {
+            localStorage.removeItem('userData')
+            localStorage.removeItem('token')
+          }
           return true
         } else {
           return false
         }
       } catch (error) {
         alert(error)
-        this.isLoading = false
-        return false
       } finally {
         this.isLoading = false
       }
@@ -287,7 +291,7 @@ export const useMutationStore = defineStore('mutationStore', {
       dataItem: null,
       responseData: [],
       responseMasterData: [],
-      responseDetailData: {},
+      responseDetailData: null,
       fromDate: '',
       toDate: '',
       currentId: '',
@@ -347,7 +351,7 @@ export const useMutationStore = defineStore('mutationStore', {
       return state.responseMasterData.data
     },
     dataDetailMasterMutation(state) {
-      return state.responseDetailData
+      return state.responseDetailData.data
     },
     dataDetailMutation(state) {
       return state.detailMutation
@@ -374,13 +378,13 @@ export const useMutationStore = defineStore('mutationStore', {
         this.isLoading = false
       }
     },
-    async getDetailMasterMutation(id, type) {
+    async getDetailMasterMutation(id) {
       this.isLoading = true
       try {
         const response = await axiosIns.get(
-          `/mutations/master/${id}?type-data=${type}`
+          `/mutations/master/${id}?type-data=${this.typeData}`
         )
-        this.responseDetailData = response.data.data
+        this.responseDetailData = response.data
       } catch (error) {
         alert(error)
       } finally {
@@ -458,6 +462,34 @@ export const useMutationStore = defineStore('mutationStore', {
         console.info(error)
       }
       this.isLoadingDownload = false
+    },
+    async deleteMasterMutation(id, index) {
+      this.isDeleteLoading = true
+      if (this.typeData == 'debit') {
+        try {
+          await axiosIns.delete(`/mutation-incoming/${id}`)
+          this.responseMasterData.data.splice(index, 1)
+          toast.error('Data telah di Delete', {
+            timeout: 2000,
+          })
+          return true
+        } catch (error) {
+        } finally {
+          this.isDeleteLoading = false
+        }
+      } else {
+        try {
+          await axiosIns.delete(`/mutation-exit/${id}`)
+          this.responseMasterData.data.splice(index, 1)
+          toast.error('Data telah di Delete', {
+            timeout: 2000,
+          })
+          return true
+        } catch (error) {
+        } finally {
+          this.isDeleteLoading = false
+        }
+      }
     },
   },
 })

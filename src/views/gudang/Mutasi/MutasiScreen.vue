@@ -130,7 +130,7 @@
                     <td class="space-x-2">
                       <button
                         class="btn btn-sm btn-square btn-outline hover:scale-110"
-                        @click="detailData(item.id, item.type)"
+                        @click="detailData(item.id)"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -150,7 +150,7 @@
                       </button>
                       <button
                         class="btn btn-sm btn-square btn-outline hover:scale-110"
-                        @click="deleteData(index)"
+                        @click="onDelete(item.id, index)"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -232,13 +232,29 @@ export default {
         getData()
       }
     })
-    function deleteData(index) {
-      swal.fire('Oops!', 'Fitur tidak bisa digunakan', 'warning')
+    function onDelete(id, index) {
+      swal
+        .fire({
+          title: 'Anda yakin?',
+          text: 'Transaksi mutasi akan dihapus',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete!',
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            const b = mutationStore.deleteMasterMutation(id, index)
+            if (b) return swal.fire('Deleted!', 'success')
+            return swal.fire('error')
+          }
+        })
     }
-    function detailData(id, type) {
+    function detailData(id) {
       router.push({
         name: 'gudang-barang-mutasi-detail',
-        params: { id: id, type: type },
+        params: { id: id },
       })
     }
 
@@ -268,7 +284,7 @@ export default {
       tabs,
       toggle,
       mutationStore,
-      deleteData,
+      onDelete,
       detailData,
       lengths,
       previousPage,
