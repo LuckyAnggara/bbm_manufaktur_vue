@@ -52,8 +52,8 @@
         </div>
       </div>
 
-      <div class="flex mt-2 md:overflow-visible overflow-y-auto">
-        <table class="table table-compact w-full">
+      <div class="flex mt-2 lg:overflow-visible overflow-x-auto">
+        <table class="table table-compact lg:w-full">
           <!-- head -->
           <thead>
             <tr>
@@ -115,7 +115,7 @@
                 <td>
                   <div class="badge badge-primary">{{ data.status }}</div>
                 </td>
-                <td>
+                <td class="lg:flex hidden">
                   <div class="mx-2 dropdown" :class="position(index)">
                     <button class="btn btn-sm btn-square btn-ghost">
                       <svg
@@ -150,6 +150,32 @@
                       <li><a @click="onDelete(data.id, index)">Hapus</a></li>
                     </ul>
                   </div>
+                </td>
+                <td class="lg:hidden">
+                  <button
+                    class="btn btn-sm btn-square btn-ghost"
+                    @click="onDetail(data.id)"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      width="36"
+                      height="36"
+                      class="inline-block w-5 h-5 stroke-current"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
+                      />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                  </button>
                 </td>
               </tr>
             </template>

@@ -1,6 +1,6 @@
 <template>
   <section>
-    <div class="mx-auto justify-center w-full md:w-1/2">
+    <div class="mx-auto justify-center w-full md:w-full lg:w-3/4 sm:w-full">
       <div class="tabs tabs-boxed bg-base rounded-t-l">
         <a
           class="tab tab-lg"
@@ -177,10 +177,193 @@
           </div>
         </div>
       </div>
-
       <div
         class="bg-neutral text-neutral-content rounded-b-lg"
         :class="{ hidden: tabIndex != 2 }"
+      >
+        <div class="card-body">
+          <h2 class="card-title">Detail Mesin</h2>
+          <p>Isi dengan mesin yang dipergunakan</p>
+
+          <div class="card-actions justify-end">
+            <label
+              for="my-modal-machine"
+              class="btn w-32 btn-secondary modal-button shadow-md"
+              @click="etcStore.getMachineData()"
+              ><span class="text-xs">Tambah</span></label
+            >
+          </div>
+
+          <div class="flex mt-2 md:overflow-visible overflow-y-auto mb-5">
+            <table class="table table-compact w-full">
+              <!-- head -->
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Nama</th>
+                  <th>Penggunaan</th>
+                  <th>Unit</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr v-if="productionOrderStore.machineData.length < 1">
+                  <td colspan="5" class="text-center">
+                    <span>Tidak ada data.</span>
+                  </td>
+                </tr>
+                <tr
+                  v-else
+                  v-for="(item, index) in productionOrderStore.machineData"
+                  :key="item"
+                >
+                  <td class="text-center"></td>
+                  <td>{{ item.name.toUpperCase() }}</td>
+                  <td>
+                    <input
+                      v-model="item.usage_meter"
+                      type="number"
+                      placeholder="0"
+                      min="0"
+                      class="input input-bordered input-sm w-1/2 max-w-xs"
+                    />
+                  </td>
+                  <td>
+                    {{ item.unit == null ? '-' : item.unit.toUpperCase() }}
+                  </td>
+                  <td>
+                    <button
+                      class="btn btn-sm btn-square btn-outline"
+                      @click="deleteMachineData(index)"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        width="24"
+                        height="24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                        />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card-actions justify-between">
+            <button type="button" class="btn btn-primary" @click="prevTab">
+              Back
+            </button>
+            <button type="button" class="btn btn-primary" @click="nextTab">
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        class="bg-neutral text-neutral-content rounded-b-lg"
+        :class="{ hidden: tabIndex != 3 }"
+      >
+        <div class="card-body">
+          <h2 class="card-title">Detail Overhead</h2>
+          <p>Isi dengan bahan baku yang di gunakan</p>
+
+          <div class="card-actions justify-end">
+            <label
+              for="my-modal-overhead"
+              class="btn w-32 btn-secondary modal-button shadow-md"
+              @click="etcStore.getOverheadData()"
+              ><span class="text-xs">Tambah</span></label
+            >
+          </div>
+
+          <div class="flex mt-2 md:overflow-visible overflow-y-auto mb-5">
+            <table class="table table-compact w-full">
+              <!-- head -->
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Nama</th>
+                  <th>Pengunaan</th>
+                  <th>Satuan</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr v-if="productionOrderStore.overheadData.length < 1">
+                  <td colspan="5" class="text-center">
+                    <span>Tidak ada data.</span>
+                  </td>
+                </tr>
+                <tr
+                  v-else
+                  v-for="(item, index) in productionOrderStore.overheadData"
+                  :key="item"
+                >
+                  <td class="text-center"></td>
+                  <td>{{ item.name.toUpperCase() }}</td>
+                  <td>
+                    <input
+                      v-model="item.usage_meter"
+                      type="number"
+                      placeholder="0"
+                      min="0"
+                      class="input input-bordered input-sm w-1/2 max-w-xs"
+                    />
+                  </td>
+                  <td>{{ item.unit.toUpperCase() }}</td>
+
+                  <td>
+                    <button
+                      class="btn btn-sm btn-square btn-outline"
+                      @click="deleteOverheadData(index)"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        width="24"
+                        height="24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                        />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card-actions justify-between">
+            <button type="button" class="btn btn-primary" @click="prevTab">
+              Back
+            </button>
+            <button type="button" class="btn btn-primary" @click="nextTab">
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="bg-neutral text-neutral-content rounded-b-lg"
+        :class="{ hidden: tabIndex != 4 }"
       >
         <div class="card-body">
           <h2 class="card-title">Detail Hasil Produksi</h2>
@@ -286,16 +469,24 @@
     </div>
     <ModalItemBahanBaku />
     <ModalItemBarangJadi />
+    <ModalMachine />
+    <ModalOverhead />
   </section>
 </template>
 
 <script>
-import { inject, onBeforeUnmount, onMounted, ref } from 'vue'
+import { inject, onMounted, ref } from 'vue'
 import { useToast } from 'vue-toastification'
-import { useItemStore, useProductionOrderStore } from '../../../../stores/store'
+import {
+  useEtcStore,
+  useItemStore,
+  useProductionOrderStore,
+} from '../../../../stores/store'
 import { useRouter } from 'vue-router'
 import ModalItemBahanBaku from './Component/ModalItemBahanBaku.vue'
 import ModalItemBarangJadi from './Component/ModalItemBarangJadi.vue'
+import ModalMachine from './Component/ModalMachine.vue'
+import ModalOverhead from './Component/ModalOverhead.vue'
 
 export default {
   setup() {
@@ -312,12 +503,15 @@ export default {
     const searchActive = ref(false)
     const itemStore = useItemStore()
     const productionOrderStore = useProductionOrderStore()
+    const etcStore = useEtcStore()
 
     const tabIndex = ref(0)
     const tabList = [
       { index: 0, name: 'Data Order' },
       { index: 1, name: 'Bahan Baku' },
-      { index: 2, name: 'Hasil Produksi' },
+      { index: 2, name: 'Mesin' },
+      { index: 3, name: 'Overhead / Lainnya' },
+      { index: 4, name: 'Hasil Produksi' },
     ]
     itemStore.getItemData()
     function nextTab() {
@@ -347,23 +541,44 @@ export default {
     }
 
     async function onSubmit() {
-      await productionOrderStore.storeProductionOrder(dataForm.value)
-      router.push({
-        name: 'produksi-order-finish',
-        params: { id: productionOrderStore.currentId },
-      })
+      await swal
+        .fire({
+          title: 'Proses?',
+          text: 'Produksi order akan di proses!',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Proses!',
+          showLoaderOnConfirm: true,
+          preConfirm: (val) => {
+            productionOrderStore
+              .storeProductionOrder(dataForm.value)
+              .then((resp) => {
+                if (resp.status != 200) {
+                  return false
+                }
+                return true
+              })
 
-      // swal
-      //   .fire({
-      //     title: 'Proses?',
-      //     text: 'Produksi akan di proses!',
-      //     icon: 'warning',
-      //     showCancelButton: true,
-      //     confirmButtonColor: '#3085d6',
-      //     cancelButtonColor: '#d33',
-      //     confirmButtonText: 'Proses!',
-      //   })
-      //   .then((result) => {})
+            // throw new Error(resp)
+          },
+          allowOutsideClick: () => swal.isLoading(),
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            if (result.value == false) {
+              swal.fire('Oopss, ada permasalahan', 'error')
+            } else {
+              swal.fire('Berhasil!', 'success')
+              router.push({
+                name: 'produksi-order-finish',
+                params: { id: productionOrderStore.currentId },
+              })
+              productionOrderStore.$reset()
+            }
+          }
+        })
     }
 
     function deleteInputData(index) {
@@ -380,24 +595,22 @@ export default {
       })
     }
 
+    function deleteMachineData(index) {
+      productionOrderStore.deleteMachineData(index)
+      toast.warning('Mesin di hapus', {
+        timeout: 1000,
+      })
+    }
+
+    function deleteOverheadData(index) {
+      productionOrderStore.deleteOutputData(index)
+      toast.warning('Overhead di hapus', {
+        timeout: 1000,
+      })
+    }
+
     onMounted(() => {
       productionOrderStore.$reset()
-    })
-
-    onBeforeUnmount(() => {
-      // swal
-      //   .fire({
-      //     title: 'Proses?',
-      //     text: 'Produksi akan di proses!',
-      //     icon: 'warning',
-      //     showCancelButton: true,
-      //     confirmButtonColor: '#3085d6',
-      //     cancelButtonColor: '#d33',
-      //     confirmButtonText: 'Proses!',
-      //   })
-      //   .then((result) => {
-      //     console.info('aa')
-      //   })
     })
 
     return {
@@ -411,8 +624,16 @@ export default {
       prevTab,
       tabIndex,
       tabList,
+      etcStore,
+      deleteOverheadData,
+      deleteMachineData,
     }
   },
-  components: { ModalItemBahanBaku, ModalItemBarangJadi },
+  components: {
+    ModalItemBahanBaku,
+    ModalItemBarangJadi,
+    ModalMachine,
+    ModalOverhead,
+  },
 }
 </script>

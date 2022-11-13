@@ -20,7 +20,7 @@ export const productionOrderRoutes = [
     name: 'produksi-order-finish',
     component: FinishScreen,
     meta: {
-      title: 'Mutasi Item',
+      title: 'Deetail Produksi',
       layout: 'layout-normal',
     },
   },

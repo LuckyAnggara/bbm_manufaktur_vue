@@ -167,7 +167,7 @@
 </template>
 
 <script>
-import { onMounted, computed } from 'vue'
+import { onActivated, computed } from 'vue'
 import {
   useItemStore,
   useProductionOrderStore,
@@ -208,7 +208,7 @@ export default {
       }
     })
 
-    onMounted(() => {
+    onActivated(() => {
       if (itemStore.items == undefined) {
         itemStore.getItemData()
       }

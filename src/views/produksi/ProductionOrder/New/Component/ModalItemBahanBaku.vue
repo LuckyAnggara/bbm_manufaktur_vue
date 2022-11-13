@@ -167,7 +167,7 @@
 </template>
 
 <script>
-import { onMounted, computed } from 'vue'
+import { onUpdated, computed } from 'vue'
 import { useToast } from 'vue-toastification'
 import {
   useItemStore,
@@ -208,7 +208,7 @@ export default {
       }
     })
 
-    onMounted(() => {
+    onUpdated(() => {
       if (itemStore.items == undefined) {
         itemStore.getItemData()
       }

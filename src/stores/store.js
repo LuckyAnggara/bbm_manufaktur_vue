@@ -523,10 +523,14 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         target_date: null,
         output: [],
         input: [],
+        machine: [],
+        overhead: [],
       },
       editOrder: {
         output: [],
         input: [],
+        machine: [],
+        overhead: [],
       },
     }
   },
@@ -570,6 +574,18 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
       })
       return state.dataOrder.output
     },
+    machineData(state) {
+      state.dataOrder.machine.forEach((x) => {
+        x.usage_meter = 0
+      })
+      return state.dataOrder.machine
+    },
+    overheadData(state) {
+      state.dataOrder.overhead.forEach((x) => {
+        x.usage_meter = 0
+      })
+      return state.dataOrder.overhead
+    },
     inputDataEdit(state) {
       state.editOrder.input.forEach((x) => {
         if (!x.estimate_quantity) {
@@ -596,6 +612,32 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
       })
       return state.editOrder.output
     },
+    machineDataEdit(state) {
+      state.editOrder.machine.forEach((x) => {
+        if (!x.usage_meter) {
+          x.usage_meter = 0
+        }
+        if (x.item) {
+          x.id = x.item.id
+          x.name = x.item.name
+          x.unit = x.item.unit
+        }
+      })
+      return state.editOrder.machine
+    },
+    overheadDataEdit(state) {
+      state.editOrder.overhead.forEach((x) => {
+        if (!x.usage_meter) {
+          x.usage_meter = 0
+        }
+        if (x.item) {
+          x.id = x.item.id
+          x.name = x.item.name
+          x.unit = x.item.unit
+        }
+      })
+      return state.editOrder.overhead
+    },
   },
   actions: {
     deleteInputEditData(index) {
@@ -603,6 +645,12 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     },
     deleteOutputEditData(index) {
       this.editOrder.output.splice(index, 1)
+    },
+    deleteMachineEditData(index) {
+      this.editOrder.machine.splice(index, 1)
+    },
+    deleteOverheadEditData(index) {
+      this.editOrder.overhead.splice(index, 1)
     },
     deleteOutputUpdateData(index) {
       this.currentData.output.splice(index, 1)
@@ -612,6 +660,12 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     },
     deleteOutputData(index) {
       this.dataOrder.output.splice(index, 1)
+    },
+    deleteMachineData(index) {
+      this.dataOrder.machine.splice(index, 1)
+    },
+    deleteOverheadData(index) {
+      this.dataOrder.overhead.splice(index, 1)
     },
     async updateStatus(status, id = null) {
       this.isLoading = true
@@ -825,6 +879,90 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         console.info(error)
       }
       this.isLoadingPrint = false
+    },
+  },
+})
+
+// ETC STORE
+export const useEtcStore = defineStore('etcStore', {
+  state: () => {
+    return {
+      modalMachineOn: false,
+      responseMachine: null,
+      responseOverhead: null,
+      response: null,
+      fromDate: '',
+      toDate: '',
+      isLoading: true,
+      currentLimit: 10,
+      searchName: '',
+    }
+  },
+  getters: {
+    data(state) {
+      if (state.response != null) {
+        return state.response.data
+      }
+    },
+    machine(state) {
+      if (state.responseMachine != null) {
+        return state.responseMachine.data
+      }
+    },
+    overhead(state) {
+      if (state.responseOverhead != null) {
+        return state.responseOverhead.data
+      }
+    },
+    currentPage(state) {
+      return state.response.current_page
+    },
+    lastPage(state) {
+      return state.response.last_page
+    },
+    from(state) {
+      return state.response.from
+    },
+    to(state) {
+      return state.response.to
+    },
+    searchQuery(state) {
+      if (state.searchName == '' || null) {
+        return ''
+      }
+      return '&name=' + state.searchName
+    },
+    fromToDate(state) {
+      if (state.fromDate == '' && state.toDate == '') {
+        return ''
+      }
+      return '&from_date=' + state.fromDate + '&to_date=' + state.toDate
+    },
+  },
+  actions: {
+    async getMachineData(page = '') {
+      this.isLoading = true
+      try {
+        const response = await axiosIns.get(
+          `/machines?limit=${this.currentLimit}${this.searchQuery}${page}${this.fromToDate}`
+        )
+        this.response = response.data.data
+      } catch (error) {
+        alert(error)
+      }
+      this.isLoading = false
+    },
+    async getOverheadData(page = '') {
+      this.isLoading = true
+      try {
+        const response = await axiosIns.get(
+          `/overheads?limit=${this.currentLimit}${this.searchQuery}${page}${this.fromToDate}`
+        )
+        this.response = response.data.data
+      } catch (error) {
+        alert(error)
+      }
+      this.isLoading = false
     },
   },
 })

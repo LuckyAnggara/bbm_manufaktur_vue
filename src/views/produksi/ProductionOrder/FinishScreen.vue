@@ -76,8 +76,8 @@
 
           <button
             v-if="
-              !dataOrder.status == 'DONE PRODUCTION' ||
-              !dataOrder.status == 'WAREHOUSE'
+              dataOrder.status != 'DONE PRODUCTION' ||
+              dataOrder.status != 'WAREHOUSE'
             "
             class="btn gap-2 w-32 btn-primary hover:btn-secondary"
             @click="onUpdateStatus"
@@ -301,58 +301,128 @@
 
                 <div class="border border-t-2 border-gray-200 mb-2 px-3"></div>
 
-                <div class="mb-2 px-3">
-                  <p>Bahan baku yang di pergunakan</p>
-                </div>
-
-                <div
-                  class="flex justify-between mb-4 bg-gray-600 px-3 py-2"
-                  v-for="input in dataOrder.input"
-                  :key="input.id"
-                >
-                  <div>{{ input.item.name }}</div>
-                  <div class="text-right font-medium">
-                    {{ input.estimate_quantity }}
-                    {{ input.item.unit.name }}
+                <div class="flex px-3">
+                  <div class="w-1/3 px-3 py-2">
+                    <div class="text-left font-medium">
+                      Bahan baku yang di pergunakan
+                    </div>
+                  </div>
+                  <div class="w-2/3 px-3 border-solid border-2 border-grey-500">
+                    <div
+                      class="flex justify-between my-2"
+                      v-for="input in dataOrder.input"
+                      :key="input.id"
+                    >
+                      <div class="text-left font-medium w-1/12">-</div>
+                      <div class="text-left font-medium w-9/12">
+                        {{ input.item.name }}
+                      </div>
+                      <div class="text-left font-medium w-2/12">
+                        {{ input.estimate_quantity }}
+                        {{ input.item.unit.name }}
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div class="mb-2 px-3">
-                  <p>Output pekerjaan</p>
-                </div>
-
-                <div
-                  class="flex justify-between mb-1 bg-gray-600 px-3 py-2"
-                  v-for="output in dataOrder.output"
-                  :key="output.id"
-                >
-                  <div>{{ output.item.name }}</div>
-                  <div class="text-right font-medium">
-                    {{
-                      dataOrder.status == 'DONE PRODUCTION'
-                        ? output.real_quantity
-                        : output.target_quantity
-                    }}
-                    {{ output.item.unit.name }}
+                <div class="flex px-3">
+                  <div class="w-1/3 px-3 py-2">
+                    <div class="text-left font-medium">
+                      Mesin yang di pergunakan
+                    </div>
+                  </div>
+                  <div class="w-2/3 px-3 border-solid border-2 border-grey-500">
+                    <div
+                      class="flex justify-between my-2"
+                      v-for="machine in dataOrder.machine"
+                      :key="machine.id"
+                    >
+                      <div class="text-left font-medium w-1/12">-</div>
+                      <div class="text-left font-medium w-9/12">
+                        {{ machine.machine.name }}
+                      </div>
+                      <div class="text-left font-medium w-2/12">
+                        {{ machine.usage_meter }} {{ machine.machine.unit }}
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div class="flex justify-between items-center mb-3 px-3">
-                  <div class="text-1xl leading-none">
-                    <span class="">Target Penyelesaian</span>:
+                <div class="flex px-3">
+                  <div class="w-1/3 px-3 py-2">
+                    <div class="text-left font-medium">Alat lainnya</div>
                   </div>
-                  <div class="text-2xl text-right font-medium">
-                    {{ $moment(dataOrder.target_date).format('DD MMMM YYYY') }}
+                  <div class="w-2/3 px-3 border-solid border-2 border-grey-500">
+                    <div
+                      class="flex justify-between my-2"
+                      v-for="overhead in dataOrder.overhead"
+                      :key="overhead.id"
+                    >
+                      <div class="text-left font-medium w-1/12">-</div>
+                      <div class="text-left font-medium w-9/12">
+                        {{ overhead.overhead.name }}
+                      </div>
+                      <div class="text-left font-medium w-2/12">
+                        {{ overhead.usage_meter }} {{ overhead.overhead.unit }}
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div class="flex justify-end mb-8 px-3">
-                  <div class="text-1xl leading-none w-1/4 text-start">
-                    <span class="">Catatan</span> :
+                <div class="flex px-3">
+                  <div class="w-1/3 px-3 py-2">
+                    <div class="text-left font-medium">Output Produksi</div>
                   </div>
-                  <div class="text-1xl leading-none w-3/4">
-                    <div class="text-end px-0 leading-tight">
-                      <small class="text-xs" style="white-space: pre-wrap">
+                  <div class="w-2/3 px-3 border-solid border-2 border-grey-500">
+                    <div
+                      class="flex justify-between my-2"
+                      v-for="output in dataOrder.output"
+                      :key="output.id"
+                    >
+                      <div class="text-left font-medium w-1/12">-</div>
+                      <div class="text-left font-medium w-8/12">
+                        {{ output.item.name }}
+                      </div>
+                      <div class="text-left w-3/12">
+                        {{
+                          dataOrder.status == 'DONE PRODUCTION'
+                            ? output.real_quantity
+                            : output.target_quantity
+                        }}
+                        {{ output.item.unit.name }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="border border-t-2 border-gray-200 mt-2 px-3"></div>
+
+                <div class="flex px-3">
+                  <div class="w-3/12 px-3 py-2">
+                    <div class="text-left font-medium">Target Produksi</div>
+                  </div>
+                  <div class="w-1/12 px-3 py-2">
+                    <div class="text-left font-medium">:</div>
+                  </div>
+                  <div class="w-8/12 px-3 py-2">
+                    <div class="text-sm text-right font-medium">
+                      {{
+                        $moment(dataOrder.target_date).format('DD MMMM YYYY')
+                      }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex px-3">
+                  <div class="w-3/12 px-3 py-2">
+                    <div class="text-left font-medium">Catatan</div>
+                  </div>
+                  <div class="w-1/12 px-3 py-2">
+                    <div class="text-left font-medium">:</div>
+                  </div>
+                  <div class="w-8/12 px-3 py-2">
+                    <div class="text-sm text-right font-medium">
+                      <small class="text-sm" style="white-space: pre-wrap">
                         {{ dataOrder.notes }}
                       </small>
                     </div>
@@ -378,17 +448,32 @@
                 </div>
 
                 <div class="flex justify-between items-center mt-12 px-3">
-                  <div class="text-1xl leading-none w-1/2 text-center">
+                  <div
+                    v-if="!editMaker"
+                    class="text-1xl leading-none w-1/2 text-center"
+                    @dblclick="editMaker = true"
+                  >
                     <span class="">{{
                       productionOrderStore.currentData.user.name.toUpperCase()
                     }}</span>
+                  </div>
+                  <div class="text-1xl leading-none w-1/2 text-center" v-else>
+                    <input
+                      @focusout="editMaker = false"
+                      type="text"
+                      v-model="productionOrderStore.currentData.user.name"
+                      placeholder="Ketik disini"
+                      class="input w-full max-w-xs align-middle"
+                      style="text-align: center"
+                    />
+                    <!-- <span class="">Kalula</span> -->
                   </div>
                   <div class="text-1xl leading-none w-1/2 text-center">
                     <input
                       type="text"
                       v-model="dataOrder.pic_production"
                       placeholder="Ketik disini"
-                      class="input input-ghost w-full max-w-xs align-middle"
+                      class="input w-full max-w-xs align-middle"
                       style="text-align: center"
                     />
                     <!-- <span class="">Kalula</span> -->
@@ -454,10 +539,11 @@
 </template>
 
 <script>
-import { computed } from '@vue/runtime-core'
+import { computed, ref } from '@vue/runtime-core'
 import { useItemStore, useProductionOrderStore } from '../../../stores/store'
 export default {
   setup() {
+    const editMaker = ref(false)
     const productionOrderStore = useProductionOrderStore()
     const itemStore = useItemStore()
 
@@ -478,6 +564,7 @@ export default {
     })
 
     return {
+      editMaker,
       itemStore,
       printData,
       randomBg,
