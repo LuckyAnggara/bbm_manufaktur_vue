@@ -555,6 +555,7 @@ export default {
             productionOrderStore
               .storeProductionOrder(dataForm.value)
               .then((resp) => {
+                console.info(resp)
                 if (resp.status != 200) {
                   return false
                 }
@@ -566,6 +567,7 @@ export default {
           allowOutsideClick: () => swal.isLoading(),
         })
         .then((result) => {
+          console.info(result.value)
           if (result.isConfirmed) {
             if (result.value == false) {
               swal.fire('Oopss, ada permasalahan', 'error')

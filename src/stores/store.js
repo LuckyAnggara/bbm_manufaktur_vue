@@ -359,7 +359,7 @@ export const useMutationStore = defineStore('mutationStore', {
   },
   actions: {
     deleteListDebit(index) {
-      this.listDebitItem.splice(index, 1)
+      this.incomingItem.detail.splice(index, 1)
     },
     deleteListKredit(index) {
       this.listKreditItem.splice(index, 1)
@@ -409,7 +409,7 @@ export const useMutationStore = defineStore('mutationStore', {
       this.storeLoading = true
       try {
         const response = await axiosIns.post(
-          `mutation-incoming/store`,
+          `mutation-incoming`,
           this.incomingItem
         )
         toast.success('Mutasi barang masuk berhasil diproses', {
@@ -653,7 +653,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
       this.editOrder.overhead.splice(index, 1)
     },
     deleteOutputUpdateData(index) {
-      this.currentData.output.splice(index, 1)
+      this.outputDataUpdate.splice(index, 1)
     },
     deleteInputData(index) {
       this.dataOrder.input.splice(index, 1)
@@ -740,6 +740,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         toast.success('Produksi Order berhasil di tambahkan', {
           timeout: 1000,
         })
+        return response
       } catch (error) {
         alert(error)
       } finally {
@@ -752,6 +753,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         const response = await axiosIns.post(`/production-order/update-data`, {
           data_order: this.currentData,
           update_order: this.outputDataUpdate,
+          update_input: this.currentData.input,
         })
         // this.storeLoading = false
         toast.success('Produksi Order berhasil di ubah', {

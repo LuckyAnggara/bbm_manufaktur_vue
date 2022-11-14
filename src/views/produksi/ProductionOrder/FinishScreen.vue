@@ -76,8 +76,11 @@
 
           <button
             v-if="
-              dataOrder.status != 'DONE PRODUCTION' ||
-              dataOrder.status != 'WAREHOUSE'
+              dataOrder.status == 'DONE PRODUCTION'
+                ? false
+                : dataOrder.status == 'WAREHOUSE'
+                ? false
+                : true
             "
             class="btn gap-2 w-32 btn-primary hover:btn-secondary"
             @click="onUpdateStatus"
@@ -292,11 +295,32 @@
                   </div>
                 </div>
 
-                <div class="flex justify-between px-3">
-                  <div>Nama Pelanggan : {{ dataOrder.customer_name }}</div>
+                <div class="flex px-3">
+                  <div class="w-4/12 px-3 py-2">
+                    <div class="text-left font-medium">Nama Pelanggang</div>
+                  </div>
+                  <div class="w-1/12 px-3 py-2">
+                    <div class="text-left font-medium">:</div>
+                  </div>
+                  <div class="w-7/12 px-3 py-2">
+                    <div class="text-sm text-left font-medium">
+                      {{ dataOrder.customer_name }}
+                    </div>
+                  </div>
                 </div>
-                <div class="flex justify-between mb-4 px-3">
-                  <div>Penanggung Jawab : {{ dataOrder.pic_name }}</div>
+
+                <div class="flex px-3">
+                  <div class="w-4/12 px-3 py-2">
+                    <div class="text-left font-medium">Penanggung Jawab</div>
+                  </div>
+                  <div class="w-1/12 px-3 py-2">
+                    <div class="text-left font-medium">:</div>
+                  </div>
+                  <div class="w-7/12 px-3 py-2">
+                    <div class="text-sm text-left font-medium">
+                      {{ dataOrder.pic_name }}
+                    </div>
+                  </div>
                 </div>
 
                 <div class="border border-t-2 border-gray-200 mb-2 px-3"></div>
@@ -318,7 +342,11 @@
                         {{ input.item.name }}
                       </div>
                       <div class="text-left font-medium w-2/12">
-                        {{ input.estimate_quantity }}
+                        {{
+                          dataOrder.status == 'DONE PRODUCTION'
+                            ? input.real_quantity
+                            : input.estimate_quantity
+                        }}
                         {{ input.item.unit.name }}
                       </div>
                     </div>
@@ -398,13 +426,13 @@
                 <div class="border border-t-2 border-gray-200 mt-2 px-3"></div>
 
                 <div class="flex px-3">
-                  <div class="w-3/12 px-3 py-2">
+                  <div class="w-4/12 px-3 py-2">
                     <div class="text-left font-medium">Target Produksi</div>
                   </div>
                   <div class="w-1/12 px-3 py-2">
                     <div class="text-left font-medium">:</div>
                   </div>
-                  <div class="w-8/12 px-3 py-2">
+                  <div class="w-7/12 px-3 py-2">
                     <div class="text-sm text-right font-medium">
                       {{
                         $moment(dataOrder.target_date).format('DD MMMM YYYY')
@@ -414,13 +442,13 @@
                 </div>
 
                 <div class="flex px-3">
-                  <div class="w-3/12 px-3 py-2">
+                  <div class="w-4/12 px-3 py-2">
                     <div class="text-left font-medium">Catatan</div>
                   </div>
                   <div class="w-1/12 px-3 py-2">
                     <div class="text-left font-medium">:</div>
                   </div>
-                  <div class="w-8/12 px-3 py-2">
+                  <div class="w-7/12 px-3 py-2">
                     <div class="text-sm text-right font-medium">
                       <small class="text-sm" style="white-space: pre-wrap">
                         {{ dataOrder.notes }}
@@ -668,7 +696,7 @@ export default {
       await this.$swal
         .fire({
           title: 'Kirim barang ke Gudang?',
-          text: 'Sistem akan memasukan ke Gudang Pabrik',
+          text: 'Sistem akan data memasukan Output Produksi ke Gudang Pabrik',
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#3085d6',

@@ -141,13 +141,31 @@
                       <li>
                         <a @click="onDetail(data.id)"> Detail </a>
                       </li>
-                      <li>
+                      <li
+                        v-if="
+                          data.status == 'WAREHOUSE'
+                            ? false
+                            : data.status == 'DONE PRODUCTION'
+                            ? false
+                            : true
+                        "
+                      >
                         <a @click="onEdit(data.id)"> Edit </a>
                       </li>
-                      <li>
+                      <!-- <li>
                         <a @click="onUpdate(data)"> Update </a>
+                      </li> -->
+                      <li
+                        v-if="
+                          data.status == 'WAREHOUSE'
+                            ? false
+                            : data.status == 'DONE PRODUCTION'
+                            ? false
+                            : true
+                        "
+                      >
+                        <a @click="onDelete(data.id, index)">Hapus</a>
                       </li>
-                      <li><a @click="onDelete(data.id, index)">Hapus</a></li>
                     </ul>
                   </div>
                 </td>

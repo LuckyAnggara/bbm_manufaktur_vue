@@ -1,7 +1,7 @@
 <template>
   <section>
     <template v-if="!mutationStore.isLoading">
-      <template v-if="!mutationStore.dataDetailMasterMutation == null">
+      <template v-if="mutationStore.dataDetailMasterMutation != null">
         <div class="md:flex">
           <div
             class="flex-col md:w-1/4 w-full mr-10 self-start card bg-neutral shadow-xl"
