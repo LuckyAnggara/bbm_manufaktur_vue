@@ -75,13 +75,7 @@
           </button>
 
           <button
-            v-if="
-              dataOrder.status == 'DONE PRODUCTION'
-                ? false
-                : dataOrder.status == 'WAREHOUSE'
-                ? false
-                : true
-            "
+            v-if="doneProduction ? false : true"
             class="btn gap-2 w-32 btn-primary hover:btn-secondary"
             @click="onUpdateStatus"
           >
@@ -209,7 +203,9 @@
           </button>
 
           <button
-            v-if="dataOrder.status == 'WAREHOUSE'"
+            v-if="
+              dataOrder.status == 'WAREHOUSE' || dataOrder.status == 'RETUR'
+            "
             class="btn gap-2 btn-primary hover:btn-secondary"
             @click="onShipping"
           >
@@ -338,12 +334,12 @@
                       :key="input.id"
                     >
                       <div class="text-left font-medium w-1/12">-</div>
-                      <div class="text-left font-medium w-9/12">
+                      <div class="text-left font-medium w-8/12">
                         {{ input.item.name }}
                       </div>
-                      <div class="text-left font-medium w-2/12">
+                      <div class="text-left font-medium w-3/12">
                         {{
-                          dataOrder.status == 'DONE PRODUCTION'
+                          doneProduction
                             ? input.real_quantity
                             : input.estimate_quantity
                         }}
@@ -366,10 +362,10 @@
                       :key="machine.id"
                     >
                       <div class="text-left font-medium w-1/12">-</div>
-                      <div class="text-left font-medium w-9/12">
+                      <div class="text-left font-medium w-8/12">
                         {{ machine.machine.name }}
                       </div>
-                      <div class="text-left font-medium w-2/12">
+                      <div class="text-left font-medium w-3/12">
                         {{ machine.usage_meter }} {{ machine.machine.unit }}
                       </div>
                     </div>
@@ -387,10 +383,10 @@
                       :key="overhead.id"
                     >
                       <div class="text-left font-medium w-1/12">-</div>
-                      <div class="text-left font-medium w-9/12">
+                      <div class="text-left font-medium w-8/12">
                         {{ overhead.overhead.name }}
                       </div>
-                      <div class="text-left font-medium w-2/12">
+                      <div class="text-left font-medium w-3/12">
                         {{ overhead.usage_meter }} {{ overhead.overhead.unit }}
                       </div>
                     </div>
@@ -413,7 +409,7 @@
                       </div>
                       <div class="text-left w-3/12">
                         {{
-                          dataOrder.status == 'DONE PRODUCTION'
+                          doneProduction
                             ? output.real_quantity
                             : output.target_quantity
                         }}
@@ -516,7 +512,7 @@
                 <h1 class="text-4xl text-center font-semibold mb-6">
                   Timeline Pekerjaan
                 </h1>
-                <div class="container">
+                <div class="container overflow-y-auto max-h-screen">
                   <div
                     class="flex flex-col md:grid grid-cols-12 text-gray-50"
                     v-for="timeline in dataOrder.timeline"
@@ -601,6 +597,14 @@ export default {
   },
 
   computed: {
+    doneProduction() {
+      if (this.dataOrder.status == 'DONE PRODUCTION') return true
+      if (this.dataOrder.status == 'WAREHOUSE') return true
+      if (this.dataOrder.status == 'SHIPPING') return true
+      if (this.dataOrder.status == 'RETUR') return true
+      if (this.dataOrder.status == 'RECEIVE') return true
+      return false
+    },
     dataOrder() {
       return this.productionOrderStore.currentData
     },
@@ -738,34 +742,76 @@ export default {
             this.$swal
               .fire({
                 title: 'Cetak Surat Jalan',
-                text: 'Nomor Polisi Kendaraan',
-                input: 'text',
-                inputAttributes: {
-                  autocapitalize: 'off',
-                },
+                html: `<div class="grid gap-y-2 justify-items-center w-full">
+                <input class="input input-bordered w-3/4" id="police_number" placeholder="Nomor Polisi Kendaraan" />
+                <input class="input input-bordered w-3/4" id="driver_name" placeholder="Nama Driver" />
+                <input class="input input-bordered w-3/4" id="man_power_name" placeholder="Nama Kenek (Jika Ada)" />
+                <label>Tanggal Pengiriman </label><input id="date" type="date" placeholder="Tanggal Pengiriman" class="input input-bordered w-auto" />
+                </div>`,
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Ya!',
                 cancelButtonText: 'Tidak!',
+                backdrop: true,
+                allowOutsideClick: () =>
+                  this.productionOrderStore.isUpdateLoading,
                 showLoaderOnConfirm: true,
-                preConfirm: (value) => {
-                  console.info(value)
+                preConfirm: () => {
+                  const police_number = this.$swal
+                    .getPopup()
+                    .querySelector('#police_number').value
+                  const driver_name = this.$swal
+                    .getPopup()
+                    .querySelector('#driver_name').value
+                  const man_power_name = this.$swal
+                    .getPopup()
+                    .querySelector('#man_power_name').value
+                  const shipping_date = this.$swal
+                    .getPopup()
+                    .querySelector('#date').value
+
+                  const value = {
+                    police_number: police_number,
+                    driver_name: driver_name,
+                    man_power_name: man_power_name,
+                    shipping_date: shipping_date,
+                  }
                   return this.productionOrderStore
                     .shippingProductionOrder(value)
                     .then((resp) => {
                       if (resp.status == 200) {
                         return resp
                       }
-                      console.info(value)
                     })
                 },
               })
               .then((result) => {
                 if (result.isConfirmed) {
-                  this.$router.push({
-                    name: 'produksi-order-list',
-                  })
+                  if (result.value.status == 200) {
+                    this.$swal
+                      .fire({
+                        icon: 'success',
+                        title: 'Berhasil',
+                        text: 'Item produksi dalam proses pengiriman',
+                        backdrop: true,
+                        allowOutsideClick: () => false,
+                      })
+                      .then(() => {
+                        this.$router.push({
+                          name: 'produksi-order-list',
+                        })
+                      })
+                  } else {
+                    this.$swal.fire({
+                      icon: 'error',
+                      title: 'Opss',
+                      text: 'Ada permasalahan segera hubungi admin',
+                      backdrop: true,
+                      allowOutsideClick: () => false,
+                    })
+                  }
+                } else {
                 }
               })
           }
@@ -781,23 +827,42 @@ export default {
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: 'Ya, Retur!',
+          backdrop: true,
+          allowOutsideClick: () => this.productionOrderStore.isUpdateLoading,
           showLoaderOnConfirm: true,
-          preConfirm: (value) => {
+          preConfirm: () => {
             return this.productionOrderStore
               .returProductionOrder()
               .then((resp) => {
-                if (resp.status == 200) {
-                  return resp
-                }
-                console.info('aa')
+                return resp
               })
           },
         })
         .then((result) => {
+          console.info(result)
           if (result.isConfirmed) {
-            this.$router.push({
-              name: 'produksi-order-list',
-            })
+            if (result.value.status == 200) {
+              this.$swal
+                .fire({
+                  icon: 'success',
+                  title: 'Berhasil',
+                  backdrop: true,
+                  allowOutsideClick: () => false,
+                })
+                .then(() => {
+                  this.$router.push({
+                    name: 'produksi-order-list',
+                  })
+                })
+            } else {
+              this.$swal.fire({
+                icon: 'error',
+                title: 'Opss',
+                text: 'Ada permasalahan segera hubungi admin',
+                backdrop: true,
+                allowOutsideClick: () => false,
+              })
+            }
           }
         })
     },
@@ -811,23 +876,41 @@ export default {
           confirmButtonColor: '#3085d6',
           cancelButtonColor: '#d33',
           confirmButtonText: 'Ya, Selesai!',
+          backdrop: true,
+          allowOutsideClick: () => this.productionOrderStore.isUpdateLoading,
           showLoaderOnConfirm: true,
-          preConfirm: (value) => {
+          preConfirm: () => {
             return this.productionOrderStore
               .receiveProductionOrder()
               .then((resp) => {
-                if (resp.status == 200) {
-                  return resp
-                }
-                console.info('aa')
+                return resp
               })
           },
         })
         .then((result) => {
           if (result.isConfirmed) {
-            this.$router.push({
-              name: 'produksi-order-list',
-            })
+            if (result.value.status == 200) {
+              this.$swal
+                .fire({
+                  icon: 'success',
+                  title: 'Berhasil',
+                  backdrop: true,
+                  allowOutsideClick: () => false,
+                })
+                .then(() => {
+                  this.$router.push({
+                    name: 'produksi-order-list',
+                  })
+                })
+            } else {
+              this.$swal.fire({
+                icon: 'error',
+                title: 'Opss',
+                text: 'Ada permasalahan segera hubungi admin',
+                backdrop: true,
+                allowOutsideClick: () => false,
+              })
+            }
           }
         })
     },

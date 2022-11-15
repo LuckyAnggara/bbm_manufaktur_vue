@@ -18,16 +18,6 @@ export const routes = [
   },
 
   {
-    path: '/',
-    name: '',
-    component: ProductionScreen,
-    meta: {
-      title: 'Login',
-      layout: 'layout-normal',
-    },
-  },
-
-  {
     path: '/gudang/mutasi/:id',
     name: 'mutation',
     component: MutationScreen,

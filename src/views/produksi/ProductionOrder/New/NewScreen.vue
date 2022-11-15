@@ -541,6 +541,13 @@ export default {
     }
 
     async function onSubmit() {
+      if (productionOrderStore.outputData.length <= 0) {
+        return swal.fire({
+          title: 'Opps',
+          text: 'Data hasil produksi belum di isi',
+          icon: 'warning',
+        })
+      }
       await swal
         .fire({
           title: 'Proses?',
@@ -551,34 +558,41 @@ export default {
           cancelButtonColor: '#d33',
           confirmButtonText: 'Proses!',
           showLoaderOnConfirm: true,
+          backdrop: true,
+          allowOutsideClick: () => this.productionOrderStore.storeLoading,
           preConfirm: (val) => {
-            productionOrderStore
+            return productionOrderStore
               .storeProductionOrder(dataForm.value)
               .then((resp) => {
-                console.info(resp)
-                if (resp.status != 200) {
-                  return false
+                if (resp.status == 200) {
+                  return resp
                 }
-                return true
               })
-
-            // throw new Error(resp)
           },
-          allowOutsideClick: () => swal.isLoading(),
         })
         .then((result) => {
-          console.info(result.value)
+          console.info(result)
           if (result.isConfirmed) {
-            if (result.value == false) {
-              swal.fire('Oopss, ada permasalahan', 'error')
-            } else {
-              swal.fire('Berhasil!', 'success')
-              router.push({
-                name: 'produksi-order-finish',
-                params: { id: productionOrderStore.currentId },
-              })
+            if (result.value.status == 200) {
+              swal
+                .fire({
+                  icon: 'success',
+                  title: 'Berhasil',
+                  text: 'Produksi baru berhasil di daftarkan',
+                  backdrop: true,
+                  allowOutsideClick: () => false,
+                })
+                .then(() => {
+                  router.push({
+                    name: 'produksi-order-finish',
+                    params: { id: result.value.data.data.id },
+                  })
+                })
               productionOrderStore.$reset()
+            } else {
+              swal.fire('Oopss, ada permasalahan', 'error')
             }
+          } else {
           }
         })
     }

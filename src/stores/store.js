@@ -90,12 +90,17 @@ export const useDashboardStore = defineStore('dashboardStore', {
     return {
       isLoadingGetItemCount: false,
       isLoadingGetProductionCount: false,
+      isLoadingGetShippingCount: false,
       dataItem: {
         bahan_baku: 0,
         barang_jadi: 0,
         barang_lainnya: 0,
       },
       dataProduction: {
+        on_progress: 0,
+        done: 0,
+      },
+      dataShipping: {
         on_progress: 0,
         done: 0,
       },
@@ -119,6 +124,15 @@ export const useDashboardStore = defineStore('dashboardStore', {
         this.dataProduction = response.data.data
       } catch (error) {}
       this.isLoadingGetProductionCount = false
+    },
+    async getShippingCount() {
+      this.isLoadingGetShippingCount = true
+      try {
+        const response = await axiosIns.get(`/dashboard/shipping`)
+        this.isLoadingGetShippingCount = false
+        this.dataShipping = response.data.data
+      } catch (error) {}
+      this.isLoadingGetShippingCount = false
     },
   },
 })
@@ -801,14 +815,14 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         this.isUpdateLoading = false
       }
     },
-    async shippingProductionOrder(nopol) {
+    async shippingProductionOrder(data) {
       this.isUpdateLoading = true
       try {
         const response = await axiosIns.post(
           `/production-order/update-shipping`,
           {
             id: this.currentData.id,
-            nopol: nopol,
+            data: data,
           }
         )
         return response

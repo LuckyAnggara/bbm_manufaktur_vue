@@ -61,8 +61,8 @@
               <th></th>
               <th>Tanggal</th>
               <th>Keterangan</th>
-              <th>Debit</th>
-              <th>Kredit</th>
+              <th>Debit / Masuk</th>
+              <th>Kredit / Keluar</th>
               <th>Saldo</th>
             </tr>
           </thead>
