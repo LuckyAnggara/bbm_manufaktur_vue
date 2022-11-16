@@ -283,6 +283,10 @@ export const useItemStore = defineStore('itemStore', {
         const response = await axiosIns.get(
           `/report/item?${this.warehousesQuery}${this.fromToDate}`
         )
+        let responseHtml = response.data
+        console.log(responseHtml, 'Monitoring')
+        var myWindow = window.open('', 'response', 'resizable=yes')
+        myWindow.document.write(responseHtml)
       } catch (error) {
         console.info(error)
       }
@@ -472,6 +476,10 @@ export const useMutationStore = defineStore('mutationStore', {
         const response = await axiosIns.get(
           `/report/mutation?${this.fromToDate}&id=${id}`
         )
+        let responseHtml = response.data
+        console.log(responseHtml, 'Monitoring')
+        var myWindow = window.open('', 'response', 'resizable=yes')
+        myWindow.document.write(responseHtml)
       } catch (error) {
         console.info(error)
       }
@@ -631,10 +639,10 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         if (!x.usage_meter) {
           x.usage_meter = 0
         }
-        if (x.item) {
-          x.id = x.item.id
-          x.name = x.item.name
-          x.unit = x.item.unit
+        if (x.machine) {
+          x.id = x.machine.id
+          x.name = x.machine.name
+          x.unit = x.machine.unit
         }
       })
       return state.editOrder.machine
@@ -644,10 +652,10 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         if (!x.usage_meter) {
           x.usage_meter = 0
         }
-        if (x.item) {
-          x.id = x.item.id
-          x.name = x.item.name
-          x.unit = x.item.unit
+        if (x.overhead) {
+          x.id = x.overhead.id
+          x.name = x.overhead.name
+          x.unit = x.overhead.unit
         }
       })
       return state.editOrder.overhead
@@ -791,6 +799,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         toast.success('Produksi Order berhasil di ubah', {
           timeout: 1000,
         })
+        return response
       } catch (error) {
         alert(error)
       } finally {
@@ -887,10 +896,13 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     async printData() {
       this.isLoadingPrint = true
       try {
-        const response = await axiosIns.post(
-          `/report/production2`,
-          this.currentData
+        const response = await axiosIns.get(
+          `/report/production?id=${this.currentData.id}&pic_production=${this.currentData.pic_production}`
         )
+        let responseHtml = response.data
+        console.log(responseHtml, 'Monitoring')
+        var myWindow = window.open('', 'response', 'resizable=yes')
+        myWindow.document.write(responseHtml)
       } catch (error) {
         console.info(error)
       }

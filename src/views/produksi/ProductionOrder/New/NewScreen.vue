@@ -143,7 +143,7 @@
                   <td>
                     <button
                       class="btn btn-sm btn-square btn-outline"
-                      @click="deleteInputData(index)"
+                      @click="deleteInputData(index, item.name)"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -235,7 +235,7 @@
                   <td>
                     <button
                       class="btn btn-sm btn-square btn-outline"
-                      @click="deleteMachineData(index)"
+                      @click="deleteMachineData(index, item.name)"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -326,7 +326,7 @@
                   <td>
                     <button
                       class="btn btn-sm btn-square btn-outline"
-                      @click="deleteOverheadData(index)"
+                      @click="deleteOverheadData(index, item.name)"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -419,7 +419,7 @@
                     <button
                       :disabled="productionOrderStore.storeLoading"
                       class="btn btn-sm btn-square btn-outline"
-                      @click="deleteOutputData(index)"
+                      @click="deleteOutputData(index, item.name)"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -597,30 +597,30 @@ export default {
         })
     }
 
-    function deleteInputData(index) {
+    function deleteInputData(index, name) {
       productionOrderStore.deleteInputData(index)
-      toast.warning('Bahan baku di hapus', {
+      toast.warning(`Bahan baku ${name} di hapus`, {
         timeout: 1000,
       })
     }
 
-    function deleteOutputData(index) {
+    function deleteOutputData(index, name) {
       productionOrderStore.deleteOutputData(index)
-      toast.warning('Barang jadi di hapus', {
+      toast.warning(`Output ${name} di hapus`, {
         timeout: 1000,
       })
     }
 
-    function deleteMachineData(index) {
+    function deleteMachineData(index, name) {
       productionOrderStore.deleteMachineData(index)
-      toast.warning('Mesin di hapus', {
+      toast.warning(`Mesin ${name} di hapus`, {
         timeout: 1000,
       })
     }
 
-    function deleteOverheadData(index) {
-      productionOrderStore.deleteOutputData(index)
-      toast.warning('Overhead di hapus', {
+    function deleteOverheadData(index, name) {
+      productionOrderStore.deleteOverheadData(index)
+      toast.warning(`Overhead ${name} di hapus`, {
         timeout: 1000,
       })
     }

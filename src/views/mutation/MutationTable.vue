@@ -53,7 +53,7 @@
         </div>
       </div>
 
-      <div class="flex mt-2 md:overflow-visible overflow-y-auto">
+      <div class="flex mt-2 overflow-y-auto">
         <table class="table table-compact w-full">
           <!-- head -->
           <thead>
