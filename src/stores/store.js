@@ -144,12 +144,15 @@ export const useItemStore = defineStore('itemStore', {
       responsItem: {},
       itemTypes: [],
       itemUnits: [],
+      itemMachines: [],
+      itemOverheads: [],
       warehouses: [],
       currentWarehouse: 0,
       currentType: 0,
       fromDate: '',
       toDate: '',
       isLoading: true,
+      isLoading2: true,
       isLoadingDownload: false,
       isDeleteLoading: false,
       modalSubmitLoading: false,
@@ -219,6 +222,65 @@ export const useItemStore = defineStore('itemStore', {
       } catch (error) {}
       this.modalSubmitLoading = false
     },
+    async storeTypeData(data) {
+      this.modalSubmitLoading = true
+      try {
+        const response = await axiosIns.post(`/item-types`, {
+          name: data,
+        })
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.modalSubmitLoading = false
+      }
+    },
+    async storeUnitData(data) {
+      this.modalSubmitLoading = true
+      try {
+        const response = await axiosIns.post(`/item-units`, {
+          name: data,
+        })
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.modalSubmitLoading = false
+      }
+    },
+    async storeMachineData(data) {
+      this.modalSubmitLoading = true
+      try {
+        const response = await axiosIns.post(`/machines`, data)
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.modalSubmitLoading = false
+      }
+    },
+    async storeOverheadData(data) {
+      this.modalSubmitLoading = true
+      try {
+        const response = await axiosIns.post(`/overheads`, data)
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.modalSubmitLoading = false
+      }
+    },
+    async storeOverheadData(data) {
+      this.modalSubmitLoading = true
+      try {
+        const response = await axiosIns.post(`/overheads`, data)
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.modalSubmitLoading = false
+      }
+    },
     async deleteItemData(id, index) {
       this.isDeleteLoading = true
       try {
@@ -230,6 +292,54 @@ export const useItemStore = defineStore('itemStore', {
         return true
       } catch (error) {}
       this.isDeleteLoading = false
+    },
+    async deleteTypeData(id, index) {
+      this.isDeleteLoading = true
+      try {
+        const response = await axiosIns.delete(`/item-types/${id}`)
+        this.itemTypes.splice(index, 1)
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isDeleteLoading = false
+      }
+    },
+    async deleteUnitData(id, index) {
+      this.isDeleteLoading = true
+      try {
+        const response = await axiosIns.delete(`/item-units/${id}`)
+        this.itemUnits.splice(index, 1)
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isDeleteLoading = false
+      }
+    },
+    async deleteMachineData(id, index) {
+      this.isDeleteLoading = true
+      try {
+        const response = await axiosIns.delete(`/machines/${id}`)
+        this.itemMachines.splice(index, 1)
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isDeleteLoading = false
+      }
+    },
+    async deleteOverheadData(id, index) {
+      this.isDeleteLoading = true
+      try {
+        const response = await axiosIns.delete(`/overheads/${id}`)
+        this.itemOverheads.splice(index, 1)
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isDeleteLoading = false
+      }
     },
     async getItemData(page = '') {
       this.isLoading = true
@@ -255,18 +365,46 @@ export const useItemStore = defineStore('itemStore', {
     },
     async getItemTypeData() {
       try {
+        this.isLoading2 = true
         const response = await axiosIns.get(`/item-types`)
         this.itemTypes = response.data.data.data
       } catch (error) {
         alert(error)
+      } finally {
+        this.isLoading2 = false
       }
     },
     async getItemUnitData() {
       try {
+        this.isLoading2 = true
         const response = await axiosIns.get(`/item-units`)
         this.itemUnits = response.data.data.data
       } catch (error) {
         alert(error)
+      } finally {
+        this.isLoading2 = false
+      }
+    },
+    async getMachineData() {
+      try {
+        this.isLoading2 = true
+        const response = await axiosIns.get(`/machines`)
+        this.itemMachines = response.data.data.data
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isLoading2 = false
+      }
+    },
+    async getOverheadData() {
+      try {
+        this.isLoading2 = true
+        const response = await axiosIns.get(`/overheads`)
+        this.itemOverheads = response.data.data.data
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isLoading2 = false
       }
     },
     async getWarehousesData() {

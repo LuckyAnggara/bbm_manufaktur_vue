@@ -714,7 +714,6 @@ export default {
                 if (resp.status == 200) {
                   return resp
                 }
-                console.info('aa')
               })
           },
         })

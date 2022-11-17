@@ -4,7 +4,7 @@
       class="btn btn-lg btn-wide hover:scale-110"
       @click="
         router.push({
-          name: 'gudang-persediaan',
+          name: 'data-unit',
         })
       "
     >
@@ -15,7 +15,7 @@
       class="btn btn-lg btn-wide hover:scale-110"
       @click="
         router.push({
-          name: 'gudang-persediaan',
+          name: 'data-tipe',
         })
       "
     >
@@ -26,7 +26,7 @@
       class="btn btn-lg btn-wide hover:scale-110"
       @click="
         router.push({
-          name: 'gudang-barang-mutasi',
+          name: 'data-machine',
         })
       "
     >
@@ -37,7 +37,7 @@
       class="btn btn-lg btn-wide hover:scale-110"
       @click="
         router.push({
-          name: 'gudang-barang-masuk',
+          name: 'data-overhead',
         })
       "
     >
