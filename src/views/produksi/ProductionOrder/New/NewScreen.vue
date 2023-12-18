@@ -34,7 +34,7 @@
                 </label>
               </div>
               <hr />
-              <div class="form-control">
+              <!-- <div class="form-control">
                 <label class="input-group">
                   <span class="w-1/4">Nama Pelanggan</span>
                   <input
@@ -44,7 +44,7 @@
                     required
                   />
                 </label>
-              </div>
+              </div> -->
               <div class="form-control">
                 <label class="input-group">
                   <span class="w-1/4">Penanggung Jawab</span>

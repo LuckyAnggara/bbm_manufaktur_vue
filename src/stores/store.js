@@ -517,7 +517,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
       outputDataUpdate: [],
       dataOrder: {
         order_date: null,
-        customer_name: null,
+        customer_name: 'dummy',
         pic_name: null,
         notes: null,
         target_date: null,
