@@ -11,6 +11,10 @@ export default [
     title: 'Produksi',
     route: 'produksi',
   },
+  {
+    title: 'Data',
+    route: 'data',
+  },
   // {
   //   title: 'Laporan',
   //   route: 'gudang',

@@ -10,4 +10,14 @@ export const dashboardRoutes = [
       layout: 'layout-normal',
     },
   },
+
+  {
+    path: '/',
+    name: '',
+    component: MainScreen,
+    meta: {
+      title: 'Dashboard',
+      layout: 'layout-normal',
+    },
+  },
 ]

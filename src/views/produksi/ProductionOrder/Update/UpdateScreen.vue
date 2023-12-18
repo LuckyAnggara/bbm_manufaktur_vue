@@ -162,6 +162,56 @@
             </table>
           </div>
 
+          <hr />
+          <div class="badge badge-lg badge-primary mt-4">Sisa Bahan Baku</div>
+
+          <div class="mt-2 md:overflow-visible overflow-y-auto mb-5">
+            <table class="table table-compact w-full">
+              <!-- head -->
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Nama</th>
+                  <th>Satuan</th>
+                  <th>Output Quantity</th>
+                  <th>Real Quantity</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr v-if="productionOrderStore.currentData.input.length < 1">
+                  <td colspan="5" class="text-center">
+                    <span>Tidak ada data.</span>
+                  </td>
+                </tr>
+                <tr
+                  v-else
+                  v-for="item in productionOrderStore.currentData.input"
+                  :key="item"
+                >
+                  <td class="text-center"></td>
+                  <td>{{ item.item.name.toUpperCase() }}</td>
+                  <td>{{ item.item.unit.name.toUpperCase() }}</td>
+                  <td>{{ item.estimate_quantity }}</td>
+                  <td>
+                    <input
+                      :disabled="productionOrderStore.isUpdateLoading"
+                      v-model="item.real_quantity"
+                      type="number"
+                      placeholder="0"
+                      class="input input-bordered input-sm w-1/2 max-w-xs"
+                    />
+                  </td>
+
+                  <td>-</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <hr />
+
           <div class="flex flex-row-reverse py-2">
             <button
               v-if="!productionOrderStore.isUpdateLoading"
@@ -255,7 +305,7 @@ export default {
 
     function deleteOutputData(index) {
       productionOrderStore.deleteOutputUpdateData(index)
-      toast.warning('Item hasil produksi di hapus', {
+      toast.warning('Data produksi lainnya di hapus', {
         timeout: 1000,
       })
     }
@@ -274,7 +324,7 @@ export default {
   },
   components: { ModalItemBarangJadi },
   created() {
-    if (this.productionOrderStore.currentData == null) {
+    if (this.productionOrderStore.currentId == null) {
       if (this.$route.params) {
         this.productionOrderStore.$patch({
           currentId: this.$route.params.id,

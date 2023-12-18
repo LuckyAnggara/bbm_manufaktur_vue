@@ -62,7 +62,7 @@
               <th>Nama Pelanggan</th>
               <th>Penanggung Jawab</th>
               <th>Tanggal Order</th>
-              <th>Tamggal Selesai</th>
+              <th>Tanggal Selesai</th>
               <th>Status</th>
               <th>Action</th>
             </tr>
@@ -141,13 +141,15 @@
                       <li>
                         <a @click="onDetail(data.id)"> Detail </a>
                       </li>
-                      <li>
+                      <li v-if="doneProduction(data.status) ? false : true">
                         <a @click="onEdit(data.id)"> Edit </a>
                       </li>
-                      <li>
+                      <!-- <li>
                         <a @click="onUpdate(data)"> Update </a>
+                      </li> -->
+                      <li v-if="doneProduction(data.status) ? false : true">
+                        <a @click="onDelete(data.id, index)">Hapus</a>
                       </li>
-                      <li><a @click="onDelete(data.id, index)">Hapus</a></li>
                     </ul>
                   </div>
                 </td>
@@ -226,7 +228,6 @@ export default {
     //   }
     // })
     const dataOrder = ref({})
-
     function getData(page = '') {
       productionOrderStore.getAllData(page)
     }
@@ -271,6 +272,14 @@ export default {
     },
   },
   methods: {
+    doneProduction(data) {
+      if (data == 'DONE PRODUCTION') return true
+      if (data == 'WAREHOUSE') return true
+      if (data == 'SHIPPING') return true
+      if (data == 'RETUR') return true
+      if (data == 'RECEIVE') return true
+      return false
+    },
     onDetail(id) {
       this.$router.push({
         name: 'produksi-order-finish',

@@ -90,12 +90,17 @@ export const useDashboardStore = defineStore('dashboardStore', {
     return {
       isLoadingGetItemCount: false,
       isLoadingGetProductionCount: false,
+      isLoadingGetShippingCount: false,
       dataItem: {
         bahan_baku: 0,
         barang_jadi: 0,
         barang_lainnya: 0,
       },
       dataProduction: {
+        on_progress: 0,
+        done: 0,
+      },
+      dataShipping: {
         on_progress: 0,
         done: 0,
       },
@@ -120,6 +125,15 @@ export const useDashboardStore = defineStore('dashboardStore', {
       } catch (error) {}
       this.isLoadingGetProductionCount = false
     },
+    async getShippingCount() {
+      this.isLoadingGetShippingCount = true
+      try {
+        const response = await axiosIns.get(`/dashboard/shipping`)
+        this.isLoadingGetShippingCount = false
+        this.dataShipping = response.data.data
+      } catch (error) {}
+      this.isLoadingGetShippingCount = false
+    },
   },
 })
 
@@ -130,12 +144,15 @@ export const useItemStore = defineStore('itemStore', {
       responsItem: {},
       itemTypes: [],
       itemUnits: [],
+      itemMachines: [],
+      itemOverheads: [],
       warehouses: [],
       currentWarehouse: 0,
       currentType: 0,
       fromDate: '',
       toDate: '',
       isLoading: true,
+      isLoading2: true,
       isLoadingDownload: false,
       isDeleteLoading: false,
       modalSubmitLoading: false,
@@ -205,6 +222,65 @@ export const useItemStore = defineStore('itemStore', {
       } catch (error) {}
       this.modalSubmitLoading = false
     },
+    async storeTypeData(data) {
+      this.modalSubmitLoading = true
+      try {
+        const response = await axiosIns.post(`/item-types`, {
+          name: data,
+        })
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.modalSubmitLoading = false
+      }
+    },
+    async storeUnitData(data) {
+      this.modalSubmitLoading = true
+      try {
+        const response = await axiosIns.post(`/item-units`, {
+          name: data,
+        })
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.modalSubmitLoading = false
+      }
+    },
+    async storeMachineData(data) {
+      this.modalSubmitLoading = true
+      try {
+        const response = await axiosIns.post(`/machines`, data)
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.modalSubmitLoading = false
+      }
+    },
+    async storeOverheadData(data) {
+      this.modalSubmitLoading = true
+      try {
+        const response = await axiosIns.post(`/overheads`, data)
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.modalSubmitLoading = false
+      }
+    },
+    async storeOverheadData(data) {
+      this.modalSubmitLoading = true
+      try {
+        const response = await axiosIns.post(`/overheads`, data)
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.modalSubmitLoading = false
+      }
+    },
     async deleteItemData(id, index) {
       this.isDeleteLoading = true
       try {
@@ -216,6 +292,54 @@ export const useItemStore = defineStore('itemStore', {
         return true
       } catch (error) {}
       this.isDeleteLoading = false
+    },
+    async deleteTypeData(id, index) {
+      this.isDeleteLoading = true
+      try {
+        const response = await axiosIns.delete(`/item-types/${id}`)
+        this.itemTypes.splice(index, 1)
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isDeleteLoading = false
+      }
+    },
+    async deleteUnitData(id, index) {
+      this.isDeleteLoading = true
+      try {
+        const response = await axiosIns.delete(`/item-units/${id}`)
+        this.itemUnits.splice(index, 1)
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isDeleteLoading = false
+      }
+    },
+    async deleteMachineData(id, index) {
+      this.isDeleteLoading = true
+      try {
+        const response = await axiosIns.delete(`/machines/${id}`)
+        this.itemMachines.splice(index, 1)
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isDeleteLoading = false
+      }
+    },
+    async deleteOverheadData(id, index) {
+      this.isDeleteLoading = true
+      try {
+        const response = await axiosIns.delete(`/overheads/${id}`)
+        this.itemOverheads.splice(index, 1)
+        return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isDeleteLoading = false
+      }
     },
     async getItemData(page = '') {
       this.isLoading = true
@@ -241,18 +365,46 @@ export const useItemStore = defineStore('itemStore', {
     },
     async getItemTypeData() {
       try {
+        this.isLoading2 = true
         const response = await axiosIns.get(`/item-types`)
         this.itemTypes = response.data.data.data
       } catch (error) {
         alert(error)
+      } finally {
+        this.isLoading2 = false
       }
     },
     async getItemUnitData() {
       try {
+        this.isLoading2 = true
         const response = await axiosIns.get(`/item-units`)
         this.itemUnits = response.data.data.data
       } catch (error) {
         alert(error)
+      } finally {
+        this.isLoading2 = false
+      }
+    },
+    async getMachineData() {
+      try {
+        this.isLoading2 = true
+        const response = await axiosIns.get(`/machines`)
+        this.itemMachines = response.data.data.data
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isLoading2 = false
+      }
+    },
+    async getOverheadData() {
+      try {
+        this.isLoading2 = true
+        const response = await axiosIns.get(`/overheads`)
+        this.itemOverheads = response.data.data.data
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.isLoading2 = false
       }
     },
     async getWarehousesData() {
@@ -269,6 +421,10 @@ export const useItemStore = defineStore('itemStore', {
         const response = await axiosIns.get(
           `/report/item?${this.warehousesQuery}${this.fromToDate}`
         )
+        let responseHtml = response.data
+        console.log(responseHtml, 'Monitoring')
+        var myWindow = window.open('', 'response', 'resizable=yes')
+        myWindow.document.write(responseHtml)
       } catch (error) {
         console.info(error)
       }
@@ -359,7 +515,7 @@ export const useMutationStore = defineStore('mutationStore', {
   },
   actions: {
     deleteListDebit(index) {
-      this.listDebitItem.splice(index, 1)
+      this.incomingItem.detail.splice(index, 1)
     },
     deleteListKredit(index) {
       this.listKreditItem.splice(index, 1)
@@ -409,7 +565,7 @@ export const useMutationStore = defineStore('mutationStore', {
       this.storeLoading = true
       try {
         const response = await axiosIns.post(
-          `mutation-incoming/store`,
+          `mutation-incoming`,
           this.incomingItem
         )
         toast.success('Mutasi barang masuk berhasil diproses', {
@@ -458,6 +614,10 @@ export const useMutationStore = defineStore('mutationStore', {
         const response = await axiosIns.get(
           `/report/mutation?${this.fromToDate}&id=${id}`
         )
+        let responseHtml = response.data
+        console.log(responseHtml, 'Monitoring')
+        var myWindow = window.open('', 'response', 'resizable=yes')
+        myWindow.document.write(responseHtml)
       } catch (error) {
         console.info(error)
       }
@@ -617,10 +777,10 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         if (!x.usage_meter) {
           x.usage_meter = 0
         }
-        if (x.item) {
-          x.id = x.item.id
-          x.name = x.item.name
-          x.unit = x.item.unit
+        if (x.machine) {
+          x.id = x.machine.id
+          x.name = x.machine.name
+          x.unit = x.machine.unit
         }
       })
       return state.editOrder.machine
@@ -630,10 +790,10 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         if (!x.usage_meter) {
           x.usage_meter = 0
         }
-        if (x.item) {
-          x.id = x.item.id
-          x.name = x.item.name
-          x.unit = x.item.unit
+        if (x.overhead) {
+          x.id = x.overhead.id
+          x.name = x.overhead.name
+          x.unit = x.overhead.unit
         }
       })
       return state.editOrder.overhead
@@ -653,7 +813,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
       this.editOrder.overhead.splice(index, 1)
     },
     deleteOutputUpdateData(index) {
-      this.currentData.output.splice(index, 1)
+      this.outputDataUpdate.splice(index, 1)
     },
     deleteInputData(index) {
       this.dataOrder.input.splice(index, 1)
@@ -740,6 +900,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         toast.success('Produksi Order berhasil di tambahkan', {
           timeout: 1000,
         })
+        return response
       } catch (error) {
         alert(error)
       } finally {
@@ -752,6 +913,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         const response = await axiosIns.post(`/production-order/update-data`, {
           data_order: this.currentData,
           update_order: this.outputDataUpdate,
+          update_input: this.currentData.input,
         })
         // this.storeLoading = false
         toast.success('Produksi Order berhasil di ubah', {
@@ -775,6 +937,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         toast.success('Produksi Order berhasil di ubah', {
           timeout: 1000,
         })
+        return response
       } catch (error) {
         alert(error)
       } finally {
@@ -799,14 +962,14 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         this.isUpdateLoading = false
       }
     },
-    async shippingProductionOrder(nopol) {
+    async shippingProductionOrder(data) {
       this.isUpdateLoading = true
       try {
         const response = await axiosIns.post(
           `/production-order/update-shipping`,
           {
             id: this.currentData.id,
-            nopol: nopol,
+            data: data,
           }
         )
         return response
@@ -871,10 +1034,13 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     async printData() {
       this.isLoadingPrint = true
       try {
-        const response = await axiosIns.post(
-          `/report/production2`,
-          this.currentData
+        const response = await axiosIns.get(
+          `/report/production?id=${this.currentData.id}&pic_production=${this.currentData.pic_production}`
         )
+        let responseHtml = response.data
+        console.log(responseHtml, 'Monitoring')
+        var myWindow = window.open('', 'response', 'resizable=yes')
+        myWindow.document.write(responseHtml)
       } catch (error) {
         console.info(error)
       }

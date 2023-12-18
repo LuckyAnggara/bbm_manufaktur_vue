@@ -203,8 +203,6 @@ export default {
             allowOutsideClick: () => swal.isLoading(),
           })
           .then((result) => {
-            mutationStore.$reset()
-
             if (result.isConfirmed) {
               if (result.value == false) {
                 swal.fire('Oopss, ada permasalahan', 'error')
@@ -215,6 +213,7 @@ export default {
                 })
               }
             }
+            mutationStore.$reset()
           })
       }
     }

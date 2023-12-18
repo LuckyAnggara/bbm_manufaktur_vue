@@ -53,7 +53,7 @@
         </div>
       </div>
 
-      <div class="flex mt-2 md:overflow-visible overflow-y-auto">
+      <div class="flex mt-2 overflow-y-auto">
         <table class="table table-compact w-full">
           <!-- head -->
           <thead>
@@ -61,8 +61,8 @@
               <th></th>
               <th>Tanggal</th>
               <th>Keterangan</th>
-              <th>Debit</th>
-              <th>Kredit</th>
+              <th>Debit / Masuk</th>
+              <th>Kredit / Keluar</th>
               <th>Saldo</th>
             </tr>
           </thead>

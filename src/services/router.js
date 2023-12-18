@@ -1,10 +1,10 @@
 import { productionOrderRoutes } from './router/ProductionOrderRoute'
 import { gudangRoutes } from './router/GudangRoute'
 import { dashboardRoutes } from './router/DashboardRoute'
+import { dataRoutes } from './router/DataRoute'
 import MutationScreen from '../views/mutation/MutationScreen.vue'
 import LoginScreen from '../views/LoginScreen.vue'
 import { getUserData, isUserLoggedIn } from './auth'
-import ProductionScreen from '../views/produksi/ProductionScreen.vue'
 
 export const routes = [
   {
@@ -14,16 +14,6 @@ export const routes = [
     meta: {
       title: 'Login',
       layout: 'layout-full',
-    },
-  },
-
-  {
-    path: '/',
-    name: '',
-    component: ProductionScreen,
-    meta: {
-      title: 'Login',
-      layout: 'layout-normal',
     },
   },
 
@@ -39,6 +29,7 @@ export const routes = [
   ...productionOrderRoutes,
   ...gudangRoutes,
   ...dashboardRoutes,
+  ...dataRoutes,
 ]
 
 export const getNavigation = () => {

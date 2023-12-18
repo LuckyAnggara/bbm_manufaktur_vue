@@ -143,7 +143,7 @@
                   <td>
                     <button
                       class="btn btn-sm btn-square btn-outline"
-                      @click="deleteInputData(index)"
+                      @click="deleteInputData(index, item.name)"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -235,7 +235,7 @@
                   <td>
                     <button
                       class="btn btn-sm btn-square btn-outline"
-                      @click="deleteMachineData(index)"
+                      @click="deleteMachineData(index, item.name)"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -326,7 +326,7 @@
                   <td>
                     <button
                       class="btn btn-sm btn-square btn-outline"
-                      @click="deleteOverheadData(index)"
+                      @click="deleteOverheadData(index, item.name)"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -419,7 +419,7 @@
                     <button
                       :disabled="productionOrderStore.storeLoading"
                       class="btn btn-sm btn-square btn-outline"
-                      @click="deleteOutputData(index)"
+                      @click="deleteOutputData(index, item.name)"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -541,6 +541,13 @@ export default {
     }
 
     async function onSubmit() {
+      if (productionOrderStore.outputData.length <= 0) {
+        return swal.fire({
+          title: 'Opps',
+          text: 'Data hasil produksi belum di isi',
+          icon: 'warning',
+        })
+      }
       await swal
         .fire({
           title: 'Proses?',
@@ -551,60 +558,69 @@ export default {
           cancelButtonColor: '#d33',
           confirmButtonText: 'Proses!',
           showLoaderOnConfirm: true,
+          backdrop: true,
+          allowOutsideClick: () => this.productionOrderStore.storeLoading,
           preConfirm: (val) => {
-            productionOrderStore
+            return productionOrderStore
               .storeProductionOrder(dataForm.value)
               .then((resp) => {
-                if (resp.status != 200) {
-                  return false
+                if (resp.status == 200) {
+                  return resp
                 }
-                return true
               })
-
-            // throw new Error(resp)
           },
-          allowOutsideClick: () => swal.isLoading(),
         })
         .then((result) => {
+          console.info(result)
           if (result.isConfirmed) {
-            if (result.value == false) {
-              swal.fire('Oopss, ada permasalahan', 'error')
-            } else {
-              swal.fire('Berhasil!', 'success')
-              router.push({
-                name: 'produksi-order-finish',
-                params: { id: productionOrderStore.currentId },
-              })
+            if (result.value.status == 200) {
+              swal
+                .fire({
+                  icon: 'success',
+                  title: 'Berhasil',
+                  text: 'Produksi baru berhasil di daftarkan',
+                  backdrop: true,
+                  allowOutsideClick: () => false,
+                })
+                .then(() => {
+                  router.push({
+                    name: 'produksi-order-finish',
+                    params: { id: result.value.data.data.id },
+                  })
+                })
               productionOrderStore.$reset()
+            } else {
+              swal.fire('Oopss, ada permasalahan', 'error')
             }
+          } else {
           }
         })
     }
 
-    function deleteInputData(index) {
+    function deleteInputData(index, name) {
       productionOrderStore.deleteInputData(index)
-      toast.warning('Bahan baku di hapus', {
+      toast.warning(`Bahan baku ${name} di hapus`, {
         timeout: 1000,
       })
     }
 
-    function deleteOutputData(index) {
+    function deleteOutputData(index, name) {
       productionOrderStore.deleteOutputData(index)
-      toast.warning('Barang jadi di hapus', {
+      toast.warning(`Output ${name} di hapus`, {
         timeout: 1000,
       })
     }
 
-    function deleteMachineData(index) {
+    function deleteMachineData(index, name) {
       productionOrderStore.deleteMachineData(index)
-      toast.warning('Mesin di hapus', {
+      toast.warning(`Mesin ${name} di hapus`, {
         timeout: 1000,
       })
     }
 
-    function deleteOverheadData(index) {
-      productionOrderStore.deleteOutputData(index)
-      toast.warning('Overhead di hapus', {
+    function deleteOverheadData(index, name) {
+      productionOrderStore.deleteOverheadData(index)
+      toast.warning(`Overhead ${name} di hapus`, {
         timeout: 1000,
       })
     }
