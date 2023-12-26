@@ -18,7 +18,7 @@
       <div class="mx-2 dropdown dropdown-end">
         <label tabindex="0" class="btn btn-ghost btn-circle avatar">
           <div class="w-10 rounded-full">
-            <img src="https://placeimg.com/80/80/people" />
+            <img src="https://placehold.co/40x40" />
           </div>
         </label>
         <ul

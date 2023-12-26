@@ -12,6 +12,10 @@ export default [
     route: 'produksi',
   },
   {
+    title: 'Bisnis',
+    route: 'bisnis',
+  },
+  {
     title: 'Data',
     route: 'data',
   },
