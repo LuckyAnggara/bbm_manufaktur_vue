@@ -17,4 +17,22 @@ export const bisnisRoutes = [
       layout: 'layout-normal',
     },
   },
+  {
+    path: '/bisnis/pembelian/new',
+    name: 'pembelian-new',
+    component: () => import('@/views/bisnis/pembelian/PembelianNew.vue'),
+    meta: {
+      title: 'Pembelian Baru',
+      layout: 'layout-normal',
+    },
+  },
+  {
+    path: '/bisnis/pembelian/faktur',
+    name: 'pembelian-faktur',
+    component: () => import('@/views/bisnis/pembelian/FakturPage.vue'),
+    meta: {
+      title: 'Pembelian Baru',
+      layout: 'layout-full',
+    },
+  },
 ]

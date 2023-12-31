@@ -166,7 +166,7 @@ export const useItemStore = defineStore('itemStore', {
   },
   getters: {
     items: (state) => {
-      return state.responsItem.data
+      return state.responsItem.data ?? []
     },
     itemByType: (state) => {
       return (typeId) => {

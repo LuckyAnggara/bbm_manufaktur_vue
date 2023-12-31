@@ -30,7 +30,7 @@
 
         <div class="card-actions justify-end">
           <button
-            class="btn btn-secondary w-32 hover:btn-primary"
+            class="btn btn-accent w-32 hover:btn-primary"
             @click="pembelianStore.getData()"
           >
             Filter
@@ -41,6 +41,12 @@
 
     <div class="card flex bg-neutral flex-col h-5/6 w-full">
       <div class="card-body shadow-xl rounded-xl">
+        <button
+          class="btn btn-accent w-32 hover:btn-primary my-2"
+          @click="toNew()"
+        >
+          Tambah
+        </button>
         <h2 class="card-title mb-2 text-2xl">Daftar Pembelian</h2>
         <div class="md:flex py-2">
           <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4">
@@ -168,7 +174,9 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { usePembelianStore } from '@/stores/pembelianStore'
 import { useMainStore } from '@/stores/mainStore'
 import { useDebounceFn } from '@vueuse/core'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const pembelianStore = usePembelianStore()
 const mainStore = useMainStore()
 
@@ -189,6 +197,12 @@ const nextPage = useDebounceFn(() => {
   })
   pembelianStore.getData()
 }, 50)
+
+function toNew() {
+  router.push({
+    name: 'pembelian-new',
+  })
+}
 
 watch(
   () => pembelianStore.filter.currentLimit,
