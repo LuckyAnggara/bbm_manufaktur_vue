@@ -17,6 +17,7 @@ export const usePembelianStore = defineStore('pembelianStore', {
       isUpdateLoading: false,
       isLoading: false,
       isStoreLoading: false,
+      resultId: null,
       isUpdateLoading: false,
       isDestroyLoading: false,
       form: {
@@ -132,6 +133,7 @@ export const usePembelianStore = defineStore('pembelianStore', {
       try {
         const response = await axiosIns.post(`/pembelian`, this.form)
         if (response.status == 200) {
+          this.resultId = response.data.data.id
           return true
         } else {
           return false
@@ -144,24 +146,39 @@ export const usePembelianStore = defineStore('pembelianStore', {
         this.isStoreLoading = false
       }
     },
-    // async destroy(id) {
-    //   this.isDestroyLoading = true
-    //   setTimeout(() => {}, 500)
-    //   try {
-    //     await axiosIns.delete(`/pembelian/${id}`)
-    //     toast.success('Data berhasil di hapus', {
-    //       timeout: 2000,
-    //     })
-    //     const index = this.items.findIndex((item) => item.id === id)
-    //     this.responses.data.splice(index, 1)
-    //   } catch (error) {
-    //     toast.error(error.message, {
-    //       timeout: 2000,
-    //     })
-    //   } finally {
-    //     this.isDestroyLoading = false
-    //   }
-    // },
+    async showData(id = '') {
+      this.isLoading = true
+      try {
+        const response = await axiosIns.get(`/pembelian/${id}`)
+        this.singleResponses = JSON.parse(JSON.stringify(response.data.data))
+        this.originalSingleResponses = JSON.parse(
+          JSON.stringify(response.data.data)
+        )
+      } catch (error) {
+        toast.error('Data not found', {
+          position: 'bottom-right',
+        })
+      }
+      this.isLoading = false
+    },
+    async destroy(id) {
+      this.isDestroyLoading = true
+      setTimeout(() => {}, 500)
+      try {
+        await axiosIns.delete(`/pembelian/${id}`)
+        toast.success('Data berhasil di hapus', {
+          timeout: 2000,
+        })
+        const index = this.items.findIndex((item) => item.id === id)
+        this.responses.data.splice(index, 1)
+      } catch (error) {
+        toast.error(error.message, {
+          timeout: 2000,
+        })
+      } finally {
+        this.isDestroyLoading = false
+      }
+    },
     // async update() {
     //   this.isUpdateLoading = true
     //   try {

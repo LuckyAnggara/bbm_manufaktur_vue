@@ -31,27 +31,11 @@
             <div class="input-group">
               <input
                 v-model="itemStore.searchName"
-                @keyup.enter="searchData"
+                @keyup="searchData"
                 type="text"
                 placeholder="Search…"
                 class="input input-bordered w-full"
               />
-              <button class="btn btn-square btn-outline" @click="searchData">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </button>
             </div>
           </div>
         </div>
@@ -172,8 +156,9 @@
 </template>
 
 <script>
-import { ref } from 'vue'
-import { useItemStore } from '../../../stores/store'
+import { onUnmounted, ref, watch } from 'vue'
+import { useItemStore } from '@/stores/store'
+import { useDebounceFn } from '@vueuse/core'
 
 export default {
   setup() {
@@ -181,18 +166,28 @@ export default {
     const dataApi = ref()
     const lengths = ref([5, 10, 20, 30, 40, 50])
 
-    itemStore.$subscribe((mutation, state) => {
-      if (mutation.events.key == 'currentLimit') {
+    watch(
+      () => itemStore.currentLimit,
+      () => {
         getData()
       }
-    })
+    )
+
+    const searchData = useDebounceFn(() => {
+      getData()
+    }, 800)
 
     function getData(page = '') {
       itemStore.getItemData(page)
     }
 
+    onUnmounted(() => {
+      itemStore.$reset()
+    })
+
     // expose to template and other options API hooks
     return {
+      searchData,
       getData,
       dataApi,
       lengths,
@@ -239,9 +234,6 @@ export default {
             return this.$swal('error')
           }
         })
-    },
-    searchData() {
-      return this.getData()
     },
     position(index) {
       if (index < 2) {

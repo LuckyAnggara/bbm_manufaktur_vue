@@ -489,7 +489,7 @@ export const useMutationStore = defineStore('mutationStore', {
       if (state.fromDate == '' && state.toDate == '') {
         return ''
       }
-      return '?from_date=' + state.fromDate + '&to_date=' + state.toDate
+      return '&from_date=' + state.fromDate + '&to_date=' + state.toDate
     },
     currentPage(state) {
       return state.responseMasterData.current_page
@@ -551,7 +551,7 @@ export const useMutationStore = defineStore('mutationStore', {
       this.isLoading = true
       try {
         const response = await axiosIns.get(
-          `/mutations/${this.currentId}${this.fromToDate}`
+          `/mutations/${this.currentId}?limit=${this.currentLimit}${this.searchQuery}${this.fromToDate}`
         )
         this.responseData = response.data.data
         return response
@@ -612,7 +612,7 @@ export const useMutationStore = defineStore('mutationStore', {
       this.isLoadingDownload = true
       try {
         const response = await axiosIns.get(
-          `/report/mutation?${this.fromToDate}&id=${id}`
+          `/report/mutation?limit=${this.currentLimit}&id=${id}${this.searchQuery}${this.fromToDate}`
         )
         let responseHtml = response.data
         console.log(responseHtml, 'Monitoring')

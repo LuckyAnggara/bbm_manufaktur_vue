@@ -27,7 +27,7 @@ export const bisnisRoutes = [
     },
   },
   {
-    path: '/bisnis/pembelian/faktur',
+    path: '/bisnis/pembelian/:id/faktur',
     name: 'pembelian-faktur',
     component: () => import('@/views/bisnis/pembelian/FakturPage.vue'),
     meta: {

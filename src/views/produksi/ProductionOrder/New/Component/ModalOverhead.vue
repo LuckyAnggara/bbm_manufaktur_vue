@@ -2,14 +2,13 @@
   <section>
     <input type="checkbox" id="my-modal-overhead" class="modal-toggle" />
     <div class="modal">
-      <div class="modal-box relative">
+      <div class="modal-box relative overflow-hidden">
         <label
           for="my-modal-overhead"
           class="btn btn-sm btn-circle absolute right-2 top-2"
           >✕</label
         >
         <h3 class="text-lg font-bold">Tambah Data</h3>
-        <small>Data yang tersedia adalah Data Overhead / Lainnya</small>
 
         <div class="md:flex py-2">
           <div class="justify-end mx-1 md:w-1/2 w-full">
@@ -22,28 +21,12 @@
                   placeholder="Search…"
                   class="input input-bordered w-full"
                 />
-                <button class="btn btn-square btn-outline" @click="searchData">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </button>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="flex mt-2 md:overflow-visible overflow-y-auto">
+        <div class="flex mt-2 overflow-y-auto h-96">
           <table class="table table-compact w-full">
             <!-- head -->
             <thead>
@@ -165,10 +148,8 @@
 <script>
 import { computed } from 'vue'
 import { useToast } from 'vue-toastification'
-import {
-  useEtcStore,
-  useProductionOrderStore,
-} from '../../../../../stores/store'
+import { useEtcStore, useProductionOrderStore } from '@/stores/store'
+import { useDebounceFn } from '@vueuse/core'
 
 export default {
   setup() {
@@ -208,9 +189,9 @@ export default {
       etcStore.getOverheadData(page)
     }
 
-    function searchData() {
-      return etcStore.getOverheadData()
-    }
+    const searchData = useDebounceFn(() => {
+      getData()
+    }, 800)
 
     return {
       // pushData,

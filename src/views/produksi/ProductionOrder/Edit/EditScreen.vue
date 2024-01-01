@@ -72,7 +72,7 @@
               <p>Lengkapi data dibawah</p>
               <div class="grid gap-y-5">
                 <div class="form-control">
-                  <label class="input-group">
+                  <label class="join">
                     <span class="w-1/4">Tanggal Order</span>
                     <input
                       v-model="productionOrderStore.editOrder.order_date"
@@ -84,7 +84,7 @@
                 </div>
                 <hr />
                 <div class="form-control">
-                  <label class="input-group">
+                  <label class="join">
                     <span class="w-1/4">Nama Pelanggan</span>
                     <input
                       v-model="productionOrderStore.editOrder.customer_name"
@@ -94,7 +94,7 @@
                   </label>
                 </div>
                 <div class="form-control">
-                  <label class="input-group">
+                  <label class="join">
                     <span class="w-1/4">Penanggung Jawab</span>
                     <input
                       v-model="productionOrderStore.editOrder.pic_name"
@@ -104,7 +104,7 @@
                   </label>
                 </div>
                 <div class="form-control">
-                  <label class="input-group">
+                  <label class="join">
                     <span class="w-1/4">Catatan</span>
                     <textarea
                       v-model="productionOrderStore.editOrder.notes"
@@ -115,7 +115,7 @@
                 </div>
                 <hr />
                 <div class="form-control">
-                  <label class="input-group">
+                  <label class="join">
                     <span class="w-1/4">Tanggal Penyelesaian</span>
                     <input
                       v-model="productionOrderStore.editOrder.target_date"

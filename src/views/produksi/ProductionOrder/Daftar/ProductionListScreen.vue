@@ -26,27 +26,11 @@
             <div class="input-group">
               <input
                 v-model="productionOrderStore.searchName"
-                @keyup.enter="searchData"
+                @keyup="searchData"
                 type="text"
                 placeholder="Search…"
                 class="input input-bordered w-full"
               />
-              <button class="btn btn-square btn-outline" @click="searchData">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </button>
             </div>
           </div>
         </div>
@@ -113,7 +97,9 @@
                   {{ $moment(data.target_date).format('DD MMMM YYYY') }}
                 </td>
                 <td>
-                  <div class="badge badge-primary">{{ data.status }}</div>
+                  <div class="badge badge-primary badge-outline">
+                    {{ data.status }}
+                  </div>
                 </td>
                 <td class="lg:flex hidden">
                   <div class="mx-2 dropdown" :class="position(index)">
@@ -215,8 +201,9 @@
 </template>
 
 <script>
-import { ref } from 'vue'
-import { useProductionOrderStore } from '../../../../stores/store'
+import { ref, watch } from 'vue'
+import { useProductionOrderStore } from '@/stores/store'
+import { useDebounceFn } from '@vueuse/core'
 
 export default {
   setup() {
@@ -232,8 +219,20 @@ export default {
       productionOrderStore.getAllData(page)
     }
 
+    watch(
+      () => productionOrderStore.currentLimit,
+      () => {
+        getData()
+      }
+    )
+
+    const searchData = useDebounceFn(() => {
+      getData()
+    }, 800)
+
     // expose to template and other options API hooks
     return {
+      searchData,
       dataOrder,
       getData,
       length,
@@ -342,9 +341,6 @@ export default {
       })
     },
 
-    searchData() {
-      return this.getData()
-    },
     position(index) {
       if (index < 2) {
         return 'dropdown-end'

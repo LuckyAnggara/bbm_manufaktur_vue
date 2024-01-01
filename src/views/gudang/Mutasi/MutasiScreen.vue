@@ -1,17 +1,17 @@
 <template>
   <section>
     <div class="w-full lg:w-2/3 mt-10 md:mt-0 mx-auto">
-      <div class="tabs tabs-boxed rounded-b-none">
+      <div role="tablist" class="tabs tabs-boxed tab-lg w-fit">
         <a
           v-for="(tab, index) in tabs"
           :key="tab.index"
+          role="tab"
           @click="mutationStore.currentTab = index"
-          class="tab tab-lg tab-lifted"
+          class="tab"
           :class="{ 'tab-active': mutationStore.currentTab == index }"
-          >{{ tab.name }}</a
+          ><span class="text-xl mb-4">{{ tab.name }}</span></a
         >
       </div>
-
       <!-- Masuk Tab -->
       <div class="bg-neutral text-neutral-content rounded-b-lg">
         <div class="card-body">
@@ -41,30 +41,11 @@
                 <div class="input-group">
                   <input
                     v-model="mutationStore.searchName"
-                    @keyup.enter="searchData"
+                    @keyup="searchData"
                     type="text"
                     placeholder="Search…"
                     class="input input-bordered w-full"
                   />
-                  <button
-                    class="btn btn-square btn-outline"
-                    @click="searchData"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                  </button>
                 </div>
               </div>
             </div>
@@ -207,10 +188,11 @@
 </template>
 
 <script>
-import { useMutationStore } from '../../../stores/store'
+import { useMutationStore } from '@/stores/store'
 import { inject, ref } from 'vue'
 import { computed } from '@vue/reactivity'
 import { useRouter } from 'vue-router'
+import { useDebounceFn } from '@vueuse/core'
 
 export default {
   setup() {
@@ -258,9 +240,9 @@ export default {
       })
     }
 
-    function searchData() {
-      return getData()
-    }
+    const searchData = useDebounceFn(() => {
+      getData()
+    }, 800)
 
     function getData(page = '', type = mutationStore.currentTab) {
       if (type == 0) {

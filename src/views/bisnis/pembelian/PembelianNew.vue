@@ -51,6 +51,20 @@
               />
             </div>
 
+            <div class="form-control">
+              <label class="join">
+                <span class="w-1/4">Tanggal Order</span>
+                <input
+                  required
+                  v-model="pembelianStore.form.tanggal_transaksi"
+                  id="date"
+                  type="date"
+                  class="input input-bordered w-full"
+                />
+              </label>
+            </div>
+            <hr />
+
             <div class="form-control w-full">
               <div class="label">
                 <span class="">Nomor Faktur</span>
@@ -229,7 +243,7 @@
 <script setup>
 import InputCurrency from '@/components/InputCurrency.vue'
 
-import { computed, onMounted, ref, watch, inject } from 'vue'
+import { computed, onMounted, ref, watch, inject, onUnmounted } from 'vue'
 import { usePembelianStore } from '@/stores/pembelianStore'
 import { useMainStore } from '@/stores/mainStore'
 import { useDebounceFn } from '@vueuse/core'
@@ -287,7 +301,12 @@ function proses() {
             .then((result) => {
               /* Read more about isConfirmed, isDenied below */
               if (result.isConfirmed) {
-                swal.fire('Saved!', '', 'success')
+                router.push({
+                  name: 'pembelian-faktur',
+                  params: {
+                    id: pembelianStore.resultId,
+                  },
+                })
               } else if (result.isDenied) {
                 router.push({
                   name: 'pembelian-list',
@@ -313,5 +332,9 @@ watch(
 
 onMounted(() => {
   pembelianStore.getData()
+})
+onUnmounted(() => {
+  pembelianStore.$reset()
+  itemStore.$reset()
 })
 </script>

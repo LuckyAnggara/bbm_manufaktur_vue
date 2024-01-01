@@ -2,7 +2,7 @@
   <section>
     <input type="checkbox" id="my-modal-item" class="modal-toggle" />
     <div class="modal">
-      <div class="modal-box relative">
+      <div class="modal-box relative overflow-hidden">
         <label
           for="my-modal-item"
           class="btn btn-sm btn-circle absolute right-2 top-2"
@@ -21,28 +21,12 @@
                   placeholder="Search…"
                   class="input input-bordered w-full"
                 />
-                <button class="btn btn-square btn-outline" @click="searchData">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </button>
               </div>
             </div>
           </div>
         </div>
 
-        <div class="flex mt-2 md:overflow-visible overflow-y-auto">
+        <div class="flex mt-2 overflow-y-auto h-96">
           <table class="table table-compact w-full">
             <!-- head -->
             <thead>
@@ -57,7 +41,7 @@
 
             <tbody>
               <tr v-if="itemStore.isLoading">
-                <td colspan="4" class="text-center">
+                <td colspan="5" class="text-center">
                   <div role="status">
                     <svg
                       class="inline mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600"
@@ -169,8 +153,9 @@
 
 <script>
 import { onMounted, computed } from 'vue'
-import { useItemStore, useMutationStore } from '../../../../../stores/store'
+import { useItemStore, useMutationStore } from '@/stores/store'
 import { useToast } from 'vue-toastification'
+import { useDebounceFn } from '@vueuse/core'
 
 export default {
   setup() {
@@ -187,21 +172,18 @@ export default {
     })
 
     onMounted(() => {
-      if (itemStore.items == undefined) {
-        itemStore.getItemData()
-      }
+      getData()
     })
 
     function getData(page = '') {
       itemStore.getItemData(page)
     }
 
-    function searchData() {
-      return itemStore.getItemData()
-    }
+    const searchData = useDebounceFn(() => {
+      getData()
+    }, 800)
 
     return {
-      // pushData,
       mutationStore,
       previousPage,
       nextPage,

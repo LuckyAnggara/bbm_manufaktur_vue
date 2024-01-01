@@ -24,7 +24,9 @@
           </h2>
 
           <div class="mt-2 md:overflow-visible overflow-y-auto mb-5">
-            <div class="badge badge-lg badge-primary mb-2">Hasil Produksi</div>
+            <div class="badge badge-lg badge-primary badge-outline mb-2">
+              Hasil Produksi
+            </div>
             <table class="table table-compact w-full">
               <!-- head -->
               <thead>
@@ -82,7 +84,9 @@
           </div>
 
           <hr />
-          <div class="badge badge-lg badge-secondary mt-4">Hasil Lainnya</div>
+          <div class="badge badge-lg badge-secondary badge-outline mt-4">
+            Hasil Lainnya
+          </div>
 
           <div class="flex flex-row-reverse">
             <div>
@@ -163,7 +167,9 @@
           </div>
 
           <hr />
-          <div class="badge badge-lg badge-primary mt-4">Sisa Bahan Baku</div>
+          <div class="badge badge-lg badge-primary badge-outline mt-4">
+            Sisa Bahan Baku
+          </div>
 
           <div class="mt-2 md:overflow-visible overflow-y-auto mb-5">
             <table class="table table-compact w-full">

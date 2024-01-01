@@ -21,7 +21,7 @@
           <form @submit.prevent="nextTab">
             <div class="grid gap-y-5">
               <div class="form-control">
-                <label class="input-group">
+                <label class="join">
                   <span class="w-1/4">Tanggal Order</span>
                   <input
                     v-model="productionOrderStore.dataOrder.order_date"
@@ -35,7 +35,7 @@
               </div>
               <hr />
               <!-- <div class="form-control">
-                <label class="input-group">
+                <label class="join">
                   <span class="w-1/4">Nama Pelanggan</span>
                   <input
                     v-model="productionOrderStore.dataOrder.customer_name"
@@ -46,7 +46,7 @@
                 </label>
               </div> -->
               <div class="form-control">
-                <label class="input-group">
+                <label class="join">
                   <span class="w-1/4">Penanggung Jawab</span>
                   <input
                     v-model="productionOrderStore.dataOrder.pic_name"
@@ -57,7 +57,7 @@
                 </label>
               </div>
               <div class="form-control">
-                <label class="input-group">
+                <label class="join">
                   <span class="w-1/4">Catatan</span>
                   <textarea
                     v-model="productionOrderStore.dataOrder.notes"
@@ -68,7 +68,7 @@
               </div>
               <hr />
               <div class="form-control">
-                <label class="input-group">
+                <label class="join">
                   <span class="w-1/4">Tanggal Penyelesaian</span>
                   <input
                     v-model="productionOrderStore.dataOrder.target_date"
@@ -481,7 +481,7 @@ import {
   useEtcStore,
   useItemStore,
   useProductionOrderStore,
-} from '../../../../stores/store'
+} from '@/stores/store'
 import { useRouter } from 'vue-router'
 import ModalItemBahanBaku from './Component/ModalItemBahanBaku.vue'
 import ModalItemBarangJadi from './Component/ModalItemBarangJadi.vue'
