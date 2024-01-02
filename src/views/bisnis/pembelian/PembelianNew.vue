@@ -15,20 +15,12 @@
                 class="input input-bordered w-full"
               />
 
-              <ul
-                v-if="itemStore.items.length > 0"
-                tabindex="0"
-                class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full"
-              >
+              <ul v-if="itemStore.items.length > 0" tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full">
                 <li v-for="item in itemStore.items">
                   <a @click="pembelianStore.addCart(item)">{{ item.name }}</a>
                 </li>
               </ul>
-              <ul
-                v-else
-                tabindex="0"
-                class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full"
-              >
+              <ul v-else tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full">
                 <li><a>Tidak ada data, silahkan cari Item lain</a></li>
               </ul>
             </div>
@@ -39,107 +31,54 @@
         <div class="card-body">
           <h2 class="card-title">Detail Transaksi</h2>
           <form class="justify-center my-4" @submit.prevent="proses">
-            <div class="form-control w-full">
+            <div class="form-control">
               <div class="label">
                 <span class="">Tanggal Transaksi</span>
               </div>
-              <input
-                required
-                v-model="pembelianStore.form.tanggal_transaksi"
-                type="date"
-                class="input input-bordered w-full"
-              />
+              <input required v-model="pembelianStore.form.tanggal_transaksi" id="date" type="date" class="input input-bordered w-full" />
             </div>
-
-            <div class="form-control">
-              <label class="join">
-                <span class="w-1/4">Tanggal Order</span>
-                <input
-                  required
-                  v-model="pembelianStore.form.tanggal_transaksi"
-                  id="date"
-                  type="date"
-                  class="input input-bordered w-full"
-                />
-              </label>
-            </div>
-            <hr />
+            <hr class="my-4" />
 
             <div class="form-control w-full">
               <div class="label">
                 <span class="">Nomor Faktur</span>
               </div>
-              <input
-                required
-                v-model="pembelianStore.form.nomor_faktur"
-                type="text"
-                class="input input-bordered w-full"
-              />
+              <input required v-model="pembelianStore.form.nomor_faktur" type="text" class="input input-bordered w-full" />
             </div>
 
             <div class="form-control w-full">
               <div class="label">
                 <span class="">Nama Supplier</span>
               </div>
-              <input
-                required
-                v-model="pembelianStore.form.nama_supplier"
-                type="text"
-                class="input input-bordered w-full"
-              />
+              <input required v-model="pembelianStore.form.nama_supplier" type="text" class="input input-bordered w-full" />
             </div>
             <div class="form-control w-full">
               <div class="label">
                 <span class="">Total (IDR) </span>
               </div>
-              <input
-                required
-                readonly
-                type="text"
-                :value="numeral(pembelianStore.cartTotal).format('0,0')"
-                class="input input-bordered w-full"
-              />
+              <input required readonly type="text" :value="numeral(pembelianStore.cartTotal).format('0,0')" class="input input-bordered w-full" />
             </div>
 
             <div class="form-control w-full">
               <div class="label">
                 <span class="">Pajak</span>
               </div>
-              <InputCurrency
-                v-model="pembelianStore.form.pajak"
-                :options="{ currency: 'IDR' }"
-              />
+              <InputCurrency v-model="pembelianStore.form.pajak" :options="{ currency: 'IDR' }" />
             </div>
             <div class="form-control w-full">
               <div class="label">
                 <span class="">Ongkos Kirim</span>
               </div>
-              <InputCurrency
-                v-model="pembelianStore.form.ongkir"
-                :options="{ currency: 'IDR' }"
-              />
+              <InputCurrency v-model="pembelianStore.form.ongkir" :options="{ currency: 'IDR' }" />
             </div>
             <div class="form-control w-full">
               <div class="label">
                 <span class="">Grand Total (IDR)</span>
               </div>
-              <input
-                required
-                readonly
-                :value="numeral(pembelianStore.grandTotal).format('0,0')"
-                type="text"
-                class="input input-bordered w-full"
-              />
+              <input required readonly :value="numeral(pembelianStore.grandTotal).format('0,0')" type="text" class="input input-bordered w-full" />
             </div>
-            <button
-              type="submit"
-              :disabled="pembelianStore.isStoreLoading"
-              class="mt-6 btn btn-accent w-32 hover:btn-primary my-2"
-            >
-              <span
-                v-if="pembelianStore.isStoreLoading"
-                class="loading loading-infinity loading-lg"
-              ></span>
+            <button type="submit" :disabled="pembelianStore.isStoreLoading" class="mt-6 btn btn-accent w-32 hover:btn-primary my-2">
+              <span v-if="pembelianStore.isStoreLoading" class="loading loading-infinity loading-lg"></span>
               <span v-else>Submit</span>
             </button>
           </form>
@@ -171,56 +110,34 @@
               <tr v-if="pembelianStore.form.cart.length == 0">
                 <td colspan="7" class="text-center">Tidak ada data</td>
               </tr>
-              <tr
-                v-else
-                v-for="(item, index) in pembelianStore.form.cart"
-                :key="index"
-              >
+              <tr v-else v-for="(item, index) in pembelianStore.form.cart" :key="index">
                 <td class="text-center">
                   {{ 1 + index }}
                 </td>
                 <td>{{ item.name }}</td>
                 <td>
-                  <input
-                    v-model="item.jumlah"
-                    type="text"
-                    placeholder="Jumlah Pembelian"
-                    class="input input-bordered w-full max-w-xs"
-                  />
+                  <input v-model="item.jumlah" type="text" placeholder="Jumlah Pembelian" class="input input-bordered w-full max-w-xs" />
                 </td>
                 <td>
                   {{ item.unit?.name }}
                 </td>
                 <td>
-                  <InputCurrency
-                    v-model="item.harga"
-                    :options="{ currency: 'IDR' }"
-                  />
+                  <InputCurrency v-model="item.harga" :options="{ currency: 'IDR' }" />
                 </td>
                 <td>
-                  <InputCurrency
-                    v-model="item.discount"
-                    :options="{ currency: 'IDR' }"
-                  />
+                  <InputCurrency v-model="item.discount" :options="{ currency: 'IDR' }" />
                 </td>
                 <td>
                   <input
                     readonly
-                    :value="
-                      numeral(item.harga * item.jumlah - item.discount).format(
-                        '0,0'
-                      )
-                    "
+                    :value="numeral(item.harga * item.jumlah - item.discount).format('0,0')"
                     type="text"
                     placeholder="Jumlah Pembelian"
                     class="input input-bordered w-full max-w-xs"
                   />
                 </td>
                 <td>
-                  <TrashIcon
-                    @click="removeItem(index)"
-                    class="w-6 h-6 cursor-pointer transition duration-150 ease-in-out hover:scale-120"
-                  />
+                  <TrashIcon @click="removeItem(index)" class="w-6 h-6 cursor-pointer transition duration-150 ease-in-out hover:scale-120" />
                 </td>
               </tr>
             </tbody>
@@ -285,10 +202,10 @@ function proses() {
         showLoaderOnConfirm: true,
         preConfirm: pembelianStore.store,
         backdrop: true,
-        allowOutsideClick: () => pembelianStore.isStoreLoading,
+        allowOutsideClick: false,
       })
       .then((result) => {
-        if (result.value) {
+        if (result.value == true) {
           swal
             .fire({
               title: 'Do you want to save the changes?',
@@ -323,15 +240,8 @@ function proses() {
   }
 }
 
-watch(
-  () => pembelianStore.filter.currentLimit,
-  () => {
-    pembelianStore.getData()
-  }
-)
-
 onMounted(() => {
-  pembelianStore.getData()
+  pembelianStore.getFakturNumber()
 })
 onUnmounted(() => {
   pembelianStore.$reset()

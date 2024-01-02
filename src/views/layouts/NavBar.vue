@@ -4,11 +4,7 @@
       <span class="text-lg font-bold"> BBM Manufaktur </span>
     </div>
     <div class="flex-none hidden px-2 mx-2 md:flex">
-      <ul
-        class="text-md menu menu-horizontal p-0"
-        v-for="item in navMenu"
-        :key="item"
-      >
+      <ul class="text-md menu menu-horizontal p-0" v-for="item in navMenu" :key="item">
         <li class="mx-1">
           <router-link :active-class="'bg-base-200'" :to="{ name: item.route }">
             <a>{{ item.title }}</a>
@@ -21,10 +17,7 @@
             <img src="https://placehold.co/40x40" />
           </div>
         </label>
-        <ul
-          tabindex="0"
-          class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-neutral rounded-box w-52"
-        >
+        <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-neutral rounded-box w-52 z-50">
           <li>
             <a class="justify-between">
               Profile
@@ -40,12 +33,7 @@
     </div>
     <div class="flex-none md:hidden px-2 mx-2 dropdown dropdown-end">
       <button class="btn btn-square btn-ghost">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          class="inline-block w-5 h-5 stroke-current"
-        >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block w-5 h-5 stroke-current">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -53,10 +41,7 @@
           />
         </svg>
       </button>
-      <ul
-        tabindex="0"
-        class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52"
-      >
+      <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52">
         <li v-for="item in navMenu" :key="item">
           <router-link :active-class="'bg-base-200'" :to="{ name: item.route }">
             <a>{{ item.title }}</a>

@@ -1,18 +1,9 @@
 <template>
   <section>
-    <input
-      type="checkbox"
-      id="my-modal"
-      v-model="itemStore.modalToggle"
-      class="modal-toggle"
-    />
+    <input type="checkbox" id="my-modal" v-model="itemStore.modalToggle" class="modal-toggle" />
     <div class="modal">
       <div class="modal-box bg-neutral text-white">
-        <label
-          for="my-modal"
-          class="btn btn-sm btn-circle btn-secondary absolute right-2 top-2"
-          >✕</label
-        >
+        <label for="my-modal" class="btn btn-sm btn-circle btn-primary absolute right-2 top-2">✕</label>
         <h3 class="text-2xl font-bold">Item Baru</h3>
         <section class="py-2">
           <form @submit.prevent="onSubmit">
@@ -20,23 +11,13 @@
               <label class="label">
                 <span class="label-text">Nama Item</span>
               </label>
-              <input
-                :disabled="itemStore.modalSubmitLoading"
-                v-model="dataForm.name"
-                type="text"
-                placeholder="Type here"
-                class="input input-bordered w-full"
-              />
+              <input :disabled="itemStore.modalSubmitLoading" v-model="dataForm.name" type="text" placeholder="Type here" class="input input-bordered w-full" />
             </div>
             <div class="form-control my-2">
               <label class="label">
                 <span class="label-text">Unit Item</span>
               </label>
-              <select
-                :disabled="itemStore.modalSubmitLoading"
-                v-model="dataForm.unit_id"
-                class="select select-bordered"
-              >
+              <select :disabled="itemStore.modalSubmitLoading" v-model="dataForm.unit_id" class="select select-bordered">
                 <option :value="unit.id" v-for="unit in itemUnits" :key="unit">
                   {{ unit.name.toUpperCase() }}
                 </option>
@@ -46,11 +27,7 @@
               <label class="label">
                 <span class="label-text">Tipe Item</span>
               </label>
-              <select
-                :disabled="itemStore.modalSubmitLoading"
-                v-model="dataForm.type_id"
-                class="select select-bordered"
-              >
+              <select :disabled="itemStore.modalSubmitLoading" v-model="dataForm.type_id" class="select select-bordered">
                 <option :value="type.id" v-for="type in itemTypes" :key="type">
                   {{ type.name.toUpperCase() }}
                 </option>
@@ -60,34 +37,16 @@
               <label class="label">
                 <span class="label-text">Gudang</span>
               </label>
-              <select
-                :disabled="itemStore.modalSubmitLoading"
-                v-model="dataForm.warehouse_id"
-                class="select select-bordered"
-              >
-                <option
-                  :value="warehouse.id"
-                  v-for="warehouse in itemStore.warehouses"
-                  :key="warehouse"
-                >
+              <select :disabled="itemStore.modalSubmitLoading" v-model="dataForm.warehouse_id" class="select select-bordered">
+                <option :value="warehouse.id" v-for="warehouse in itemStore.warehouses" :key="warehouse">
                   {{ warehouse.name.toUpperCase() }}
                 </option>
               </select>
             </div>
             <div class="card-actions justify-end mt-10">
-              <button
-                :disabled="itemStore.modalSubmitLoading"
-                type="submit"
-                class="btn btn-secondary modal-button"
-              >
+              <button :disabled="itemStore.modalSubmitLoading" type="submit" class="btn btn-primary modal-button">
                 <template v-if="itemStore.modalSubmitLoading">
-                  <svg
-                    role="status"
-                    class="inline mr-3 w-4 h-4 text-white animate-spin"
-                    viewBox="0 0 100 101"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg role="status" class="inline mr-3 w-4 h-4 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                       d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
                       fill="#E5E7EB"

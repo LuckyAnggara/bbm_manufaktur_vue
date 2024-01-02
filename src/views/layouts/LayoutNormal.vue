@@ -2,7 +2,7 @@
 import NavBar from './NavBar.vue'
 import MainContent from './MainContent.vue'
 import Footer from './Footer.vue'
-import Title from './Title..vue'
+import Title from './Title.vue'
 export default {
   setup() {},
   components: { NavBar, MainContent, Footer, Title },
