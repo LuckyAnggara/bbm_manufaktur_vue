@@ -1,8 +1,5 @@
 <template>
-  <section
-    class="bg-gray-200 mx-auto text-black"
-    v-if="pembelianStore.isLoading"
-  >
+  <section class="bg-gray-200 mx-auto text-black" v-if="pembelianStore.isLoading">
     <div class="w-screen h-screen">
       <div class="m-auto">
         <span class="loading loading-bars loading-lg"></span>
@@ -67,43 +64,20 @@
         </div>
 
         <div class="overflow-x-auto">
-          <table
-            class="border-collapse table-auto w-full text-sm mt-14 mb-12 whitespace-pre"
-          >
+          <table class="border-collapse table-auto w-full text-sm mt-14 mb-12 whitespace-pre">
             <thead>
               <tr class="bg-red-600 text-white text-center">
-                <th class="p-4 uppercase text-base font-semibold border-white">
-                  #
-                </th>
-                <th
-                  class="p-4 uppercase text-base font-semibold border-s-2 border-white"
-                >
-                  Nama Item
-                </th>
+                <th class="p-4 uppercase text-base font-semibold border-white">#</th>
+                <th class="p-4 uppercase text-base font-semibold border-s-2 border-white">Nama Item</th>
 
-                <th
-                  class="p-4 uppercase text-base font-semibold border-s-2 border-white"
-                >
-                  Qty
-                </th>
-                <th
-                  class="p-4 uppercase text-base font-semibold border-s-2 border-white"
-                >
-                  Harga
-                </th>
+                <th class="p-4 uppercase text-base font-semibold border-s-2 border-white">Qty</th>
+                <th class="p-4 uppercase text-base font-semibold border-s-2 border-white">Harga</th>
 
-                <th
-                  class="p-4 uppercase text-base font-semibold border-s-2 border-white"
-                >
-                  Total
-                </th>
+                <th class="p-4 uppercase text-base font-semibold border-s-2 border-white">Total</th>
               </tr>
             </thead>
             <tbody class="bg-white">
-              <tr
-                v-for="(item, index) in pembelianStore.singleResponses?.detail"
-                class=""
-              >
+              <tr v-for="(item, index) in pembelianStore.singleResponses?.detail" class="">
                 <td class="p-5 text-base font-medium">{{ index + 1 }}</td>
                 <td class="p-5 text-base font-medium border-s-2 border-white">
                   {{ item.item.name }}
@@ -116,60 +90,28 @@
                 </td>
 
                 <td class="p-5 text-base font-medium border-s-2 border-white">
-                  {{
-                    numeral(
-                      parseFloat(item.harga) * parseFloat(item.jumlah)
-                    ).format('0,0')
-                  }}
+                  {{ numeral(parseFloat(item.harga) * parseFloat(item.jumlah)).format('0,0') }}
                 </td>
               </tr>
 
               <tr>
-                <td
-                  colspan="5"
-                  class="p-4 pb-0 border border-white text-base font-semibold text-end"
-                >
-                  <span class="pe-12 font-bold">Sub Total:</span
-                  >{{
-                    numeral(pembelianStore.singleResponses?.sub_total).format(
-                      '0,0'
-                    )
-                  }}
+                <td colspan="5" class="p-4 pb-0 border border-white text-base font-semibold text-end">
+                  <span class="pe-12 font-bold">Sub Total:</span>{{ numeral(pembelianStore.singleResponses?.sub_total).format('0,0') }}
                 </td>
               </tr>
               <tr>
-                <td
-                  colspan="5"
-                  class="pe-5 border border-white text-base font-normal text-end"
-                >
-                  <span class="pe-12 font-bold">Diskon:</span
-                  >{{
-                    numeral(pembelianStore.singleResponses?.diskon).format(
-                      '0,0'
-                    )
-                  }}
+                <td colspan="5" class="pe-5 border border-white text-base font-normal text-end">
+                  <span class="pe-12 font-bold">Diskon:</span>{{ numeral(pembelianStore.singleResponses?.diskon).format('0,0') }}
                 </td>
               </tr>
               <tr>
-                <td
-                  colspan="5"
-                  class="pe-5 border border-white text-base font-normal text-end"
-                >
-                  <span class="pe-12 font-bold">Tax:</span
-                  >{{
-                    numeral(pembelianStore.singleResponses?.pajak).format('0,0')
-                  }}
+                <td colspan="5" class="pe-5 border border-white text-base font-normal text-end">
+                  <span class="pe-12 font-bold">Tax:</span>{{ numeral(pembelianStore.singleResponses?.pajak).format('0,0') }}
                 </td>
               </tr>
               <tr>
-                <td
-                  colspan="5"
-                  class="pe-5 border border-white text-base font-semibold text-end"
-                >
-                  <span class="pe-12 font-bold">Total:</span
-                  >{{
-                    numeral(pembelianStore.singleResponses?.total).format('0,0')
-                  }}
+                <td colspan="5" class="pe-5 border border-white text-base font-semibold text-end">
+                  <span class="pe-12 font-bold">Total:</span>{{ numeral(pembelianStore.singleResponses?.total).format('0,0') }}
                 </td>
               </tr>
             </tbody>
@@ -178,9 +120,7 @@
 
         <div class="flex flex-wrap items-center justify-between mt-6">
           <h5 class="text-base font-normal">
-            <span class="font-bold">{{
-              pembelianStore.singleResponses?.user.name
-            }}</span>
+            <span class="font-bold">{{ pembelianStore.singleResponses?.user.name }}</span>
           </h5>
         </div>
 

@@ -167,6 +167,20 @@ export const usePembelianStore = defineStore('pembelianStore', {
         this.isDestroyLoading = false
       }
     },
+    async showFaktur(id) {
+      this.isLoadingDownload = true
+      try {
+        const response = await axiosIns.get(`/faktur/pembelian/${id}`)
+        let responseHtml = response.data
+        console.log(responseHtml, 'Faktur Pembelian')
+        var myWindow = window.open('response')
+        myWindow.document.write(responseHtml)
+      } catch (error) {
+        console.info(error)
+      }
+      this.isLoadingDownload = false
+    },
+
     // async update() {
     //   this.isUpdateLoading = true
     //   try {
