@@ -1,10 +1,10 @@
 <template>
   <section>
-    <input type="checkbox" id="my-modal-overhead" class="modal-toggle" />
+    <input type="checkbox" id="my-modal-pegawai" class="modal-toggle" />
     <div class="modal">
       <div class="modal-box relative overflow-hidden">
         <label
-          for="my-modal-overhead"
+          for="my-modal-pegawai"
           class="btn btn-sm btn-circle absolute right-2 top-2"
           >✕</label
         >
@@ -15,7 +15,7 @@
             <div class="form-control">
               <div class="input-group input-group-sm">
                 <input
-                  v-model="etcStore.searchName"
+                  v-model="pegawaiStore.filter.searchName"
                   @keyup.enter="searchData"
                   type="text"
                   placeholder="Search…"
@@ -38,7 +38,7 @@
             </thead>
 
             <tbody>
-              <template v-if="etcStore.isLoading">
+              <template v-if="pegawaiStore.isLoading">
                 <tr>
                   <td colspan="3" class="text-center">
                     <div role="status">
@@ -63,15 +63,15 @@
                 </tr>
               </template>
               <template v-else>
-                <tr v-for="(item, index) in etcStore.data" :key="item">
-                  <td class="text-center">{{ etcStore.from + index }}</td>
+                <tr v-for="(item, index) in pegawaiStore.items" :key="index">
+                  <td class="text-center">{{ pegawaiStore.from + index }}</td>
                   <td>{{ item.name.toUpperCase() }}</td>
                   <td class="text-center">
                     <label class="swap">
                       <!-- this hidden checkbox controls the state -->
                       <input
                         type="checkbox"
-                        v-model.lazy="productionOrderStore.dataOrder.overhead"
+                        v-model.lazy="productionOrderStore.editOrder.pegawai"
                         :value="item"
                       />
 
@@ -120,22 +120,24 @@
         </div>
         <div
           class="btn-group mx-auto mt-4 mb-1 justify-center"
-          v-if="!etcStore.isLoading"
+          v-if="!pegawaiStore.isLoading"
         >
           <button
             class="btn btn-outline"
             @click="getData(previousPage)"
-            :disabled="etcStore.currentPage == 1 ? true : false"
+            :disabled="pegawaiStore.currentPage == 1 ? true : false"
           >
             «
           </button>
           <button class="btn btn-outline">
-            Page {{ etcStore.currentPage }}
+            Page {{ pegawaiStore.currentPage }}
           </button>
           <button
             class="btn btn-outline"
             @click="getData(nextPage)"
-            :disabled="etcStore.lastPage == etcStore.currentPage ? true : false"
+            :disabled="
+              pegawaiStore.lastPage == pegawaiStore.currentPage ? true : false
+            "
           >
             »
           </button>
@@ -148,45 +150,46 @@
 <script>
 import { computed } from 'vue'
 import { useToast } from 'vue-toastification'
-import { useEtcStore, useProductionOrderStore } from '@/stores/store'
+import { useProductionOrderStore } from '@/stores/store'
+import { usePegawaiStore } from '@/stores/pegawaiStore'
 import { useDebounceFn } from '@vueuse/core'
 
 export default {
   setup() {
     const toast = useToast()
-    const etcStore = useEtcStore()
+    const pegawaiStore = usePegawaiStore()
     const productionOrderStore = useProductionOrderStore()
 
     const previousPage = computed(() => {
-      return '&page=' + (this.etcStore.currentPage - 1)
+      return '&page=' + (this.pegawaiStore.currentPage - 1)
     })
 
     const nextPage = computed(() => {
-      return '&page=' + (this.etcStore.currentPage + 1)
+      return '&page=' + (this.pegawaiStore.currentPage + 1)
     })
 
     productionOrderStore.$subscribe((mutation, state) => {
       if (
-        mutation.events.key == 'overhead' &&
+        mutation.events.key == 'pegawai' &&
         mutation.events.newValue.length > mutation.events.oldValue.length
       ) {
-        toast.success('Data overhead baru ditambahkan', {
+        toast.success('Data pegawai baru ditambahkan', {
           timeout: 1000,
         })
       }
 
       if (
-        mutation.events.key == 'overhead' &&
+        mutation.events.key == 'pegawai' &&
         mutation.events.newValue.length < mutation.events.oldValue.length
       ) {
-        toast.warning('Data overhead di hapus', {
+        toast.warning('Data pegawai di hapus', {
           timeout: 1000,
         })
       }
     })
 
     function getData(page = '') {
-      etcStore.getOverheadData(page)
+      pegawaiStore.getData(page)
     }
 
     const searchData = useDebounceFn(() => {
@@ -200,7 +203,7 @@ export default {
       nextPage,
       getData,
       searchData,
-      etcStore,
+      pegawaiStore,
     }
   },
   computed: {},

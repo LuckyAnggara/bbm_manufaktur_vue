@@ -85,10 +85,11 @@
                 <hr />
                 <div class="form-control">
                   <label class="join">
-                    <span class="w-1/4">Nama Pelanggan</span>
+                    <span class="w-1/4">Shift</span>
                     <input
-                      v-model="productionOrderStore.editOrder.customer_name"
-                      type="text"
+                      v-model="productionOrderStore.editOrder.shift"
+                      type="number"
+                      required
                       class="input input-bordered w-3/4"
                     />
                   </label>
@@ -96,11 +97,47 @@
                 <div class="form-control">
                   <label class="join">
                     <span class="w-1/4">Penanggung Jawab</span>
-                    <input
-                      v-model="productionOrderStore.editOrder.pic_name"
-                      type="text"
-                      class="input input-bordered w-3/4"
-                    />
+                    <div class="dropdown w-3/4">
+                      <input
+                        v-model="productionOrderStore.editOrder.pic_name"
+                        tabindex="0"
+                        type="text"
+                        @keyup="searchData"
+                        placeholder="Isi dengan Pengawai Penanggu Jawab Shift"
+                        class="input input-bordered w-full"
+                      />
+                      <ul
+                        v-if="pegawaiStore.isLoading"
+                        tabindex="0"
+                        class="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-full"
+                      >
+                        <li class="mx-auto">
+                          <span class="loading loading-dots loading-lg"></span>
+                        </li>
+                      </ul>
+                      <ul
+                        v-else-if="pegawaiStore.items.length > 0"
+                        tabindex="0"
+                        class="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-full"
+                      >
+                        <li v-for="item in pegawaiStore.items">
+                          <a
+                            @click="
+                              productionOrderStore.dataOrder.pic_name =
+                                item.name
+                            "
+                            >{{ item.name }}</a
+                          >
+                        </li>
+                      </ul>
+                      <ul
+                        v-else
+                        tabindex="0"
+                        class="dropdown-content z-50 menu p-2 shadow bg-base-100 rounded-box w-full"
+                      >
+                        <li><a>Tidak ada data, silahkan cari Item lain</a></li>
+                      </ul>
+                    </div>
                   </label>
                 </div>
                 <div class="form-control">
@@ -156,6 +193,7 @@
                       <th></th>
                       <th>Nama</th>
                       <th>Quantity</th>
+                      <th>Satuan</th>
                       <th>Action</th>
                     </tr>
                   </thead>
@@ -173,7 +211,7 @@
                       ) in productionOrderStore.inputDataEdit"
                       :key="item"
                     >
-                      <td class="text-center"></td>
+                      <td class="text-center">{{ index + 1 }}</td>
                       <td>{{ item.name.toUpperCase() }}</td>
                       <td>
                         <input
@@ -184,6 +222,8 @@
                           class="input input-bordered input-sm w-1/2 max-w-xs"
                         />
                       </td>
+                      <td>{{ item.unit.name.toUpperCase() }}</td>
+
                       <td>
                         <button
                           class="btn btn-sm btn-square btn-outline"
@@ -265,7 +305,7 @@
                       ) in productionOrderStore.machineDataEdit"
                       :key="item"
                     >
-                      <td class="text-center"></td>
+                      <td class="text-center">{{ index + 1 }}</td>
                       <td>{{ item.name.toUpperCase() }}</td>
                       <td>
                         <input
@@ -338,7 +378,7 @@
                   <!-- head -->
                   <thead>
                     <tr>
-                      <th></th>
+                      <td class="text-center">{{ index + 1 }}</td>
                       <th>Nama</th>
                       <th>Pengunaan</th>
                       <th>Satuan</th>
@@ -359,7 +399,7 @@
                       ) in productionOrderStore.overheadDataEdit"
                       :key="item"
                     >
-                      <td class="text-center"></td>
+                      <td class="text-center">{{ index + 1 }}</td>
                       <td>{{ item.name.toUpperCase() }}</td>
                       <td>
                         <input
@@ -399,6 +439,83 @@
                 </table>
               </div>
 
+              <div class="card-actions justify-between">
+                <button type="button" class="btn btn-primary" @click="prevTab">
+                  Back
+                </button>
+                <button type="button" class="btn btn-primary" @click="nextTab">
+                  Next
+                </button>
+              </div>
+
+              <h2 class="card-title mt-4">Detail Pegawai</h2>
+              <p>Isi dengan Operator yang bertugas</p>
+
+              <div class="card-actions justify-end">
+                <label
+                  for="my-modal-pegawai"
+                  class="btn w-32 btn-secondary modal-button shadow-md"
+                  @click="getDataPegawai()"
+                  ><span class="text-xs">Tambah</span></label
+                >
+              </div>
+
+              <div class="flex mt-2 md:overflow-visible overflow-y-auto mb-5">
+                <table class="table table-compact w-full">
+                  <!-- head -->
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Nama</th>
+                      <th>Jabatan</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr
+                      v-if="productionOrderStore.editOrder.pegawai.length < 1"
+                    >
+                      <td colspan="4" class="text-center">
+                        <span>Tidak ada data.</span>
+                      </td>
+                    </tr>
+                    <tr
+                      v-else
+                      v-for="(item, index) in productionOrderStore.editOrder
+                        .pegawai"
+                      :key="item"
+                    >
+                      <td class="text-center">{{ index + 1 }}</td>
+                      <td>{{ item.pegawai.name.toUpperCase() }}</td>
+                      <td>{{ item.pegawai.jabatan }}</td>
+
+                      <td>
+                        <button
+                          class="btn btn-sm btn-square btn-outline"
+                          @click="deletePegawaiData(index, item.name)"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            width="24"
+                            height="24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                            />
+                          </svg>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
               <div class="card-actions justify-between">
                 <button type="button" class="btn btn-primary" @click="prevTab">
                   Back
@@ -532,166 +649,153 @@
     <ModalItemBarangJadi />
     <ModalMachine />
     <ModalOverhead />
+    <ModalPegawai />
   </section>
 </template>
 
-<script>
-import { inject, onBeforeMount, ref } from 'vue'
+<script setup>
+import { inject, onBeforeMount, onMounted, ref } from 'vue'
 import { useToast } from 'vue-toastification'
 import {
   useEtcStore,
   useItemStore,
   useProductionOrderStore,
-} from '../../../../stores/store'
+} from '@/stores/store'
+import { usePegawaiStore } from '@/stores/pegawaiStore'
 import { useRouter, useRoute } from 'vue-router'
 import ModalItemBahanBaku from './Component/ModalItemBahanBaku.vue'
 import ModalItemBarangJadi from './Component/ModalItemBarangJadi.vue'
 import ModalMachine from './Component/ModalMachine.vue'
 import ModalOverhead from './Component/ModalOverhead.vue'
+import ModalPegawai from './Component/ModalPegawai.vue'
 
-export default {
-  setup() {
-    const router = useRouter()
-    const route = useRoute()
-    const swal = inject('$swal')
-    const toast = useToast()
-    const searchActive = ref(false)
-    const itemStore = useItemStore()
-    const productionOrderStore = useProductionOrderStore()
-    const etcStore = useEtcStore()
+const pegawaiStore = usePegawaiStore()
+const router = useRouter()
+const route = useRoute()
+const swal = inject('$swal')
+const toast = useToast()
+const searchActive = ref(false)
+const itemStore = useItemStore()
+const productionOrderStore = useProductionOrderStore()
+const etcStore = useEtcStore()
 
-    const tabIndex = ref(0)
-    const tabList = [
-      { index: 0, name: 'Data Order' },
-      { index: 1, name: 'Bahan Baku' },
-      { index: 2, name: 'Mesin' },
-      { index: 3, name: 'Overhead / Lainnya' },
-      { index: 4, name: 'Hasil Produksi' },
-    ]
+const tabIndex = ref(0)
+const tabList = [
+  { index: 0, name: 'Data Order' },
+  { index: 1, name: 'Bahan Baku' },
+  { index: 2, name: 'Mesin' },
+  { index: 3, name: 'Overhead / Lainnya' },
+  { index: 4, name: 'Hasil Produksi' },
+]
 
-    itemStore.getItemData()
-    function nextTab() {
-      this.tabIndex++
-    }
+itemStore.getItemData()
+function nextTab() {
+  tabIndex.value++
+}
 
-    function prevTab() {
-      this.tabIndex--
-    }
+function prevTab() {
+  tabIndex.value--
+}
 
-    async function onSubmit() {
-      if (productionOrderStore.outputDataEdit.length <= 0) {
-        return swal.fire({
-          title: 'Opps',
-          text: 'Data hasil produksi belum di isi',
-          icon: 'warning',
-        })
-      }
-      await swal
-        .fire({
-          title: 'Proses?',
-          text: 'Update produksi akan di proses!',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Proses!',
-          showLoaderOnConfirm: true,
-          backdrop: true,
-          allowOutsideClick: () => this.productionOrderStore.storeLoading,
-          preConfirm: (val) => {
-            return productionOrderStore.updateProductionOrder().then((resp) => {
-              if (resp.status == 200) {
-                return resp
-              }
-            })
-          },
-        })
-        .then((result) => {
-          console.info(result)
-          if (result.isConfirmed) {
-            if (result.value.status == 200) {
-              swal
-                .fire({
-                  icon: 'success',
-                  title: 'Berhasil',
-                  text: 'Produksi baru berhasil di perbaharui',
-                  backdrop: true,
-                  allowOutsideClick: () => false,
-                })
-                .then(() => {
-                  router.push({
-                    name: 'produksi-order-finish',
-                    params: { id: result.value.data.data.id },
-                  })
-                })
-              productionOrderStore.$reset()
-            } else {
-              swal.fire('Oopss, ada permasalahan', 'error')
-            }
-          } else {
+async function onSubmit() {
+  if (productionOrderStore.outputDataEdit.length <= 0) {
+    return swal.fire({
+      title: 'Opps',
+      text: 'Data hasil produksi belum di isi',
+      icon: 'warning',
+    })
+  }
+  await swal
+    .fire({
+      title: 'Proses?',
+      text: 'Update produksi akan di proses!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Proses!',
+      showLoaderOnConfirm: true,
+      backdrop: true,
+      allowOutsideClick: () => productionOrderStore.storeLoading,
+      preConfirm: (val) => {
+        return productionOrderStore.updateProductionOrder().then((resp) => {
+          if (resp.status == 200) {
+            return resp
           }
         })
-    }
-
-    function deleteInputData(index, name) {
-      productionOrderStore.deleteInputEditData(index)
-      toast.warning(`Bahan baku ${name} di hapus`, {
-        timeout: 1000,
-      })
-    }
-
-    function deleteOutputData(index, name) {
-      productionOrderStore.deleteOutputEditData(index)
-      toast.warning(`Output ${name} di hapus`, {
-        timeout: 1000,
-      })
-    }
-
-    function deleteMachineData(index, name) {
-      productionOrderStore.deleteMachineEditData(index)
-      toast.warning(`Mesin ${name} di hapus`, {
-        timeout: 1000,
-      })
-    }
-
-    function deleteOverheadData(index, name) {
-      productionOrderStore.deleteOverheadEditData(index)
-      toast.warning(`Overhead ${name} di hapus`, {
-        timeout: 1000,
-      })
-    }
-
-    onBeforeMount(() => {
-      if (route.params) {
-        productionOrderStore.$patch({
-          currentId: route.params.id,
-        })
-        productionOrderStore.getProductionOrderData(true)
+      },
+    })
+    .then((result) => {
+      if (result.isConfirmed) {
+        if (result.value.status == 200) {
+          swal
+            .fire({
+              icon: 'success',
+              title: 'Berhasil',
+              text: 'Produksi baru berhasil di perbaharui',
+              backdrop: true,
+              allowOutsideClick: () => false,
+            })
+            .then(() => {
+              router.push({
+                name: 'produksi-order-finish',
+                params: { id: result.value.data.data.id },
+              })
+            })
+          productionOrderStore.$reset()
+        } else {
+          swal.fire('Oopss, ada permasalahan', 'error')
+        }
+      } else {
       }
     })
-
-    return {
-      onSubmit,
-      deleteOutputData,
-      deleteInputData,
-      deleteMachineData,
-      deleteOverheadData,
-      productionOrderStore,
-      etcStore,
-      searchActive,
-      itemStore,
-      nextTab,
-      prevTab,
-      tabIndex,
-      tabList,
-    }
-  },
-  created() {},
-  components: {
-    ModalItemBahanBaku,
-    ModalItemBarangJadi,
-    ModalMachine,
-    ModalOverhead,
-  },
 }
+
+function deleteInputData(index, name) {
+  productionOrderStore.deleteInputEditData(index)
+  toast.warning(`Bahan baku ${name} di hapus`, {
+    timeout: 1000,
+  })
+}
+
+function deleteOutputData(index, name) {
+  productionOrderStore.deleteOutputEditData(index)
+  toast.warning(`Output ${name} di hapus`, {
+    timeout: 1000,
+  })
+}
+
+function deleteMachineData(index, name) {
+  productionOrderStore.deleteMachineEditData(index)
+  toast.warning(`Mesin ${name} di hapus`, {
+    timeout: 1000,
+  })
+}
+
+function deleteOverheadData(index, name) {
+  productionOrderStore.deleteOverheadEditData(index)
+  toast.warning(`Overhead ${name} di hapus`, {
+    timeout: 1000,
+  })
+}
+
+function deletePegawaiData(index, name) {
+  productionOrderStore.deletePegawaiEditData(index)
+  toast.warning(`Pegawai ${name} di hapus`, {
+    timeout: 1000,
+  })
+}
+
+onMounted(() => {
+  pegawaiStore.getData()
+})
+
+onBeforeMount(() => {
+  if (route.params) {
+    productionOrderStore.$patch({
+      currentId: route.params.id,
+    })
+    productionOrderStore.getProductionOrderData(true)
+  }
+})
 </script>

@@ -1,44 +1,5 @@
 <template>
   <div class="flex">
-    <div
-      class="flex-col md:w-1/4 w-full mr-10 self-start card bg-neutral shadow-xl"
-    >
-      <div class="card-body">
-        <h2 class="card-title">Filter Data</h2>
-        <div class="justify-center my-4">
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Tanggal Data</span>
-            </label>
-            <input
-              v-model="pembelianStore.filter.date.fromDate"
-              id="date"
-              type="date"
-              placeholder="Type here"
-              class="input input-bordered w-auto"
-            />
-            <label class="my-4">s.d</label>
-            <input
-              v-model="pembelianStore.filter.date.toDate"
-              id="date"
-              type="date"
-              placeholder="Type here"
-              class="input input-bordered w-auto"
-            />
-          </div>
-        </div>
-
-        <div class="card-actions justify-end">
-          <button
-            class="btn btn-accent w-32 hover:btn-primary"
-            @click="pembelianStore.getData()"
-          >
-            Filter
-          </button>
-        </div>
-      </div>
-    </div>
-
     <div class="card flex bg-neutral flex-col h-5/6 w-full">
       <div class="card-body shadow-xl rounded-xl">
         <button
@@ -47,12 +8,12 @@
         >
           Tambah
         </button>
-        <h2 class="card-title mb-2 text-2xl">Daftar Pembelian</h2>
+        <h2 class="card-title mb-2 text-2xl">Daftar Penjualan</h2>
         <div class="md:flex py-2">
           <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4">
             <label class="mr-4">Jumlah Data </label>
             <select
-              v-model="pembelianStore.filter.currentLimit"
+              v-model="penjualanStore.filter.currentLimit"
               class="select select-bordered max-w-xs"
             >
               <option
@@ -68,7 +29,7 @@
           <div class="justify-end mx-1 md:w-1/2 w-full">
             <div class="form-control">
               <input
-                v-model="pembelianStore.filter.searchName"
+                v-model="penjualanStore.filter.searchQuery"
                 @keyup="searchData"
                 type="text"
                 placeholder="Cari Data"
@@ -86,7 +47,7 @@
                 <th></th>
                 <th>Nomor Faktur</th>
                 <th>Tanggal Transaksi</th>
-                <th>Nama Supplier</th>
+                <th>Nama Pelanggan</th>
                 <th>Total</th>
                 <!-- <th>Status</th> -->
                 <th>Action</th>
@@ -94,7 +55,7 @@
             </thead>
 
             <tbody>
-              <tr v-if="pembelianStore.isLoading">
+              <tr v-if="penjualanStore.isLoading">
                 <td colspan="7" class="text-center">
                   <div role="status">
                     <svg
@@ -117,20 +78,24 @@
                 </td>
               </tr>
               <template v-else>
-                <tr v-if="pembelianStore.items.length == 0">
+                <tr v-if="penjualanStore.items.length == 0">
                   <td colspan="7" class="text-center">Tidak ada data</td>
                 </tr>
                 <tr
                   v-else
-                  v-for="(item, index) in pembelianStore.items"
+                  v-for="(item, index) in penjualanStore.items"
                   :key="index"
                 >
                   <td class="text-center">
-                    {{ pembelianStore.from + index }}
+                    {{ penjualanStore.from + index }}
                   </td>
                   <td>{{ item.nomor_faktur }}</td>
                   <td>{{ item.created_at }}</td>
-                  <td>{{ item.nama_supplier }}</td>
+                  <td>
+                    {{
+                      item.pelanggan ? item.pelanggan.name : item.nama_pelanggan
+                    }}
+                  </td>
                   <td>{{ numeral(item.total).format('0,0') }}</td>
                   <!-- <td>Lunas</td> -->
                   <td class="before:hidden lg:w-1 whitespace-nowrap">
@@ -139,11 +104,11 @@
                         <div>
                           <MenuButton
                             :disabled="
-                              pembelianStore.isDestroyLoading &&
+                              penjualanStore.isDestroyLoading &&
                               indexDestroy == item.id
                             "
                             :class="
-                              pembelianStore.isDestroyLoading &&
+                              penjualanStore.isDestroyLoading &&
                               indexDestroy == item.id
                                 ? ''
                                 : 'hover:scale-125 ease-in-out duration-300'
@@ -152,7 +117,7 @@
                           >
                             <ArrowPathIcon
                               v-if="
-                                pembelianStore.isDestroyLoading &&
+                                penjualanStore.isDestroyLoading &&
                                 indexDestroy == item.id
                               "
                               class="animate-spin h-5 w-5 text-black dark:text-gray-400"
@@ -211,23 +176,23 @@
         </div>
         <div
           class="btn-group mx-auto mt-4 mb-20 justify-center"
-          v-if="!pembelianStore.isLoading"
+          v-if="!penjualanStore.isLoading"
         >
           <button
             class="btn btn-outline"
             @click="previousPage"
-            :disabled="pembelianStore.currentPage == 1 ? true : false"
+            :disabled="penjualanStore.currentPage == 1 ? true : false"
           >
             «
           </button>
           <button class="btn btn-outline">
-            Page {{ pembelianStore.currentPage }}
+            Page {{ penjualanStore.currentPage }}
           </button>
           <button
             class="btn btn-outline"
             @click="nextPage"
             :disabled="
-              pembelianStore.lastPage == pembelianStore.currentPage
+              penjualanStore.lastPage == penjualanStore.currentPage
                 ? true
                 : false
             "
@@ -237,12 +202,51 @@
         </div>
       </div>
     </div>
+
+    <div
+      class="flex-col md:w-1/4 w-full ml-10 self-start card bg-neutral shadow-xl"
+    >
+      <div class="card-body">
+        <h2 class="card-title">Filter Data</h2>
+        <div class="justify-center my-4">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text">Tanggal Data</span>
+            </label>
+            <input
+              v-model="penjualanStore.filter.date.fromDate"
+              id="date"
+              type="date"
+              placeholder="Type here"
+              class="input input-bordered w-auto"
+            />
+            <label class="my-4">s.d</label>
+            <input
+              v-model="penjualanStore.filter.date.toDate"
+              id="date"
+              type="date"
+              placeholder="Type here"
+              class="input input-bordered w-auto"
+            />
+          </div>
+        </div>
+
+        <div class="card-actions justify-end">
+          <button
+            class="btn btn-accent w-32 hover:btn-primary"
+            @click="penjualanStore.getData()"
+          >
+            Filter
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { inject, onMounted, onUnmounted, ref, watch } from 'vue'
-import { usePembelianStore } from '@/stores/pembelianStore'
+import { usePenjualanStore } from '@/stores/penjualanStore'
 import { useMainStore } from '@/stores/mainStore'
 import { useDebounceFn } from '@vueuse/core'
 import { useRouter } from 'vue-router'
@@ -256,7 +260,7 @@ import {
 import numeral from 'numeral'
 
 const router = useRouter()
-const pembelianStore = usePembelianStore()
+const penjualanStore = usePenjualanStore()
 const mainStore = useMainStore()
 const indexDestroy = ref(null)
 
@@ -276,50 +280,50 @@ const itemMenu = [
 const swal = inject('$swal')
 
 const searchData = useDebounceFn(() => {
-  pembelianStore.getData()
+  penjualanStore.getData()
 }, 500)
 
 const previousPage = useDebounceFn(() => {
-  pembelianStore.$patch((state) => {
+  penjualanStore.$patch((state) => {
     state.filter.page--
   })
-  pembelianStore.getData()
+  penjualanStore.getData()
 }, 50)
 
 const nextPage = useDebounceFn(() => {
-  pembelianStore.$patch((state) => {
+  penjualanStore.$patch((state) => {
     state.filter.page++
   })
-  pembelianStore.getData()
+  penjualanStore.getData()
 }, 50)
 
 function toNew() {
   router.push({
-    name: 'pembelian-new',
+    name: 'penjualan-new',
   })
 }
 
 function toFaktur(item) {
-  pembelianStore.showFaktur(item.id)
+  penjualanStore.showFaktur(item.id)
 }
 
 function destroy(item) {
   // swal("Hello Vue world!!!");
-  pembelianStore.destroy(item.id)
+  penjualanStore.destroy(item.id)
   indexDestroy.value = item.id
 }
 
 watch(
-  () => pembelianStore.filter.currentLimit,
+  () => penjualanStore.filter.currentLimit,
   () => {
-    pembelianStore.getData()
+    penjualanStore.getData()
   }
 )
 
 onMounted(() => {
-  pembelianStore.getData()
+  penjualanStore.getData()
 })
 onUnmounted(() => {
-  pembelianStore.$reset()
+  penjualanStore.$reset()
 })
 </script>

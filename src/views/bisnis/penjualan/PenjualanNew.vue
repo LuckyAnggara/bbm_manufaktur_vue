@@ -21,7 +21,7 @@
                 class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full"
               >
                 <li v-for="item in itemStore.items">
-                  <a @click="pembelianStore.addCart(item)">{{ item.name }}</a>
+                  <a @click="penjualanStore.addCart(item)">{{ item.name }}</a>
                 </li>
               </ul>
               <ul
@@ -45,13 +45,12 @@
               </div>
               <input
                 required
-                v-model="pembelianStore.form.tanggal_transaksi"
+                v-model="penjualanStore.form.tanggal_transaksi"
                 id="date"
                 type="date"
                 class="input input-bordered w-full"
               />
             </div>
-            <hr class="my-4" />
 
             <div class="form-control w-full">
               <div class="label">
@@ -59,23 +58,116 @@
               </div>
               <input
                 required
-                v-model="pembelianStore.form.nomor_faktur"
+                v-model="penjualanStore.form.nomor_faktur"
                 type="text"
                 class="input input-bordered w-full"
               />
             </div>
+            <hr class="my-4" />
 
-            <div class="form-control w-full">
-              <div class="label">
-                <span class="">Nama Supplier</span>
-              </div>
-              <input
-                required
-                v-model="pembelianStore.form.nama_supplier"
-                type="text"
-                class="input input-bordered w-full"
-              />
+            <div class="form-control w-52">
+              <label class="cursor-pointer label">
+                <input
+                  type="checkbox"
+                  class="toggle toggle-primary"
+                  v-model="penjualanStore.form.pelanggan_tetap"
+                />
+                <span class="label-text">Pelanggan Tetap</span>
+              </label>
             </div>
+            <template v-if="!penjualanStore.form.pelanggan_tetap">
+              <div class="form-control w-full">
+                <div class="label">
+                  <span class="">Nama Pelanggan</span>
+                </div>
+                <input
+                  required
+                  v-model="penjualanStore.form.nama_pelanggan"
+                  type="text"
+                  class="input input-bordered w-full"
+                />
+              </div>
+              <div class="form-control w-full">
+                <div class="label">
+                  <span class="">Alamat</span>
+                </div>
+                <textarea
+                  required
+                  v-model="penjualanStore.form.alamat"
+                  type="text"
+                  class="textarea textarea-bordered w-full"
+                ></textarea>
+              </div>
+              <div class="form-control w-full">
+                <div class="label">
+                  <span class="">Nomor Telepon</span>
+                </div>
+                <input
+                  required
+                  v-model="penjualanStore.form.nomor_telepon"
+                  type="text"
+                  class="input input-bordered w-full"
+                />
+              </div>
+            </template>
+            <template v-else>
+              <div class="form-control w-full">
+                <div class="label">
+                  <span class="">Cari Pelanggan</span>
+                </div>
+                <div class="dropdown dropdown-hover w-full">
+                  <input
+                    v-model="pelangganStore.searchName"
+                    tabindex="0"
+                    type="text"
+                    @keyup="searchDataPelanggan"
+                    placeholder="Cari Pelanggan"
+                    class="input input-bordered w-full"
+                  />
+
+                  <ul
+                    v-if="pelangganStore.items.length > 0"
+                    tabindex="0"
+                    class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full"
+                  >
+                    <li v-for="item in pelangganStore.items">
+                      <a @click="setPelanggan(item)">{{ item.name }}</a>
+                    </li>
+                  </ul>
+                  <ul
+                    v-else
+                    tabindex="0"
+                    class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full"
+                  >
+                    <li><a>Tidak ada data, silahkan cari Item lain</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="form-control w-full">
+                <div class="label">
+                  <span class="">Alamat</span>
+                </div>
+                <textarea
+                  required
+                  v-model="penjualanStore.form.pelanggan.alamat"
+                  type="text"
+                  class="textarea textarea-bordered w-full"
+                ></textarea>
+              </div>
+              <div class="form-control w-full">
+                <div class="label">
+                  <span class="">Nomor Telepon</span>
+                </div>
+                <input
+                  required
+                  v-model="penjualanStore.form.pelanggan.nomor_telepon"
+                  type="text"
+                  class="input input-bordered w-full"
+                />
+              </div>
+            </template>
+
+            <hr class="my-4" />
             <div class="form-control w-full">
               <div class="label">
                 <span class="">Total (IDR) </span>
@@ -84,18 +176,28 @@
                 required
                 readonly
                 type="text"
-                :value="numeral(pembelianStore.cartTotal).format('0,0')"
+                :value="numeral(penjualanStore.cartTotal).format('0,0')"
                 class="input input-bordered w-full"
               />
             </div>
 
             <div class="form-control w-full">
               <div class="label">
-                <span class="">Pajak</span>
+                <span class="">Pajak (IDR) </span>
               </div>
-              <InputCurrency
-                v-model="pembelianStore.form.pajak"
-                :options="{ currency: 'IDR' }"
+              <select
+                v-model="penjualanStore.tipePajak"
+                class="select select-bordered w-full"
+              >
+                <option value="0" selected>Tanpa Pajak</option>
+                <option value="11">PPN 11%</option>
+              </select>
+              <input
+                required
+                readonly
+                type="text"
+                :value="numeral(penjualanStore.pajakTotal).format('0,0')"
+                class="input input-bordered w-full"
               />
             </div>
             <div class="form-control w-full">
@@ -103,7 +205,7 @@
                 <span class="">Ongkos Kirim</span>
               </div>
               <InputCurrency
-                v-model="pembelianStore.form.ongkir"
+                v-model="penjualanStore.form.ongkir"
                 :options="{ currency: 'IDR' }"
               />
             </div>
@@ -114,18 +216,18 @@
               <input
                 required
                 readonly
-                :value="numeral(pembelianStore.grandTotal).format('0,0')"
+                :value="numeral(penjualanStore.grandTotal).format('0,0')"
                 type="text"
                 class="input input-bordered w-full"
               />
             </div>
             <button
               type="submit"
-              :disabled="pembelianStore.isStoreLoading"
+              :disabled="penjualanStore.isStoreLoading"
               class="mt-6 btn btn-accent w-32 hover:btn-primary my-2"
             >
               <span
-                v-if="pembelianStore.isStoreLoading"
+                v-if="penjualanStore.isStoreLoading"
                 class="loading loading-infinity loading-lg"
               ></span>
               <span v-else>Submit</span>
@@ -137,7 +239,7 @@
 
     <div class="card flex bg-neutral flex-col h-fit w-full">
       <div class="card-body shadow-xl rounded-xl">
-        <h2 class="card-title mb-2 text-2xl">Daftar Pembelian</h2>
+        <h2 class="card-title mb-2 text-2xl">Daftar Penjualan</h2>
 
         <div class="flex mt-2 lg:overflow-visible overflow-x-auto">
           <table class="table table-compact lg:w-full">
@@ -148,7 +250,7 @@
                 <th>Nama Item</th>
                 <th>Kuantitas</th>
                 <th>Satuan</th>
-                <th>Harga Beli</th>
+                <th>Harga Jual</th>
                 <th>Discount</th>
                 <th>Total (IDR)</th>
                 <th>Action</th>
@@ -156,12 +258,12 @@
             </thead>
 
             <tbody>
-              <tr v-if="pembelianStore.form.cart.length == 0">
-                <td colspan="7" class="text-center">Tidak ada data</td>
+              <tr v-if="penjualanStore.form.cart.length == 0">
+                <td colspan="8" class="text-center">Tidak ada data</td>
               </tr>
               <tr
                 v-else
-                v-for="(item, index) in pembelianStore.form.cart"
+                v-for="(item, index) in penjualanStore.form.cart"
                 :key="index"
               >
                 <td class="text-center">
@@ -217,7 +319,7 @@
               <tr>
                 <th colspan="6" class="text-right text-xl">Total</th>
                 <th class="text-xl">
-                  {{ numeral(pembelianStore.cartTotal).format('0,0') }}
+                  {{ numeral(penjualanStore.cartTotal).format('0,0') }}
                 </th>
               </tr>
             </tfoot>
@@ -232,7 +334,8 @@
 import InputCurrency from '@/components/InputCurrency.vue'
 
 import { computed, onMounted, ref, watch, inject, onUnmounted } from 'vue'
-import { usePembelianStore } from '@/stores/pembelianStore'
+import { usePenjualanStore } from '@/stores/penjualanStore'
+import { usePelangganStore } from '@/stores/pelangganStore'
 import { useMainStore } from '@/stores/mainStore'
 import { useDebounceFn } from '@vueuse/core'
 import { useRouter } from 'vue-router'
@@ -243,7 +346,8 @@ import numeral from 'numeral'
 const swal = inject('$swal')
 
 const router = useRouter()
-const pembelianStore = usePembelianStore()
+const penjualanStore = usePenjualanStore()
+const pelangganStore = usePelangganStore()
 const itemStore = useItemStore()
 const toast = useToast()
 
@@ -254,8 +358,20 @@ const searchData = useDebounceFn(() => {
   itemStore.getItemData()
 }, 500)
 
+const searchDataPelanggan = useDebounceFn(() => {
+  pelangganStore.$patch((state) => {
+    state.currentLimit = 5
+  })
+  pelangganStore.getItemData()
+}, 500)
+
+function setPelanggan(item) {
+  pelangganStore.searchName = item.name
+  penjualanStore.form.pelanggan = item
+}
+
 function removeItem(index) {
-  pembelianStore.form.cart.splice(index, 1)
+  penjualanStore.form.cart.splice(index, 1)
   toast.info('Item dihapus', {
     timeout: 1000,
     position: 'bottom-right',
@@ -263,7 +379,7 @@ function removeItem(index) {
 }
 
 function proses() {
-  if (pembelianStore.checkCartExisting()) {
+  if (penjualanStore.checkCartExisting()) {
     swal
       .fire({
         title: 'Proses',
@@ -271,7 +387,7 @@ function proses() {
         showCancelButton: true,
         confirmButtonText: 'Proses',
         showLoaderOnConfirm: true,
-        preConfirm: pembelianStore.store,
+        preConfirm: penjualanStore.store,
         backdrop: true,
         allowOutsideClick: false,
         allowEscapeKey: false,
@@ -292,11 +408,11 @@ function proses() {
             .then((result) => {
               /* Read more about isConfirmed, isDenied below */
               if (result.isConfirmed) {
-                pembelianStore.showFaktur(pembelianStore.resultId)
+                penjualanStore.showFaktur(penjualanStore.resultId)
                 // router.push({
                 //   name: 'pembelian-faktur',
                 //   params: {
-                //     id: pembelianStore.resultId,
+                //     id: penjualanStore.resultId,
                 //   },
                 // })
               } else if (result.isDenied) {
@@ -316,10 +432,12 @@ function proses() {
 }
 
 onMounted(() => {
-  pembelianStore.getFakturNumber()
+  penjualanStore.getFakturNumber()
+  pelangganStore.getData()
 })
 onUnmounted(() => {
-  pembelianStore.$reset()
+  pelangganStore.$reset()
+  penjualanStore.$reset()
   itemStore.$reset()
 })
 </script>

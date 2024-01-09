@@ -15,33 +15,11 @@
       class="btn btn-lg btn-wide hover:scale-110"
       @click="
         router.push({
-          name: 'gudang-barang-mutasi',
+          name: 'gudang-barang-stock-opname',
         })
       "
     >
-      Daftar Mutasi Persediaan
-    </button>
-
-    <button
-      class="btn btn-lg btn-wide hover:scale-110"
-      @click="
-        router.push({
-          name: 'gudang-barang-masuk',
-        })
-      "
-    >
-      Persediaan Masuk
-    </button>
-
-    <button
-      class="btn btn-lg btn-wide hover:scale-110"
-      @click="
-        router.push({
-          name: 'gudang-barang-keluar',
-        })
-      "
-    >
-      Persediaan Keluar
+      Stock Opname
     </button>
   </div>
 </template>

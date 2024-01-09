@@ -1,8 +1,9 @@
-import DataScreen from '../../views/data/DataScreen.vue'
-import TipeScreen from '../../views/data/Tipe/TipeScreen.vue'
-import UnitScreen from '../../views/data/Unit/UnitScreen.vue'
-import MachineScreen from '../../views/data/Machine/MachineScreen.vue'
-import OverheadScreen from '../../views/data/Overhead/OverheadScreen.vue'
+import DataScreen from '@/views/data/DataScreen.vue'
+import TipeScreen from '@/views/data/tipe/TipeScreen.vue'
+import UnitScreen from '@/views/data/unit/UnitScreen.vue'
+import MachineScreen from '@/views/data/machine/MachineScreen.vue'
+import OverheadScreen from '@/views/data/overhead/OverheadScreen.vue'
+import PegawaiScreen from '@/views/data/pegawai/PegawaiScreen.vue'
 
 export const dataRoutes = [
   {
@@ -47,6 +48,15 @@ export const dataRoutes = [
     component: OverheadScreen,
     meta: {
       title: 'Data Overhead',
+      layout: 'layout-normal',
+    },
+  },
+  {
+    path: '/data/pegawai',
+    name: 'data-pegawai',
+    component: PegawaiScreen,
+    meta: {
+      title: 'Data Pegawai',
       layout: 'layout-normal',
     },
   },

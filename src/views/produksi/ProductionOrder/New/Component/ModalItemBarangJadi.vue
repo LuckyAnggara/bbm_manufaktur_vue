@@ -26,7 +26,7 @@
           </div>
         </div>
 
-        <div class="flex mt-2 overflow-y-auto h-96">
+        <div class="flex mt-2 md:overflow-visible overflow-y-auto">
           <table class="table table-compact w-full">
             <!-- head -->
             <thead>
@@ -153,7 +153,7 @@
 import { onActivated, computed } from 'vue'
 import { useItemStore, useProductionOrderStore } from '@/stores/store'
 import { useToast } from 'vue-toastification'
-import { useDebounceFn } from '@vueuse/core'
+import { tryOnMounted, useDebounceFn } from '@vueuse/core'
 
 export default {
   setup() {
@@ -190,17 +190,11 @@ export default {
     })
 
     onActivated(() => {
-      if (itemStore.items == undefined) {
-        itemStore.getItemData()
-      }
+      itemStore.getItemData()
     })
 
-    function getData(page = '') {
-      itemStore.getItemData(page)
-    }
-
     const searchData = useDebounceFn(() => {
-      getData()
+      itemStore.getItemData()
     }, 800)
 
     return {
@@ -208,7 +202,6 @@ export default {
       productionOrderStore,
       previousPage,
       nextPage,
-      getData,
       searchData,
       itemStore,
     }

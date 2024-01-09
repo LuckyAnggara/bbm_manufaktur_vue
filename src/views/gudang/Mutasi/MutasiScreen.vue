@@ -49,6 +49,13 @@
                 </div>
               </div>
             </div>
+
+            <button
+              class="btn btn-accent w-32 hover:btn-primary ml-4"
+              @click="toNew()"
+            >
+              Tambah
+            </button>
           </div>
 
           <div class="flex mt-2 md:overflow-visible overflow-y-auto mb-5">
@@ -235,11 +242,22 @@ export default {
     }
     function detailData(id) {
       router.push({
-        name: 'gudang-barang-mutasi-detail',
+        name: 'gudang-barang-opname-detail',
         params: { id: id },
       })
     }
 
+    function toNew() {
+      if (mutationStore.typeData == 'debit') {
+        router.push({
+          name: 'gudang-barang-stock-opname-masuk',
+        })
+      } else {
+        router.push({
+          name: 'gudang-barang-stock-opname-keluar',
+        })
+      }
+    }
     const searchData = useDebounceFn(() => {
       getData()
     }, 800)
@@ -262,6 +280,7 @@ export default {
     })
 
     return {
+      toNew,
       searchData,
       tabs,
       toggle,

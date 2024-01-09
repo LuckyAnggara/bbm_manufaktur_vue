@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import axiosIns from '../services/axios'
 import { useToast } from 'vue-toastification'
 import Swal from 'sweetalert2/dist/sweetalert2'
+import moment from 'moment'
 
 const toast = useToast()
 
@@ -344,7 +345,9 @@ export const useItemStore = defineStore('itemStore', {
     async getItemData(page = '') {
       this.isLoading = true
       try {
-        const response = await axiosIns.get(`/items?limit=${this.currentLimit}${this.searchQuery}${page}${this.warehousesQuery}${this.fromToDate}`)
+        const response = await axiosIns.get(
+          `/items?limit=${this.currentLimit}${this.searchQuery}${page}${this.warehousesQuery}${this.fromToDate}`
+        )
         this.responsItem = response.data.data
       } catch (error) {
         alert(error)
@@ -416,10 +419,11 @@ export const useItemStore = defineStore('itemStore', {
     async getDownloadData() {
       this.isLoadingDownload = true
       try {
-        const response = await axiosIns.get(`/report/item?${this.warehousesQuery}${this.fromToDate}`)
+        const response = await axiosIns.get(
+          `/report/item?${this.warehousesQuery}${this.fromToDate}`
+        )
         let responseHtml = response.data
-        console.log(responseHtml, 'Monitoring')
-        var myWindow = window.open('', 'response', 'resizable=yes')
+        var myWindow = window.open('response')
         myWindow.document.write(responseHtml)
       } catch (error) {
         console.info(error)
@@ -503,7 +507,7 @@ export const useMutationStore = defineStore('mutationStore', {
       return state.responseMasterData.data
     },
     dataDetailMasterMutation(state) {
-      return state.responseDetailData.data
+      return state.responseDetailData?.data
     },
     dataDetailMutation(state) {
       return state.detailMutation
@@ -519,7 +523,9 @@ export const useMutationStore = defineStore('mutationStore', {
     async getMasterMutationData(page = '') {
       this.isLoading = true
       try {
-        const response = await axiosIns.get(`/mutations/master?limit=${this.currentLimit}${this.searchQuery}${page}${this.typeQuery}`)
+        const response = await axiosIns.get(
+          `/mutations/master?limit=${this.currentLimit}${this.searchQuery}${page}${this.typeQuery}`
+        )
         this.responseMasterData = response.data.data
         return response
       } catch (error) {
@@ -531,7 +537,9 @@ export const useMutationStore = defineStore('mutationStore', {
     async getDetailMasterMutation(id) {
       this.isLoading = true
       try {
-        const response = await axiosIns.get(`/mutations/master/${id}?type-data=${this.typeData}`)
+        const response = await axiosIns.get(
+          `/mutations/master/${id}?type-data=${this.typeData}`
+        )
         this.responseDetailData = response.data
       } catch (error) {
         alert(error)
@@ -542,7 +550,9 @@ export const useMutationStore = defineStore('mutationStore', {
     async getMutationData() {
       this.isLoading = true
       try {
-        const response = await axiosIns.get(`/mutations/${this.currentId}?limit=${this.currentLimit}${this.searchQuery}${this.fromToDate}`)
+        const response = await axiosIns.get(
+          `/mutations/${this.currentId}?limit=${this.currentLimit}${this.searchQuery}${this.fromToDate}`
+        )
         this.responseData = response.data.data
         return response
       } catch (error) {
@@ -554,7 +564,10 @@ export const useMutationStore = defineStore('mutationStore', {
     async storeIncomingItem() {
       this.storeLoading = true
       try {
-        const response = await axiosIns.post(`mutation-incoming`, this.incomingItem)
+        const response = await axiosIns.post(
+          `mutation-incoming`,
+          this.incomingItem
+        )
         toast.success('Mutasi barang masuk berhasil diproses', {
           timeout: 1000,
         })
@@ -570,7 +583,10 @@ export const useMutationStore = defineStore('mutationStore', {
     async storeExitItem() {
       this.storeLoading = true
       try {
-        const response = await axiosIns.post(`mutation-exit/store`, this.exitItem)
+        const response = await axiosIns.post(
+          `mutation-exit/store`,
+          this.exitItem
+        )
         toast.success('Mutasi barang keluar berhasil diproses', {
           timeout: 1000,
         })
@@ -595,10 +611,11 @@ export const useMutationStore = defineStore('mutationStore', {
     async getDownloadDetailMutation(id) {
       this.isLoadingDownload = true
       try {
-        const response = await axiosIns.get(`/report/mutation?limit=${this.currentLimit}&id=${id}${this.searchQuery}${this.fromToDate}`)
+        const response = await axiosIns.get(
+          `/report/mutation?limit=${this.currentLimit}&id=${id}${this.searchQuery}${this.fromToDate}`
+        )
         let responseHtml = response.data
-        console.log(responseHtml, 'Monitoring')
-        var myWindow = window.open('', 'response', 'resizable=yes')
+        var myWindow = window.open('response')
         myWindow.document.write(responseHtml)
       } catch (error) {
         console.info(error)
@@ -658,14 +675,16 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
       storeLoading: false,
       outputDataUpdate: [],
       dataOrder: {
-        order_date: null,
+        order_date: moment().format('yyyy-MM-DD'),
         customer_name: 'dummy',
         pic_name: null,
+        shift: 1,
         notes: null,
-        target_date: null,
+        target_date: moment().format('yyyy-MM-DD'),
         output: [],
         input: [],
         machine: [],
+        pegawai: [],
         overhead: [],
       },
       editOrder: {
@@ -780,6 +799,15 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
       })
       return state.editOrder.overhead
     },
+    pegawaiDataEdit(state) {
+      state.editOrder.pegawai.forEach((x) => {
+        if (x.overhead) {
+          x.id = x.pegawai.id
+          x.name = x.pegawai.name
+        }
+      })
+      return state.editOrder.pegawai
+    },
   },
   actions: {
     deleteInputEditData(index) {
@@ -793,6 +821,9 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     },
     deleteOverheadEditData(index) {
       this.editOrder.overhead.splice(index, 1)
+    },
+    deletePegawaiEditData(index) {
+      this.editOrder.pegawai.splice(index, 1)
     },
     deleteOutputUpdateData(index) {
       this.outputDataUpdate.splice(index, 1)
@@ -809,13 +840,19 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     deleteOverheadData(index) {
       this.dataOrder.overhead.splice(index, 1)
     },
+    deletePegawaiData(index) {
+      this.dataOrder.pegawai.splice(index, 1)
+    },
     async updateStatus(status, id = null) {
       this.isLoading = true
       try {
-        const response = await axiosIns.post(`/production-order/update-status`, {
-          id: id == null ? this.currentData.id : id,
-          status: status,
-        })
+        const response = await axiosIns.post(
+          `/production-order/update-status`,
+          {
+            id: id == null ? this.currentData.id : id,
+            status: status,
+          }
+        )
         // this.storeLoading = false
         toast.success('Status berhasil di update', {
           timeout: 1000,
@@ -830,7 +867,9 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     async getAllData(page = '') {
       this.isLoading = true
       try {
-        const response = await axiosIns.get(`/production-order?limit=${this.currentLimit}${this.searchQuery}${this.fromToDate}`)
+        const response = await axiosIns.get(
+          `/production-order?limit=${this.currentLimit}${this.searchQuery}${this.fromToDate}`
+        )
         this.responseListData = response.data.data
       } catch (error) {
         Swal.fire({
@@ -849,7 +888,9 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     async getProductionOrderData(edit = false) {
       this.isLoading = true
       try {
-        const response = await axiosIns.get(`/production-order/${this.currentId}`)
+        const response = await axiosIns.get(
+          `/production-order/${this.currentId}`
+        )
         if (edit == true) {
           this.editOrder = response.data.data
         }
@@ -865,7 +906,10 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     async storeProductionOrder(data) {
       this.storeLoading = true
       try {
-        const response = await axiosIns.post(`/production-order`, this.dataOrder)
+        const response = await axiosIns.post(
+          `/production-order`,
+          this.dataOrder
+        )
         this.responseSingleData = response.data.data
         this.currentId = response.data.data.id
         // this.storeLoading = false
@@ -901,7 +945,10 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     async updateProductionOrder() {
       this.storeLoading = true
       try {
-        const response = await axiosIns.put(`/production-order/${this.editOrder.id}`, this.editOrder)
+        const response = await axiosIns.put(
+          `/production-order/${this.editOrder.id}`,
+          this.editOrder
+        )
         // this.storeLoading = false
         toast.success('Produksi Order berhasil di ubah', {
           timeout: 1000,
@@ -916,7 +963,10 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     async warehouseProductionOrder() {
       this.isUpdateLoading = true
       try {
-        const response = await axiosIns.post(`/production-order/update-warehouse`, this.currentData)
+        const response = await axiosIns.post(
+          `/production-order/update-warehouse`,
+          this.currentData
+        )
         // this.storeLoading = false
         toast.success('Data Item berhasil di pindahkan ke Gudang', {
           timeout: 2000,
@@ -931,10 +981,13 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     async shippingProductionOrder(data) {
       this.isUpdateLoading = true
       try {
-        const response = await axiosIns.post(`/production-order/update-shipping`, {
-          id: this.currentData.id,
-          data: data,
-        })
+        const response = await axiosIns.post(
+          `/production-order/update-shipping`,
+          {
+            id: this.currentData.id,
+            data: data,
+          }
+        )
         return response
       } catch (error) {
         alert(error)
@@ -945,9 +998,12 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     async returProductionOrder() {
       this.isUpdateLoading = true
       try {
-        const response = await axiosIns.post(`/production-order/retur-shipping`, {
-          id: this.currentData.id,
-        })
+        const response = await axiosIns.post(
+          `/production-order/retur-shipping`,
+          {
+            id: this.currentData.id,
+          }
+        )
         return response
       } catch (error) {
         alert(error)
@@ -958,9 +1014,12 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     async receiveProductionOrder() {
       this.isUpdateLoading = true
       try {
-        const response = await axiosIns.post(`/production-order/receive-shipping`, {
-          id: this.currentData.id,
-        })
+        const response = await axiosIns.post(
+          `/production-order/receive-shipping`,
+          {
+            id: this.currentData.id,
+          }
+        )
         return response
       } catch (error) {
         alert(error)
@@ -991,10 +1050,11 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     async printData() {
       this.isLoadingPrint = true
       try {
-        const response = await axiosIns.get(`/report/production?id=${this.currentData.id}&pic_production=${this.currentData.pic_production}`)
+        const response = await axiosIns.get(
+          `/report/production?id=${this.currentData.id}&pic_production=${this.currentData.pic_production}`
+        )
         let responseHtml = response.data
-        console.log(responseHtml, 'Monitoring')
-        var myWindow = window.open('', 'response', 'resizable=yes')
+        var myWindow = window.open('response')
         myWindow.document.write(responseHtml)
       } catch (error) {
         console.info(error)
@@ -1064,7 +1124,9 @@ export const useEtcStore = defineStore('etcStore', {
     async getMachineData(page = '') {
       this.isLoading = true
       try {
-        const response = await axiosIns.get(`/machines?limit=${this.currentLimit}${this.searchQuery}${page}${this.fromToDate}`)
+        const response = await axiosIns.get(
+          `/machines?limit=${this.currentLimit}${this.searchQuery}${page}${this.fromToDate}`
+        )
         this.response = response.data.data
       } catch (error) {
         alert(error)
@@ -1074,7 +1136,9 @@ export const useEtcStore = defineStore('etcStore', {
     async getOverheadData(page = '') {
       this.isLoading = true
       try {
-        const response = await axiosIns.get(`/overheads?limit=${this.currentLimit}${this.searchQuery}${page}${this.fromToDate}`)
+        const response = await axiosIns.get(
+          `/overheads?limit=${this.currentLimit}${this.searchQuery}${page}${this.fromToDate}`
+        )
         this.response = response.data.data
       } catch (error) {
         alert(error)

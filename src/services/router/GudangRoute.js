@@ -34,17 +34,17 @@ export const gudangRoutes = [
     },
   },
   {
-    path: '/gudang/barang/mutasi',
-    name: 'gudang-barang-mutasi',
+    path: '/gudang/barang/opname',
+    name: 'gudang-barang-stock-opname',
     component: MutasiScreen,
     meta: {
-      title: 'Master Mutasi Persediaan',
+      title: 'Stock Opname Persediaan',
       layout: 'layout-normal',
     },
   },
   {
-    path: '/gudang/barang/masuk',
-    name: 'gudang-barang-masuk',
+    path: '/gudang/barang/opname/masuk',
+    name: 'gudang-barang-stock-opname-masuk',
     component: MasukScreen,
     meta: {
       title: 'Barang Masuk',
@@ -52,8 +52,8 @@ export const gudangRoutes = [
     },
   },
   {
-    path: '/gudang/barang/keluar',
-    name: 'gudang-barang-keluar',
+    path: '/gudang/barang/opname/keluar',
+    name: 'gudang-barang-stock-opname-keluar',
     component: KeluarScreen,
     meta: {
       title: 'Barang Keluar',
@@ -61,11 +61,11 @@ export const gudangRoutes = [
     },
   },
   {
-    path: '/gudang/barang/mutasi/detail/:id',
-    name: 'gudang-barang-mutasi-detail',
+    path: '/gudang/barang/opname/detail/:id',
+    name: 'gudang-barang-opname-detail',
     component: MutasiDetailScreen,
     meta: {
-      title: 'Detail Mutasi Barang',
+      title: 'Detail Stock Opname',
       layout: 'layout-normal',
     },
   },

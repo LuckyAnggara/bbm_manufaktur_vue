@@ -43,6 +43,17 @@
     >
       Data Overhead
     </button>
+
+    <button
+      class="btn btn-lg btn-wide hover:scale-110"
+      @click="
+        router.push({
+          name: 'data-pegawai',
+        })
+      "
+    >
+      Data Pegawai
+    </button>
   </div>
 </template>
 

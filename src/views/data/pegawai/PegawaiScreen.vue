@@ -1,100 +1,36 @@
 <template>
-  <div class="flex">
-    <div
-      class="flex-col md:w-1/4 w-full mr-10 self-start card bg-neutral shadow-xl"
-    >
-      <div class="card-body">
-        <h2 class="card-title">Filter Data</h2>
-        <div class="justify-center my-4">
-          <div class="form-control">
-            <label class="label">
-              <span class="label-text">Tanggal Data</span>
-            </label>
-            <input
-              v-model="pembelianStore.filter.date.fromDate"
-              id="date"
-              type="date"
-              placeholder="Type here"
-              class="input input-bordered w-auto"
-            />
-            <label class="my-4">s.d</label>
-            <input
-              v-model="pembelianStore.filter.date.toDate"
-              id="date"
-              type="date"
-              placeholder="Type here"
-              class="input input-bordered w-auto"
-            />
-          </div>
-        </div>
-
-        <div class="card-actions justify-end">
-          <button
-            class="btn btn-accent w-32 hover:btn-primary"
-            @click="pembelianStore.getData()"
-          >
-            Filter
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="card flex bg-neutral flex-col h-5/6 w-full">
+  <section>
+    <div class="card flex bg-neutral flex-col lg:w-fit w-full">
       <div class="card-body shadow-xl rounded-xl">
-        <button
-          class="btn btn-accent w-32 hover:btn-primary my-2"
-          @click="toNew()"
-        >
-          Tambah
-        </button>
-        <h2 class="card-title mb-2 text-2xl">Daftar Pembelian</h2>
+        <h2 class="card-title mb-2 text-2xl">Data Pegawai</h2>
         <div class="md:flex py-2">
-          <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4">
-            <label class="mr-4">Jumlah Data </label>
-            <select
-              v-model="pembelianStore.filter.currentLimit"
-              class="select select-bordered max-w-xs"
+          <div class="w-full">
+            <button
+              class="btn w-32 btn-secondary modal-button shadow-md"
+              @click="onNew()"
             >
-              <option
-                v-for="option in mainStore.limitDataOptions"
-                :key="option"
-                :value="option"
-              >
-                {{ option == 100000 ? 'SEMUA' : option }}
-              </option>
-            </select>
-          </div>
-
-          <div class="justify-end mx-1 md:w-1/2 w-full">
-            <div class="form-control">
-              <input
-                v-model="pembelianStore.filter.searchName"
-                @keyup="searchData"
-                type="text"
-                placeholder="Cari Data"
-                class="input input-bordered w-full"
-              />
-            </div>
+              Tambah
+            </button>
           </div>
         </div>
 
-        <div class="flex mt-2 lg:overflow-visible overflow-x-auto">
-          <table class="table table-compact lg:w-full">
+        <div class="flex mt-2 md:overflow-visible overflow-y-auto">
+          <table class="table table-compact w-full">
             <!-- head -->
             <thead>
               <tr>
                 <th></th>
-                <th>Nomor Faktur</th>
-                <th>Tanggal Transaksi</th>
-                <th>Nama Supplier</th>
-                <th>Total</th>
-                <!-- <th>Status</th> -->
+                <th>Nama</th>
+                <th>Jabatan</th>
+                <th>Gaji (IDR)</th>
+                <th>Uang Makan (IDR)</th>
+                <th>Bonus (IDR)</th>
                 <th>Action</th>
               </tr>
             </thead>
 
             <tbody>
-              <tr v-if="pembelianStore.isLoading">
+              <tr v-if="pegawaiStore.isLoading">
                 <td colspan="7" class="text-center">
                   <div role="status">
                     <svg
@@ -117,33 +53,37 @@
                 </td>
               </tr>
               <template v-else>
-                <tr v-if="pembelianStore.items.length == 0">
+                <tr v-if="pegawaiStore.items.length == 0">
                   <td colspan="7" class="text-center">Tidak ada data</td>
                 </tr>
                 <tr
                   v-else
-                  v-for="(item, index) in pembelianStore.items"
-                  :key="index"
+                  v-for="(item, index) in pegawaiStore.items"
+                  :key="item.id"
                 >
-                  <td class="text-center">
-                    {{ pembelianStore.from + index }}
+                  <td class="text-center">{{ from + index }}</td>
+                  <td>
+                    {{ item.name.toUpperCase() }}
                   </td>
-                  <td>{{ item.nomor_faktur }}</td>
-                  <td>{{ item.created_at }}</td>
-                  <td>{{ item.nama_supplier }}</td>
-                  <td>{{ numeral(item.total).format('0,0') }}</td>
-                  <!-- <td>Lunas</td> -->
+                  <td>
+                    {{ item.jabatan }}
+                  </td>
+                  <td>
+                    {{ numeral(item.gaji).format('0,0') }}
+                  </td>
+                  <td>
+                    {{ numeral(item.uang_makan).format('0,0') }}
+                  </td>
+                  <td>
+                    {{ numeral(item.bonus).format('0,0') }}
+                  </td>
                   <td class="before:hidden lg:w-1 whitespace-nowrap">
                     <div>
                       <Menu as="div" class="relative inline-block text-left">
                         <div>
                           <MenuButton
-                            :disabled="
-                              pembelianStore.isDestroyLoading &&
-                              indexDestroy == item.id
-                            "
+                            :disabled="indexDestroy == item.id"
                             :class="
-                              pembelianStore.isDestroyLoading &&
                               indexDestroy == item.id
                                 ? ''
                                 : 'hover:scale-125 ease-in-out duration-300'
@@ -151,10 +91,7 @@
                             class="flex w-full rounded-md font-medium text-black dark:text-gray-400"
                           >
                             <ArrowPathIcon
-                              v-if="
-                                pembelianStore.isDestroyLoading &&
-                                indexDestroy == item.id
-                              "
+                              v-if="indexDestroy == item.id"
                               class="animate-spin h-5 w-5 text-black dark:text-gray-400"
                               aria-hidden="true"
                             />
@@ -209,65 +146,50 @@
             </tbody>
           </table>
         </div>
-        <div
-          class="btn-group mx-auto mt-4 mb-20 justify-center"
-          v-if="!pembelianStore.isLoading"
-        >
-          <button
-            class="btn btn-outline"
-            @click="previousPage"
-            :disabled="pembelianStore.currentPage == 1 ? true : false"
-          >
-            «
-          </button>
-          <button class="btn btn-outline">
-            Page {{ pembelianStore.currentPage }}
-          </button>
-          <button
-            class="btn btn-outline"
-            @click="nextPage"
-            :disabled="
-              pembelianStore.lastPage == pembelianStore.currentPage
-                ? true
-                : false
-            "
-          >
-            »
-          </button>
-        </div>
       </div>
     </div>
-  </div>
+  </section>
+  <!-- Modal -->
+  <Teleport to="body">
+    <!-- use the modal component, pass in the prop -->
+    <ModalNewPegawai
+      :show-modal="showModal"
+      :is-edit="isEdit"
+      @updateStore="onEdit()"
+      @submitStore="onSubmit()"
+      @close="showModal = !showModal"
+    />
+  </Teleport>
 </template>
 
 <script setup>
-import { inject, onMounted, onUnmounted, ref, watch } from 'vue'
-import { usePembelianStore } from '@/stores/pembelianStore'
-import { useMainStore } from '@/stores/mainStore'
-import { useDebounceFn } from '@vueuse/core'
-import { useRouter } from 'vue-router'
+import { onMounted, inject, ref } from 'vue'
+import { usePegawaiStore } from '@/stores/pegawaiStore'
+import ModalNewPegawai from './component/ModalNewPegawai.vue'
+import numeral from 'numeral'
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import {
-  ArrowPathIcon,
-  EllipsisVerticalIcon,
-  PrinterIcon,
+  PencilSquareIcon,
   TrashIcon,
+  EllipsisVerticalIcon,
+  ArrowPathIcon,
 } from '@heroicons/vue/24/solid'
-import numeral from 'numeral'
 
-const router = useRouter()
-const pembelianStore = usePembelianStore()
-const mainStore = useMainStore()
+const pegawaiStore = usePegawaiStore()
+const from = 1
+const showModal = ref(false)
+const isEdit = ref(false)
 const indexDestroy = ref(null)
+const indexId = ref(null)
 
 const itemMenu = [
   {
-    function: toFaktur,
-    label: 'Faktur',
-    icon: PrinterIcon,
+    function: edit,
+    label: 'Edit',
+    icon: PencilSquareIcon,
   },
   {
-    function: destroy,
+    function: onDelete,
     label: 'Hapus',
     icon: TrashIcon,
   },
@@ -275,51 +197,84 @@ const itemMenu = [
 
 const swal = inject('$swal')
 
-const searchData = useDebounceFn(() => {
-  pembelianStore.getData()
-}, 500)
-
-const previousPage = useDebounceFn(() => {
-  pembelianStore.$patch((state) => {
-    state.filter.page--
-  })
-  pembelianStore.getData()
-}, 50)
-
-const nextPage = useDebounceFn(() => {
-  pembelianStore.$patch((state) => {
-    state.filter.page++
-  })
-  pembelianStore.getData()
-}, 50)
-
-function toNew() {
-  router.push({
-    name: 'pembelian-new',
-  })
+function onDelete(item) {
+  const { id } = item
+  swal
+    .fire({
+      title: 'Anda yakin?',
+      text: 'Data ini akan di hapus!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete!',
+      showLoaderOnConfirm: true,
+      allowOutsideClick: false,
+      backdrop: true,
+      preConfirm: (value) => {
+        return this.pegawaiStore.destroy(id).then((resp) => {
+          if (resp.status == 200) {
+            return resp
+          }
+        })
+      },
+      allowOutsideClick: () => this.pegawaiStore.isDeleteLoading,
+    })
+    .then((result) => {
+      if (result.isConfirmed) {
+        if (result.value.status == 200) {
+          swal.fire({
+            icon: 'success',
+            title: 'Deleted',
+            text: 'Data berhasil di hapus',
+            backdrop: true,
+            allowOutsideClick: () => false,
+          })
+        } else {
+          swal.fire({
+            icon: 'error',
+            title: 'Opss',
+            text: 'Ada permasalahan segera hubungi admin',
+            backdrop: true,
+            allowOutsideClick: () => false,
+          })
+        }
+      }
+    })
 }
 
-function toFaktur(item) {
-  pembelianStore.showFaktur(item.id)
-}
-
-function destroy(item) {
-  // swal("Hello Vue world!!!");
-  pembelianStore.destroy(item.id)
-  indexDestroy.value = item.id
-}
-
-watch(
-  () => pembelianStore.filter.currentLimit,
-  () => {
-    pembelianStore.getData()
+async function onSubmit() {
+  const result = await pegawaiStore.store()
+  if (result) {
+    showModal.value = false
+    pegawaiStore.clearForm()
   }
-)
+}
+
+async function edit(item) {
+  indexDestroy.value = item.id
+  const result = await pegawaiStore.showData(item.id)
+  if (result) {
+    indexDestroy.value = null
+    isEdit.value = true
+    showModal.value = true
+  }
+}
+
+async function onEdit() {
+  const result = await pegawaiStore.update()
+  if (result) {
+    showModal.value = false
+  }
+}
+
+function onNew() {
+  pegawaiStore.clearForm()
+  isEdit.value = false
+  showModal.value = !showModal.value
+}
 
 onMounted(() => {
-  pembelianStore.getData()
-})
-onUnmounted(() => {
-  pembelianStore.$reset()
+  pegawaiStore.getData()
 })
 </script>

@@ -8,7 +8,7 @@ import { useToast } from 'vue-toastification'
 const toast = useToast()
 
 // PRODUCTION ORDER STORE
-export const usePembelianStore = defineStore('pembelianStore', {
+export const usePenjualanStore = defineStore('penjualanStore', {
   state: () => {
     return {
       responses: null,
@@ -20,15 +20,20 @@ export const usePembelianStore = defineStore('pembelianStore', {
       resultId: null,
       isUpdateLoading: false,
       isDestroyLoading: false,
+      tipePajak: 0,
       form: {
         nomor_faktur: null,
-        nama_supplier: null,
+        nama_pelanggan: null,
+        alamat: null,
+        nomor_telepon: null,
         tanggal_transaksi: moment().format('YYYY-MM-DD'),
         cart: [],
         total: 0,
         pajak: 0,
         diskon: 0,
         ongkir: 0,
+        pelanggan_tetap: false,
+        pelanggan: {},
       },
       filter: {
         page: 1,
@@ -59,11 +64,14 @@ export const usePembelianStore = defineStore('pembelianStore', {
       }, 0)
       return sum
     },
+    pajakTotal(state) {
+      return this.cartTotal * (state.tipePajak / 100)
+    },
     grandTotal(state) {
       return (
         parseFloat(this.cartTotal) +
         parseFloat(state.form.ongkir) +
-        parseFloat(state.form.pajak)
+        parseFloat(this.pajakTotal)
       )
     },
     currentPage(state) {
@@ -116,7 +124,7 @@ export const usePembelianStore = defineStore('pembelianStore', {
       this.isLoading = true
       try {
         const response = await axiosIns.get(
-          `/pembelian?limit=${this.filter.currentLimit}${this.searchQuery}${this.pageQuery}${this.dateQuery}`
+          `/penjualan?limit=${this.filter.currentLimit}${this.searchQuery}${this.pageQuery}${this.dateQuery}`
         )
         this.responses = response.data.data
       } catch (error) {
@@ -127,15 +135,16 @@ export const usePembelianStore = defineStore('pembelianStore', {
       return false
     },
     async getFakturNumber() {
-      const response = await axiosIns.get(`/pembelian/faktur`)
+      const response = await axiosIns.get(`/penjualan/faktur`)
       this.form.nomor_faktur = response.data
     },
     async store() {
       this.isStoreLoading = true
       this.form.total = this.cartTotal
       this.form.diskon = this.cartDiskon
+      this.form.pajak = this.pajakTotal
       try {
-        const response = await axiosIns.post(`/pembelian`, this.form)
+        const response = await axiosIns.post(`/penjualan`, this.form)
         if (response.status == 200) {
           this.resultId = response.data.data.id
           return true
@@ -153,7 +162,7 @@ export const usePembelianStore = defineStore('pembelianStore', {
     async showData(id = '') {
       this.isLoading = true
       try {
-        const response = await axiosIns.get(`/pembelian/${id}`)
+        const response = await axiosIns.get(`/penjualan/${id}`)
         this.singleResponses = JSON.parse(JSON.stringify(response.data.data))
         this.originalSingleResponses = JSON.parse(
           JSON.stringify(response.data.data)
@@ -169,7 +178,7 @@ export const usePembelianStore = defineStore('pembelianStore', {
       this.isDestroyLoading = true
       setTimeout(() => {}, 500)
       try {
-        await axiosIns.delete(`/pembelian/${id}`)
+        await axiosIns.delete(`/penjualan/${id}`)
         toast.success('Data berhasil di hapus', {
           timeout: 2000,
         })
@@ -186,9 +195,9 @@ export const usePembelianStore = defineStore('pembelianStore', {
     async showFaktur(id) {
       this.isLoadingDownload = true
       try {
-        const response = await axiosIns.get(`/faktur/pembelian/${id}`)
+        const response = await axiosIns.get(`/faktur/penjualan/${id}`)
         let responseHtml = response.data
-        // console.log(responseHtml, 'Faktur Pembelian')
+        // console.log(responseHtml, 'Faktur penjualan')
         var myWindow = window.open('response')
         myWindow.document.write(responseHtml)
       } catch (error) {
@@ -201,7 +210,7 @@ export const usePembelianStore = defineStore('pembelianStore', {
     //   this.isUpdateLoading = true
     //   try {
     //     const response = await axiosIns.put(
-    //       `/pembelian/${this.singleResponses.id}`,
+    //       `/penjualan/${this.singleResponses.id}`,
     //       this.singleResponses
     //     )
     //     if (response.status == 200) {

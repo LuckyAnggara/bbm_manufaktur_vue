@@ -192,8 +192,8 @@
 </template>
 
 <script>
-import { useMutationStore, useAuthStore } from '../../../../stores/store'
-import ModalItem from './Component/ModalItem.vue'
+import { useMutationStore, useAuthStore } from '@/stores/store'
+import ModalItem from './component/ModalItem.vue'
 import { useToast } from 'vue-toastification'
 import { inject } from 'vue'
 import { useRouter } from 'vue-router'

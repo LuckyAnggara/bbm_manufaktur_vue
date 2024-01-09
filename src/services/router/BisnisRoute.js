@@ -35,4 +35,31 @@ export const bisnisRoutes = [
       layout: 'layout-full',
     },
   },
+  {
+    path: '/bisnis/penjualan',
+    name: 'penjualan-list',
+    component: () => import('@/views/bisnis/penjualan/PenjualanList.vue'),
+    meta: {
+      title: 'Penjualan',
+      layout: 'layout-normal',
+    },
+  },
+  {
+    path: '/bisnis/penjualan/new',
+    name: 'penjualan-new',
+    component: () => import('@/views/bisnis/penjualan/PenjualanNew.vue'),
+    meta: {
+      title: 'Penjualan Baru',
+      layout: 'layout-normal',
+    },
+  },
+  {
+    path: '/bisnis/penjualan/:id/faktur',
+    name: 'penjualan-faktur',
+    component: () => import('@/views/bisnis/penjualan/FakturPage.vue'),
+    meta: {
+      title: 'Faktur Penjualan',
+      layout: 'layout-full',
+    },
+  },
 ]

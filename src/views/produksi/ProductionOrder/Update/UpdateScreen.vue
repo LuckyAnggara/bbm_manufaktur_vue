@@ -181,7 +181,7 @@
                   <th>Satuan</th>
                   <th>Output Quantity</th>
                   <th>Real Quantity</th>
-                  <th>Action</th>
+                  <th>Sisa Quantity</th>
                 </tr>
               </thead>
 
@@ -210,7 +210,7 @@
                     />
                   </td>
 
-                  <td>-</td>
+                  <td>{{ item.estimate_quantity - item.real_quantity }}</td>
                 </tr>
               </tbody>
             </table>

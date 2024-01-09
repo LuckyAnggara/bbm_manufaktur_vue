@@ -1,14 +1,12 @@
 import { defineStore } from 'pinia'
 import axiosIns from '@/services/axios'
-import { useArrayFindIndex } from '@vueuse/core'
 
-import moment from 'moment'
 import { useToast } from 'vue-toastification'
 
 const toast = useToast()
 
 // PRODUCTION ORDER STORE
-export const usePembelianStore = defineStore('pembelianStore', {
+export const usePegawaiStore = defineStore('pegawaiStore', {
   state: () => {
     return {
       responses: null,
@@ -16,19 +14,17 @@ export const usePembelianStore = defineStore('pembelianStore', {
       originalSingleResponses: null,
       isUpdateLoading: false,
       isLoading: false,
+      isShowLoading: false,
       isStoreLoading: false,
       resultId: null,
       isUpdateLoading: false,
       isDestroyLoading: false,
       form: {
-        nomor_faktur: null,
-        nama_supplier: null,
-        tanggal_transaksi: moment().format('YYYY-MM-DD'),
-        cart: [],
-        total: 0,
-        pajak: 0,
-        diskon: 0,
-        ongkir: 0,
+        name: null,
+        jabatan: null,
+        gaji: 0,
+        uang_makan: 0,
+        bonus: 0,
       },
       filter: {
         page: 1,
@@ -46,25 +42,6 @@ export const usePembelianStore = defineStore('pembelianStore', {
   getters: {
     items(state) {
       return state.responses?.data ?? []
-    },
-    cartTotal(state) {
-      let sum = state.form.cart.reduce((accumulator, item) => {
-        return accumulator + item.harga * item.jumlah
-      }, 0)
-      return sum
-    },
-    cartDiskon(state) {
-      let sum = state.form.cart.reduce((accumulator, item) => {
-        return accumulator + item.discount * item.jumlah
-      }, 0)
-      return sum
-    },
-    grandTotal(state) {
-      return (
-        parseFloat(this.cartTotal) +
-        parseFloat(state.form.ongkir) +
-        parseFloat(state.form.pajak)
-      )
     },
     currentPage(state) {
       return state.responses?.current_page
@@ -116,7 +93,7 @@ export const usePembelianStore = defineStore('pembelianStore', {
       this.isLoading = true
       try {
         const response = await axiosIns.get(
-          `/pembelian?limit=${this.filter.currentLimit}${this.searchQuery}${this.pageQuery}${this.dateQuery}`
+          `/pegawai?limit=${this.filter.currentLimit}${this.searchQuery}${this.pageQuery}${this.dateQuery}`
         )
         this.responses = response.data.data
       } catch (error) {
@@ -126,23 +103,23 @@ export const usePembelianStore = defineStore('pembelianStore', {
       }
       return false
     },
-    async getFakturNumber() {
-      const response = await axiosIns.get(`/pembelian/faktur`)
-      this.form.nomor_faktur = response.data
-    },
+
     async store() {
       this.isStoreLoading = true
-      this.form.total = this.cartTotal
-      this.form.diskon = this.cartDiskon
       try {
-        const response = await axiosIns.post(`/pembelian`, this.form)
+        const response = await axiosIns.post(`/pegawai`, this.form)
         if (response.status == 200) {
           this.resultId = response.data.data.id
+          this.getData()
+          toast.success('Data berhasil di buat silahkan tutup Modal', {
+            timeout: 3000,
+          })
           return true
         }
         return false
       } catch (error) {
-        toast.error(error.response.data.data, {
+        console.info(error)
+        toast.error(error.message, {
           timeout: 3000,
         })
         return false
@@ -151,30 +128,58 @@ export const usePembelianStore = defineStore('pembelianStore', {
       }
     },
     async showData(id = '') {
-      this.isLoading = true
+      this.isShowLoading = true
       try {
-        const response = await axiosIns.get(`/pembelian/${id}`)
+        const response = await axiosIns.get(`/pegawai/${id}`)
         this.singleResponses = JSON.parse(JSON.stringify(response.data.data))
         this.originalSingleResponses = JSON.parse(
           JSON.stringify(response.data.data)
         )
+        return true
       } catch (error) {
         toast.error('Data not found', {
           position: 'bottom-right',
         })
+        return false
       }
-      this.isLoading = false
+    },
+    async update() {
+      this.isUpdateLoading = true
+      try {
+        const response = await axiosIns.put(
+          `/pegawai/${this.singleResponses.id}`,
+          this.singleResponses
+        )
+        if (response.status == 200) {
+          toast.success(response.data.message, {
+            timeout: 2000,
+          })
+          this.originalSingleResponses = JSON.parse(
+            JSON.stringify(response.data.data)
+          )
+          this.getData()
+          return true
+        } else {
+          return false
+        }
+      } catch (error) {
+        toast.error(error.message, {
+          timeout: 2000,
+        })
+      } finally {
+        this.isUpdateLoading = false
+      }
     },
     async destroy(id) {
       this.isDestroyLoading = true
-      setTimeout(() => {}, 500)
       try {
-        await axiosIns.delete(`/pembelian/${id}`)
+        const resp = await axiosIns.delete(`/pegawai/${id}`)
         toast.success('Data berhasil di hapus', {
           timeout: 2000,
         })
         const index = this.items.findIndex((item) => item.id === id)
         this.responses.data.splice(index, 1)
+        return resp
       } catch (error) {
         toast.error(error.message, {
           timeout: 2000,
@@ -183,71 +188,14 @@ export const usePembelianStore = defineStore('pembelianStore', {
         this.isDestroyLoading = false
       }
     },
-    async showFaktur(id) {
-      this.isLoadingDownload = true
-      try {
-        const response = await axiosIns.get(`/faktur/pembelian/${id}`)
-        let responseHtml = response.data
-        // console.log(responseHtml, 'Faktur Pembelian')
-        var myWindow = window.open('response')
-        myWindow.document.write(responseHtml)
-      } catch (error) {
-        console.info(error)
+    clearForm() {
+      this.form = {
+        name: null,
+        jabatan: null,
+        gaji: 0,
+        uang_makan: 0,
+        bonus: 0,
       }
-      this.isLoadingDownload = false
-    },
-
-    // async update() {
-    //   this.isUpdateLoading = true
-    //   try {
-    //     const response = await axiosIns.put(
-    //       `/pembelian/${this.singleResponses.id}`,
-    //       this.singleResponses
-    //     )
-    //     if (response.status == 200) {
-    //       toast.success(response.data.message, {
-    //         timeout: 2000,
-    //       })
-    //       this.originalSingleResponses = JSON.parse(
-    //         JSON.stringify(response.data.data)
-    //       )
-    //       return true
-    //     } else {
-    //       return false
-    //     }
-    //   } catch (error) {
-    //     toast.error(error.message, {
-    //       timeout: 2000,
-    //     })
-    //   } finally {
-    //     this.isUpdateLoading = false
-    //   }
-    // },
-    addCart(item) {
-      if (!this.checkItem(item.id)) {
-        const newItem = {
-          id: item.id,
-          unit: item.unit,
-          name: item.name,
-          harga: 0,
-          discount: 0,
-          jumlah: 0,
-        }
-        this.form.cart.push(newItem)
-      } else {
-        const b = useArrayFindIndex(this.form.cart, (i) => i.id == item.id)
-        this.form.cart[b.value].jumlah++
-      }
-    },
-    checkItem(id) {
-      const b = this.form.cart.find((e) => e.id == id)
-      if (b) {
-        return true
-      }
-      return false
-    },
-    checkCartExisting() {
-      return this.form.cart.length > 0 && this.cartTotal > 0
     },
   },
 })

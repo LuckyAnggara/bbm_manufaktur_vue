@@ -15,7 +15,7 @@
       class="btn btn-lg btn-wide hover:scale-110"
       @click="
         router.push({
-          name: 'gudang-barang-mutasi',
+          name: 'penjualan-list',
         })
       "
     >
@@ -30,7 +30,7 @@
         })
       "
     >
-      Laporan Laba Rugi
+      Laporan Bisnis
     </button>
   </div>
 </template>

@@ -100,7 +100,7 @@
               dataOrder.status == 'NEW ORDER' ||
               !dataOrder.status == 'WORK IN PROGRESS'
             "
-            class="btn gap-2 w-32 btn-primary hover:btn-secondary text-white"
+            class="btn gap-2 w-32 btn-primary hover:btn-secondary"
             @click="onDelete"
           >
             <svg

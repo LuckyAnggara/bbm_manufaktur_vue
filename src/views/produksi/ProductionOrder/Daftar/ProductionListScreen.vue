@@ -122,18 +122,18 @@
                     </button>
                     <ul
                       tabindex="0"
-                      class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52"
+                      class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52 z-50"
                     >
                       <li>
                         <a @click="onDetail(data.id)"> Detail </a>
                       </li>
-                      <li v-if="doneProduction(data.status) ? false : true">
+                      <li v-show="!doneProduction(data.status) ? false : true">
                         <a @click="onEdit(data.id)"> Edit </a>
                       </li>
                       <!-- <li>
                         <a @click="onUpdate(data)"> Update </a>
                       </li> -->
-                      <li v-if="doneProduction(data.status) ? false : true">
+                      <li v-show="!doneProduction(data.status) ? false : true">
                         <a @click="onDelete(data.id, index)">Hapus</a>
                       </li>
                     </ul>
@@ -272,11 +272,12 @@ export default {
   },
   methods: {
     doneProduction(data) {
-      if (data == 'DONE PRODUCTION') return true
-      if (data == 'WAREHOUSE') return true
-      if (data == 'SHIPPING') return true
-      if (data == 'RETUR') return true
-      if (data == 'RECEIVE') return true
+      // if (data == 'DONE PRODUCTION') return true
+      // if (data == 'WAREHOUSE') return true
+      // if (data == 'SHIPPING') return true
+      // if (data == 'RETUR') return true
+      // if (data == 'RECEIVE') return true
+      if (data == 'NEW ORDER') return true
       return false
     },
     onDetail(id) {
