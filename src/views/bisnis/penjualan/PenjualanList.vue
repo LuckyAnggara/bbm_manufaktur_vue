@@ -241,6 +241,55 @@
         </div>
       </div>
     </div>
+
+    <TransitionRoot appear :show="qrDialogShow" as="template">
+      <Dialog as="div" @close="closeModal" class="relative z-10">
+        <TransitionChild
+          as="template"
+          enter="duration-300 ease-out"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="duration-200 ease-in"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
+        >
+          <div class="fixed inset-0 bg-black/25" />
+        </TransitionChild>
+
+        <div class="fixed inset-0 overflow-y-auto">
+          <div
+            class="flex min-h-full items-center justify-center p-4 text-center"
+          >
+            <TransitionChild
+              as="template"
+              enter="duration-300 ease-out"
+              enter-from="opacity-0 scale-95"
+              enter-to="opacity-100 scale-100"
+              leave="duration-200 ease-in"
+              leave-from="opacity-100 scale-100"
+              leave-to="opacity-0 scale-95"
+            >
+              <DialogPanel
+                class="w-fit transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
+              >
+                <DialogTitle
+                  as="h3"
+                  class="text-lg font-medium leading-6 text-gray-900"
+                >
+                  QR Code
+                </DialogTitle>
+                <div class="mt-2">
+                  <vue-qrcode
+                    :value="link"
+                    :options="{ width: 400 }"
+                  ></vue-qrcode>
+                </div>
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </div>
+      </Dialog>
+    </TransitionRoot>
   </div>
 </template>
 
@@ -250,11 +299,23 @@ import { usePenjualanStore } from '@/stores/penjualanStore'
 import { useMainStore } from '@/stores/mainStore'
 import { useDebounceFn } from '@vueuse/core'
 import { useRouter } from 'vue-router'
-import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
+import {
+  Menu,
+  MenuButton,
+  MenuItems,
+  MenuItem,
+  TransitionRoot,
+  TransitionChild,
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+} from '@headlessui/vue'
+
 import {
   ArrowPathIcon,
   EllipsisVerticalIcon,
   PrinterIcon,
+  QrCodeIcon,
   TrashIcon,
 } from '@heroicons/vue/24/solid'
 import numeral from 'numeral'
@@ -264,11 +325,22 @@ const penjualanStore = usePenjualanStore()
 const mainStore = useMainStore()
 const indexDestroy = ref(null)
 
+const qrDialogShow = ref(false)
+const link = ref(null)
+function closeModal() {
+  qrDialogShow.value = false
+}
+
 const itemMenu = [
   {
     function: toFaktur,
     label: 'Faktur',
     icon: PrinterIcon,
+  },
+  {
+    function: toQr,
+    label: 'QR Code',
+    icon: QrCodeIcon,
   },
   {
     function: destroy,
@@ -305,6 +377,13 @@ function toNew() {
 
 function toFaktur(item) {
   penjualanStore.showFaktur(item.id)
+}
+
+function toQr(item) {
+  const firstSegment = new URL(window.location.href)
+  link.value = `${firstSegment}/${item.id}/verification`
+
+  qrDialogShow.value = true
 }
 
 function destroy(item) {

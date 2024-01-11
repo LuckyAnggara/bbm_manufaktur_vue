@@ -13,6 +13,7 @@ export const dataRoutes = [
     meta: {
       title: 'Master Data',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -22,6 +23,7 @@ export const dataRoutes = [
     meta: {
       title: 'Data Tipe',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -31,6 +33,7 @@ export const dataRoutes = [
     meta: {
       title: 'Data Unit',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -40,6 +43,7 @@ export const dataRoutes = [
     meta: {
       title: 'Data Mesin',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -49,6 +53,7 @@ export const dataRoutes = [
     meta: {
       title: 'Data Overhead',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -58,6 +63,7 @@ export const dataRoutes = [
     meta: {
       title: 'Data Pegawai',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
 ]

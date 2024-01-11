@@ -13,6 +13,7 @@ export const gudangRoutes = [
     meta: {
       title: 'Dashboard',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -22,6 +23,7 @@ export const gudangRoutes = [
     meta: {
       title: 'Gudang',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -31,6 +33,7 @@ export const gudangRoutes = [
     meta: {
       title: 'Data Persediaan Barang',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -40,6 +43,7 @@ export const gudangRoutes = [
     meta: {
       title: 'Stock Opname Persediaan',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -49,6 +53,7 @@ export const gudangRoutes = [
     meta: {
       title: 'Barang Masuk',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -58,6 +63,7 @@ export const gudangRoutes = [
     meta: {
       title: 'Barang Keluar',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -67,6 +73,7 @@ export const gudangRoutes = [
     meta: {
       title: 'Detail Stock Opname',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
 ]

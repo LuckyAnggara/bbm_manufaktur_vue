@@ -6,6 +6,7 @@ export const bisnisRoutes = [
     meta: {
       title: 'Bisnis',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -15,6 +16,7 @@ export const bisnisRoutes = [
     meta: {
       title: 'Pembelian',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -24,6 +26,7 @@ export const bisnisRoutes = [
     meta: {
       title: 'Pembelian Baru',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -33,6 +36,7 @@ export const bisnisRoutes = [
     meta: {
       title: 'Pembelian Baru',
       layout: 'layout-full',
+      requiresAuth: true,
     },
   },
   {
@@ -42,6 +46,7 @@ export const bisnisRoutes = [
     meta: {
       title: 'Penjualan',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -51,6 +56,7 @@ export const bisnisRoutes = [
     meta: {
       title: 'Penjualan Baru',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -58,7 +64,18 @@ export const bisnisRoutes = [
     name: 'penjualan-faktur',
     component: () => import('@/views/bisnis/penjualan/FakturPage.vue'),
     meta: {
+      requiresAuth: true,
       title: 'Faktur Penjualan',
+      layout: 'layout-full',
+    },
+  },
+  {
+    path: '/bisnis/penjualan/:id/verification',
+    name: 'verification',
+    component: () => import('@/views/bisnis/penjualan/VerificationPage.vue'),
+    meta: {
+      requiresAuth: false,
+      title: 'Bisnis',
       layout: 'layout-full',
     },
   },

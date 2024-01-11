@@ -13,6 +13,7 @@ export const productionOrderRoutes = [
     meta: {
       title: 'Produksi',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -22,6 +23,7 @@ export const productionOrderRoutes = [
     meta: {
       title: 'Deetail Produksi',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -31,6 +33,7 @@ export const productionOrderRoutes = [
     meta: {
       title: 'Data Produksi Order',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -40,6 +43,7 @@ export const productionOrderRoutes = [
     meta: {
       title: 'Produksi Order',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -49,6 +53,7 @@ export const productionOrderRoutes = [
     meta: {
       title: 'Produksi Order',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
   {
@@ -58,6 +63,7 @@ export const productionOrderRoutes = [
     meta: {
       title: 'Update Production Order',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
 ]

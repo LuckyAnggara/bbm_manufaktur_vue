@@ -8,6 +8,7 @@ export const dashboardRoutes = [
     meta: {
       title: 'Dashboard',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
 
@@ -18,6 +19,7 @@ export const dashboardRoutes = [
     meta: {
       title: 'Dashboard',
       layout: 'layout-normal',
+      requiresAuth: true,
     },
   },
 ]

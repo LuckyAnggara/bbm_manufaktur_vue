@@ -4,7 +4,7 @@ import './index.css'
 import './style.css'
 import App from './App.vue'
 import axiosIns from './services/axios'
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import { routes } from './services/router'
 import Toast from 'vue-toastification'
 import VueSweetalert2 from 'vue-sweetalert2'
@@ -15,6 +15,8 @@ import VueNumerals from 'vue-numerals'
 import '@sweetalert2/themes/dark/dark.css'
 import { isUserLoggedIn } from './services/auth'
 import { useAuthStore } from './stores/store'
+
+import VueQrcode from '@chenfengyuan/vue-qrcode'
 
 moment.tz.setDefault('Asia/Jakarta')
 moment.updateLocale('en', {
@@ -54,17 +56,20 @@ moment().format('L')
 const router = createRouter({
   mode: 'history',
   linkExactActiveClass: 'active',
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes,
 })
 
 router.beforeResolve(async (to, _, next) => {
   const auth = useAuthStore()
   const isLogin = JSON.parse(localStorage.getItem('userData'))
-  // const userData = getUserData()
-  // if (to.name !== 'login' && !isLoggedIn) next({ name: 'login' })
-  if (to.name !== 'login' && !isLogin) next({ name: 'login' })
-  else next()
+
+  if (to.meta.requiresAuth == true) {
+    if (to.name !== 'login' && !isLogin) next({ name: 'login' })
+    else next()
+  } else {
+    return next()
+  }
 })
 
 const pirntOptions = {
@@ -73,9 +78,8 @@ const pirntOptions = {
   styles: [],
 }
 
-createApp(App)
-const app = createApp(App)
 const pinia = createPinia()
+const app = createApp(App)
 
 app.config.globalProperties.$moment = moment
 app.config.globalProperties.$axios = axiosIns
@@ -88,4 +92,6 @@ app.use(Toast, {
   maxToasts: 20,
   newestOnTop: true,
 })
+app.component(VueQrcode.name, VueQrcode)
+
 app.mount('#app')

@@ -15,12 +15,14 @@ export const usePenjualanStore = defineStore('penjualanStore', {
       singleResponses: null,
       originalSingleResponses: null,
       isUpdateLoading: false,
+      isVerifikasiLoading: false,
       isLoading: false,
       isStoreLoading: false,
       resultId: null,
       isUpdateLoading: false,
       isDestroyLoading: false,
       tipePajak: 0,
+      pin: null,
       form: {
         nomor_faktur: null,
         nama_pelanggan: null,
@@ -205,7 +207,44 @@ export const usePenjualanStore = defineStore('penjualanStore', {
       }
       this.isLoadingDownload = false
     },
-
+    async showVerifikasi(id = '') {
+      this.isLoading = true
+      try {
+        const response = await axiosIns.get(`/verifikasi/penjualan/${id}`)
+        this.singleResponses = JSON.parse(JSON.stringify(response.data.data))
+        this.originalSingleResponses = JSON.parse(
+          JSON.stringify(response.data.data)
+        )
+      } catch (error) {
+        toast.error('Data not found', {
+          position: 'bottom-right',
+        })
+      }
+      this.isLoading = false
+    },
+    async verifikasi() {
+      this.isVerifikasiLoading = true
+      try {
+        const response = await axiosIns.post(`/verifikasi/penjualan`, {
+          pin: this.pin,
+          id: this.singleResponses.id,
+        })
+        if (response.status == 200) {
+          toast.success(response.data.message, {
+            timeout: 3000,
+          })
+          return true
+        }
+        return false
+      } catch (error) {
+        toast.error(error.response.data.data, {
+          timeout: 3000,
+        })
+        return false
+      } finally {
+        this.isVerifikasiLoading = false
+      }
+    },
     // async update() {
     //   this.isUpdateLoading = true
     //   try {

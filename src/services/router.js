@@ -13,6 +13,7 @@ export const routes = [
     name: 'login',
     component: LoginScreen,
     meta: {
+      requiresAuth: false,
       title: 'Login',
       layout: 'layout-full',
     },
