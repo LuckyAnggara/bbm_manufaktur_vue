@@ -79,4 +79,14 @@ export const bisnisRoutes = [
       layout: 'layout-full',
     },
   },
+  {
+    path: '/bisnis/biaya',
+    name: 'biaya-list',
+    component: () => import('@/views/bisnis/biaya/BiayaList.vue'),
+    meta: {
+      title: 'Biaya',
+      layout: 'layout-normal',
+      requiresAuth: true,
+    },
+  },
 ]
