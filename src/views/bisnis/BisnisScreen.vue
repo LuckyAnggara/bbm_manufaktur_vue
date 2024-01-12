@@ -26,6 +26,28 @@
       class="btn btn-lg btn-wide hover:scale-110"
       @click="
         router.push({
+          name: 'biaya-list',
+        })
+      "
+    >
+      Biaya
+    </button>
+
+    <button
+      class="btn btn-lg btn-wide hover:scale-110"
+      @click="
+        router.push({
+          name: 'gudang-barang-mutasi',
+        })
+      "
+    >
+      Gaji
+    </button>
+
+    <button
+      class="btn btn-lg btn-wide hover:scale-110"
+      @click="
+        router.push({
           name: 'gudang-barang-mutasi',
         })
       "
