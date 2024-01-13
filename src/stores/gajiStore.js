@@ -11,6 +11,7 @@ const toast = useToast()
 export const useGajiStore = defineStore('gajiStore', {
   state: () => {
     return {
+      isLoadingDownload: false,
       modalToggle: false,
       responses: null,
       singleResponses: null,
@@ -159,6 +160,21 @@ export const useGajiStore = defineStore('gajiStore', {
       } finally {
         this.isStoreLoading = false
       }
+    },
+    async showGaji(created_at) {
+      this.isLoadingDownload = true
+      try {
+        const response = await axiosIns.get(
+          `/report/gaji/${moment(created_at).format('yyyy-MM-DD')}`
+        )
+        let responseHtml = response.data
+        // console.log(responseHtml, 'Faktur penjualan')
+        var myWindow = window.open('response')
+        myWindow.document.write(responseHtml)
+      } catch (error) {
+        console.info(error)
+      }
+      this.isLoadingDownload = false
     },
     async destroy(created_at, index) {
       this.isDestroyLoading = true

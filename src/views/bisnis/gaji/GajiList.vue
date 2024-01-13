@@ -129,37 +129,79 @@
                         }}
                       </td>
 
-                      <td>
-                        <button
-                          class="btn btn-sm btn-square btn-ghost hover:scale-110"
-                          @click="onDelete(item, index)"
-                        >
-                          <span>
-                            <ArrowPathIcon
-                              v-if="
-                                gajiStore.isDestroyLoading &&
-                                indexDestroy == item.id
-                              "
-                              class="animate-spin h-5 w-5 text-black dark:text-gray-400"
-                              aria-hidden="true"
-                            />
-                            <svg
-                              v-else
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              width="36"
-                              height="36"
-                              class="inline-block w-5 h-5 stroke-current"
+                      <td class="before:hidden lg:w-1 whitespace-nowrap">
+                        <div>
+                          <Menu
+                            as="div"
+                            class="relative inline-block text-left"
+                          >
+                            <div>
+                              <MenuButton
+                                :disabled="
+                                  gajiStore.isDestroyLoading &&
+                                  indexDestroy == item.id
+                                "
+                                :class="
+                                  gajiStore.isDestroyLoading &&
+                                  indexDestroy == item.id
+                                    ? ''
+                                    : 'hover:scale-125 ease-in-out duration-300'
+                                "
+                                class="flex w-full rounded-md font-medium text-black dark:text-gray-400"
+                              >
+                                <ArrowPathIcon
+                                  v-if="
+                                    gajiStore.isDestroyLoading &&
+                                    indexDestroy == item.id
+                                  "
+                                  class="animate-spin h-5 w-5 text-black dark:text-gray-400"
+                                  aria-hidden="true"
+                                />
+                                <EllipsisVerticalIcon
+                                  v-else
+                                  class="h-5 w-5 text-black dark:text-gray-400"
+                                  aria-hidden="true"
+                                />
+                              </MenuButton>
+                            </div>
+
+                            <transition
+                              enter-active-class="transition duration-100 ease-out"
+                              enter-from-class="transform scale-95 opacity-0"
+                              enter-to-class="transform scale-100 opacity-100"
+                              leave-active-class="transition duration-75 ease-in"
+                              leave-from-class="transform scale-100 opacity-100"
+                              leave-to-class="transform scale-95 opacity-0"
                             >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                              />
-                            </svg>
-                          </span>
-                        </button>
+                              <MenuItems
+                                class="z-50 py-1 absolute right-0 mt-2 w-40 origin-top-right divide-y divide-gray-100 rounded-md bg-white dark:bg-gray-800 dark:text-gray-100 shadow-lg ring-1 ring-black dark:ring-gray-700 ring-opacity-5 focus:outline-none"
+                              >
+                                <div class="px-2 py-1">
+                                  <MenuItem
+                                    v-for="menu in itemMenu"
+                                    v-slot="{ active }"
+                                  >
+                                    <button
+                                      @click="menu.function(item)"
+                                      :class="[
+                                        active
+                                          ? 'bg-blue-500 text-white'
+                                          : 'text-gray-900 dark:text-gray-400',
+                                        'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                      ]"
+                                    >
+                                      <component
+                                        :is="menu.icon"
+                                        class="w-5 h-5 mr-3"
+                                      />
+                                      {{ menu.label }}
+                                    </button>
+                                  </MenuItem>
+                                </div>
+                              </MenuItems>
+                            </transition>
+                          </Menu>
+                        </div>
                       </td>
                     </tr>
                   </template>
@@ -206,15 +248,35 @@
 <script setup>
 import { useGajiStore } from '@/stores/gajiStore'
 import { useMainStore } from '@/stores/mainStore'
-import { ArrowPathIcon } from '@heroicons/vue/24/solid'
 import { inject, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
+import {
+  ArrowPathIcon,
+  EllipsisVerticalIcon,
+  PrinterIcon,
+  TrashIcon,
+} from '@heroicons/vue/24/solid'
 
 import moment from 'moment'
+
 const gajiStore = useGajiStore()
 const mainStore = useMainStore()
 const router = useRouter()
 const indexDestroy = ref(0)
+
+const itemMenu = [
+  {
+    function: toReport,
+    label: 'Print',
+    icon: PrinterIcon,
+  },
+  {
+    function: onDelete,
+    label: 'Hapus',
+    icon: TrashIcon,
+  },
+]
 
 function onNew(item) {
   router.push({
@@ -223,12 +285,9 @@ function onNew(item) {
 }
 const swal = inject('$swal')
 
-// function onDelete(item) {
-//   // swal("Hello Vue world!!!");
-//   gajiStore.destroy(item.id)
-//   indexDestroy.value = item.id
-// }
-
+function toReport(item) {
+  gajiStore.showGaji(item.created_at)
+}
 async function onDelete(item, index) {
   swal
     .fire({
@@ -257,28 +316,6 @@ async function onDelete(item, index) {
       if (result.value == true) {
       }
     })
-
-  // await swal.fire({
-  //   title: 'Anda yakin?',
-  //   text: 'Data ini akan di hapus!',
-  //   icon: 'warning',
-  //   showCancelButton: true,
-  //   confirmButtonColor: '#3085d6',
-  //   cancelButtonColor: '#d33',
-  //   confirmButtonText: 'Ya, Hapus!',
-  //   showLoaderOnConfirm: gajiStore.isDestroyLoading,
-  //   preConfirm: (value) => {
-  //     indexDestroy.value = item.id
-  //     return gajiStore
-  //       .destroy(moment(item.created_at).format('yyyy-MM-DD'), index)
-  //       .then((resp) => {
-  //         if (resp.status == 200) {
-  //           return resp
-  //         }
-  //         throw new Error(resp)
-  //       })
-  //   },
-  // })
 }
 
 watch(
