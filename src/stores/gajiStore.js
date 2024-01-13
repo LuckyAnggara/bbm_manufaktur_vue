@@ -3,11 +3,12 @@ import axiosIns from '@/services/axios'
 
 import moment from 'moment'
 import { useToast } from 'vue-toastification'
+import { usePegawaiStore } from './pegawaiStore'
 
 const toast = useToast()
 
 // PRODUCTION ORDER STORE
-export const useBiayaStore = defineStore('biayaStore', {
+export const useGajiStore = defineStore('gajiStore', {
   state: () => {
     return {
       modalToggle: false,
@@ -16,11 +17,10 @@ export const useBiayaStore = defineStore('biayaStore', {
       isLoading: false,
       isStoreLoading: false,
       isDestroyLoading: false,
+      pegawai: [],
       form: {
-        tanggal_transaksi: moment().format('yyyy-MM-DD'),
-        nama: null,
-        kategori: null,
-        jumlah: 0,
+        created_at: moment().format('yyyy-MM-DD'),
+        detail: [],
       },
       filter: {
         page: 1,
@@ -36,12 +36,38 @@ export const useBiayaStore = defineStore('biayaStore', {
     }
   },
   getters: {
+    pegawaiList(state) {
+      state.pegawai.forEach((x) => {
+        x.bayarkan = true
+      })
+      return state.pegawai
+    },
     items(state) {
       return state.responses?.data ?? []
     },
-    biayaTotal(state) {
+    gajiTotal(state) {
+      let sum = state.pegawai.reduce((accumulator, item) => {
+        if (item.bayarkan === true) {
+          return (
+            accumulator +
+            parseFloat(item.gaji) +
+            parseFloat(item.uang_makan) +
+            parseFloat(item.bonus)
+          )
+        } else {
+          return accumulator
+        }
+      }, 0)
+      return sum
+    },
+    totalBayar(state) {
       let sum = state.items.reduce((accumulator, item) => {
-        return accumulator + item.jumlah
+        return (
+          accumulator +
+          parseFloat(item.total_gaji) +
+          parseFloat(item.total_uang_makan) +
+          parseFloat(item.total_bonus)
+        )
       }, 0)
       return sum
     },
@@ -95,7 +121,7 @@ export const useBiayaStore = defineStore('biayaStore', {
       this.isLoading = true
       try {
         const response = await axiosIns.get(
-          `/biaya?limit=${this.filter.currentLimit}${this.searchQuery}${this.pageQuery}${this.dateQuery}`
+          `/gaji?limit=${this.filter.currentLimit}${this.searchQuery}${this.pageQuery}${this.dateQuery}`
         )
         this.responses = response.data.data
       } catch (error) {
@@ -105,12 +131,23 @@ export const useBiayaStore = defineStore('biayaStore', {
       }
       return false
     },
+    async getPegawai() {
+      this.isLoading = true
+      const pegawaiStore = usePegawaiStore()
+      await pegawaiStore.getData()
+      this.pegawai = pegawaiStore.items
+      this.isLoading = false
+    },
     async store() {
       this.isStoreLoading = true
       try {
-        const response = await axiosIns.post(`/biaya`, this.form)
+        this.form.detail = this.pegawai
+        const response = await axiosIns.post(`/gaji`, this.form)
         if (response.status == 200) {
           this.reset()
+          toast.success('Penggajian berhasil', {
+            timeout: 3000,
+          })
           return true
         }
         return false
@@ -123,16 +160,16 @@ export const useBiayaStore = defineStore('biayaStore', {
         this.isStoreLoading = false
       }
     },
-    async destroy(id) {
+    async destroy(created_at, index) {
       this.isDestroyLoading = true
       setTimeout(() => {}, 500)
       try {
-        await axiosIns.delete(`/biaya/${id}`)
+        const resp = await axiosIns.delete(`/gaji/${created_at}`)
         toast.success('Data berhasil di hapus', {
           timeout: 2000,
         })
-        const index = this.items.findIndex((item) => item.id === id)
         this.responses.data.splice(index, 1)
+        return resp
       } catch (error) {
         toast.error(error.message, {
           timeout: 2000,
@@ -142,10 +179,9 @@ export const useBiayaStore = defineStore('biayaStore', {
       }
     },
     reset() {
-      this.form.tanggal_transaksi = null
-      this.form.nama = null
-      this.form.kategori = null
-      this.form.jumlah = null
+      this.form.created_at = moment().format('yyyy-MM-DD')
+      this.form.detail = []
+      this.form.pegawai = []
     },
   },
 })

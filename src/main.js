@@ -72,12 +72,6 @@ router.beforeResolve(async (to, _, next) => {
   }
 })
 
-const pirntOptions = {
-  name: '_blank',
-  specs: ['fullscreen=yes', 'titlebar=yes', 'scrollbars=yes'],
-  styles: [],
-}
-
 const pinia = createPinia()
 const app = createApp(App)
 
@@ -92,6 +86,5 @@ app.use(Toast, {
   maxToasts: 20,
   newestOnTop: true,
 })
-app.component(VueQrcode.name, VueQrcode)
 
 app.mount('#app')

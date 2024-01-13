@@ -13,7 +13,7 @@
               </label>
               <div class="flex justify-between items-center">
                 <input
-                  v-model="biayaStore.filter.date.fromDate"
+                  v-model="gajiStore.filter.date.fromDate"
                   id="date"
                   type="date"
                   placeholder="Type here"
@@ -21,7 +21,7 @@
                 />
                 <label class="">s.d</label>
                 <input
-                  v-model="biayaStore.filter.date.toDate"
+                  v-model="gajiStore.filter.date.toDate"
                   id="date"
                   type="date"
                   placeholder="Type here"
@@ -34,31 +34,11 @@
           <div class="card-actions justify-end">
             <button
               class="btn btn-primary w-32 hover:btn-primary"
-              @click="biayaStore.getData()"
+              @click="gajiStore.getData()"
             >
               Filter
             </button>
           </div>
-
-          <!-- <div class="divider"></div>
-          <h2 class="card-title">Laporan Persediaan</h2>
-          <div class="card-actions justify-end">
-            <button class="btn btn-primary w-32 hover:btn-primary" @click="downloadData">
-              <template v-if="biayaStore.isLoadingDownload">
-                <svg role="status" class="inline mr-3 w-4 h-4 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                    fill="#E5E7EB"
-                  />
-                  <path
-                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                    fill="currentColor"
-                  />
-                </svg>
-              </template>
-              <template v-else> Download </template>
-            </button>
-          </div> -->
         </div>
       </div>
       <div class="md:w-3/4 mt-10 md:mt-0 justify-self-end">
@@ -77,12 +57,12 @@
               <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4">
                 <label class="mr-4">Jumlah Data </label>
                 <select
-                  v-model="biayaStore.filter.currentLimit"
+                  v-model="gajiStore.filter.currentLimit"
                   class="select select-bordered max-w-xs"
                 >
                   <option
                     :selected="
-                      biayaStore.filter.currentLimit == length ? true : false
+                      gajiStore.filter.currentLimit == length ? true : false
                     "
                     v-for="length in mainStore.limitDataOptions"
                     :key="length"
@@ -90,20 +70,6 @@
                     {{ length }}
                   </option>
                 </select>
-              </div>
-
-              <div class="justify-end mx-1 md:w-1/2 w-full">
-                <div class="form-control">
-                  <div class="input-group">
-                    <input
-                      v-model="biayaStore.filter.searchQuery"
-                      @keyup="searchData"
-                      type="text"
-                      placeholder="Search…"
-                      class="input input-bordered w-full"
-                    />
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -114,16 +80,14 @@
                   <tr>
                     <th></th>
                     <th>Tanggal</th>
-                    <th>Nama Biaya</th>
-                    <th>Kategori</th>
-                    <th>Jumlah</th>
+                    <th>Jumlah Dibayarkan</th>
                     <th>Action</th>
                   </tr>
                 </thead>
 
                 <tbody>
-                  <tr v-if="biayaStore.isLoading">
-                    <td colspan="6" class="text-center">
+                  <tr v-if="gajiStore.isLoading">
+                    <td colspan="4" class="text-center">
                       <div role="status">
                         <svg
                           class="inline mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600"
@@ -145,20 +109,26 @@
                     </td>
                   </tr>
                   <template v-else>
-                    <tr v-if="biayaStore.items.length == 0">
-                      <td colspan="6" class="text-center">Tidak ada data</td>
+                    <tr v-if="gajiStore.items.length == 0">
+                      <td colspan="4" class="text-center">Tidak ada data</td>
                     </tr>
                     <tr
                       v-else
-                      v-for="(item, index) in biayaStore.items"
+                      v-for="(item, index) in gajiStore.items"
                       :key="item.id"
                     >
-                      <td class="text-center">{{ biayaStore.from + index }}</td>
-                      <td>{{ item.tanggal_transaksi }}</td>
-                      <td>{{ item.nama }}</td>
-                      <td>{{ item.kategori }}</td>
+                      <td class="text-center">{{ gajiStore.from + index }}</td>
+                      <td>{{ item.created_at }}</td>
+                      <td>
+                        {{
+                          numeralFormat(
+                            item.total_bonus +
+                              item.total_gaji +
+                              item.total_uang_makan
+                          )
+                        }}
+                      </td>
 
-                      <td>{{ numeralFormat(item.jumlah) }}</td>
                       <td>
                         <button
                           class="btn btn-sm btn-square btn-ghost hover:scale-110"
@@ -167,7 +137,7 @@
                           <span>
                             <ArrowPathIcon
                               v-if="
-                                biayaStore.isDestroyLoading &&
+                                gajiStore.isDestroyLoading &&
                                 indexDestroy == item.id
                               "
                               class="animate-spin h-5 w-5 text-black dark:text-gray-400"
@@ -195,32 +165,32 @@
                   </template>
                 </tbody>
                 <tfoot>
-                  <td colspan="4" class="text-end text-lg text-white">Total</td>
+                  <td colspan="2" class="text-end text-lg text-white">Total</td>
                   <td class="text-lg text-white">
-                    {{ numeralFormat(biayaStore.biayaTotal) }}
+                    {{ numeralFormat(gajiStore.totalBayar) }}
                   </td>
                 </tfoot>
               </table>
             </div>
             <div
               class="btn-group mx-auto mt-4 mb-1 justify-center"
-              v-if="!biayaStore.isLoading"
+              v-if="!gajiStore.isLoading"
             >
               <button
                 class="btn btn-outline"
                 @click="getData(previousPage)"
-                :disabled="biayaStore.currentPage == 1 ? true : false"
+                :disabled="gajiStore.currentPage == 1 ? true : false"
               >
                 «
               </button>
               <button class="btn btn-outline">
-                Page {{ biayaStore.currentPage }}
+                Page {{ gajiStore.currentPage }}
               </button>
               <button
                 class="btn btn-outline"
                 @click="getData(nextPage)"
                 :disabled="
-                  biayaStore.lastPage == biayaStore.currentPage ? true : false
+                  gajiStore.lastPage == gajiStore.currentPage ? true : false
                 "
               >
                 »
@@ -230,49 +200,96 @@
         </div>
       </div>
     </div>
-
-    <Teleport to="body">
-      <!-- use the modal component, pass in the prop -->
-      <ModalNewItem
-        :show-modal="showModal"
-        @submitStore="onSubmit()"
-        @close="showModal = !showModal"
-      />
-    </Teleport>
   </section>
 </template>
 
 <script setup>
-import ModalNewItem from './ModalBiayaNew.vue'
-import { useBiayaStore } from '@/stores/biayaStore'
+import { useGajiStore } from '@/stores/gajiStore'
 import { useMainStore } from '@/stores/mainStore'
 import { ArrowPathIcon } from '@heroicons/vue/24/solid'
-import { onMounted, ref } from 'vue'
+import { inject, onMounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+
+import moment from 'moment'
+const gajiStore = useGajiStore()
+const mainStore = useMainStore()
+const router = useRouter()
 const indexDestroy = ref(0)
 
-const showModal = ref(false)
+function onNew(item) {
+  router.push({
+    name: 'gaji-new',
+  })
+}
+const swal = inject('$swal')
 
-async function onSubmit() {
-  const result = await biayaStore.store()
-  if (result) {
-    showModal.value = false
-    biayaStore.getData()
-  }
+// function onDelete(item) {
+//   // swal("Hello Vue world!!!");
+//   gajiStore.destroy(item.id)
+//   indexDestroy.value = item.id
+// }
+
+async function onDelete(item, index) {
+  swal
+    .fire({
+      title: 'Proses',
+      text: `Data gaji tanggal ${item.created_at} akan di hapus!`,
+      showCancelButton: true,
+      confirmButtonText: 'Proses',
+      showLoaderOnConfirm: true,
+      backdrop: true,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      preConfirm: (value) => {
+        indexDestroy.value = item.id
+        return gajiStore
+          .destroy(moment(item.created_at).format('yyyy-MM-DD'), index)
+          .then((resp) => {
+            if (resp.status == 200) {
+              return resp
+            }
+            throw new Error(resp)
+          })
+      },
+    })
+    .then((result) => {
+      console.info(result)
+      if (result.value == true) {
+      }
+    })
+
+  // await swal.fire({
+  //   title: 'Anda yakin?',
+  //   text: 'Data ini akan di hapus!',
+  //   icon: 'warning',
+  //   showCancelButton: true,
+  //   confirmButtonColor: '#3085d6',
+  //   cancelButtonColor: '#d33',
+  //   confirmButtonText: 'Ya, Hapus!',
+  //   showLoaderOnConfirm: gajiStore.isDestroyLoading,
+  //   preConfirm: (value) => {
+  //     indexDestroy.value = item.id
+  //     return gajiStore
+  //       .destroy(moment(item.created_at).format('yyyy-MM-DD'), index)
+  //       .then((resp) => {
+  //         if (resp.status == 200) {
+  //           return resp
+  //         }
+  //         throw new Error(resp)
+  //       })
+  //   },
+  // })
 }
 
-function onNew() {
-  showModal.value = !showModal.value
-}
-function onDelete(item) {
-  // swal("Hello Vue world!!!");
-  biayaStore.destroy(item.id)
-  indexDestroy.value = item.id
-}
-
-const biayaStore = useBiayaStore()
-const mainStore = useMainStore()
+watch(
+  () => gajiStore.filter.currentLimit,
+  () => {
+    gajiStore.getData()
+  },
+  { deep: true }
+)
 
 onMounted(() => {
-  biayaStore.getData()
+  gajiStore.getData()
 })
 </script>

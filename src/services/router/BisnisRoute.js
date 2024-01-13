@@ -89,4 +89,24 @@ export const bisnisRoutes = [
       requiresAuth: true,
     },
   },
+  {
+    path: '/bisnis/gaji',
+    name: 'gaji-list',
+    component: () => import('@/views/bisnis/gaji/GajiList.vue'),
+    meta: {
+      title: 'Gaji',
+      layout: 'layout-normal',
+      requiresAuth: true,
+    },
+  },
+  {
+    path: '/bisnis/gaji',
+    name: 'gaji-new',
+    component: () => import('@/views/bisnis/gaji/New.vue'),
+    meta: {
+      title: 'Gaji',
+      layout: 'layout-normal',
+      requiresAuth: true,
+    },
+  },
 ]
