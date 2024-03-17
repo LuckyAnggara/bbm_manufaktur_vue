@@ -243,7 +243,7 @@ import { inject, ref } from 'vue'
 import { useToast } from 'vue-toastification'
 import { useItemStore, useProductionOrderStore } from '../../../../stores/store'
 import { useRouter } from 'vue-router'
-import ModalItemBarangJadi from './Component/ModalItemBarangJadi.vue'
+import ModalItemBarangJadi from './component/ModalItemBarangJadi.vue'
 
 export default {
   setup() {

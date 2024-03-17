@@ -129,7 +129,7 @@
 </template>
 
 <script>
-import { useMutationStore } from '../../../stores/store'
+import { useMutationStore } from '@/stores/store'
 
 export default {
   setup() {

@@ -153,7 +153,7 @@
 
 <script>
 import { onMounted, computed } from 'vue'
-import { useItemStore, useMutationStore } from '../../../../../stores/store'
+import { useItemStore, useMutationStore } from '@/stores/store'
 import { useToast } from 'vue-toastification'
 import { useDebounceFn } from '@vueuse/core'
 
