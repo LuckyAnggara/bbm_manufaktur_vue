@@ -2,7 +2,7 @@ import ProductionScreen from '@/views/produksi/ProductionScreen.vue'
 import UpdateScreen from '@/views/produksi/productionorder/update/UpdateScreen.vue'
 import NewScreen from '@/views/produksi/productionorder/new/NewScreen.vue'
 import EditScreen from '@/views/produksi/productionorder/edit/EditScreen.vue'
-import FinishScreen from '@/views/produksi/productionorder/finishScreen.vue'
+import FinishScreen from '@/views/produksi/productionorder/FinishScreen.vue'
 import ProductionListScreen from '@/views/produksi/productionorder/daftar/ProductionListScreen.vue'
 
 export const productionOrderRoutes = [
