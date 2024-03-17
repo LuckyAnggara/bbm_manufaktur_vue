@@ -4,7 +4,7 @@ import './index.css'
 import './style.css'
 import App from './App.vue'
 import axiosIns from './services/axios'
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { routes } from './services/router'
 import Toast from 'vue-toastification'
 import VueSweetalert2 from 'vue-sweetalert2'
@@ -56,7 +56,7 @@ moment().format('L')
 const router = createRouter({
   mode: 'history',
   linkExactActiveClass: 'active',
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes,
 })
 

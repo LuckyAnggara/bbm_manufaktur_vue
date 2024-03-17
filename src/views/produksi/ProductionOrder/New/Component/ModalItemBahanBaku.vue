@@ -19,11 +19,27 @@
                   v-model="itemStore.searchName"
                   @keyup="searchData"
                   type="text"
-                  placeholder="Search…"
+                  placeholder="Search… tekan enter"
                   class="input input-bordered w-full"
                 />
               </div>
             </div>
+          </div>
+          <div class="form-control">
+            <select
+              @change="itemStore.getItemData()"
+              v-model="itemStore.filter.type"
+              class="select select-bordered"
+            >
+              <option value="0">SEMUA</option>
+              <option
+                :value="type.id"
+                v-for="(type, index) in itemStore.itemTypes"
+                :key="index"
+              >
+                {{ type.name.toUpperCase() }}
+              </option>
+            </select>
           </div>
         </div>
 
@@ -62,11 +78,7 @@
                   </div>
                 </td>
               </tr>
-              <tr
-                v-else
-                v-for="(item, index) in itemStore.itemByType(1)"
-                :key="item"
-              >
+              <tr v-else v-for="(item, index) in itemStore.items" :key="item">
                 <td class="text-center">{{ itemStore.from + index }}</td>
                 <td>{{ item.name.toUpperCase() }}</td>
                 <td class="text-center">{{ item.balance }}</td>
@@ -151,7 +163,7 @@
 </template>
 
 <script>
-import { onUpdated, computed } from 'vue'
+import { onUpdated, computed, watch } from 'vue'
 import { useToast } from 'vue-toastification'
 import { useItemStore, useProductionOrderStore } from '@/stores/store'
 import { useDebounceFn } from '@vueuse/core'
@@ -170,25 +182,22 @@ export default {
       return '&page=' + (this.itemStore.currentPage + 1)
     })
 
-    productionOrderStore.$subscribe((mutation, state) => {
-      if (
-        mutation.events.key == 'input' &&
-        mutation.events.newValue.length > mutation.events.oldValue.length
-      ) {
-        toast.success('Bahan baku baru ditambahkan', {
-          timeout: 1000,
-        })
+    watch(
+      () => productionOrderStore.dataOrder.input,
+      (newValue, oldValue) => {
+        console.info(newValue.length, oldValue.length)
+        if (newValue.length > oldValue.length) {
+          toast.success('Bahan baku ditambahkan', {
+            timeout: 1000,
+          })
+        }
+        if (newValue.length < oldValue.length) {
+          toast.warning('Bahan baku di hapus', {
+            timeout: 1000,
+          })
+        }
       }
-
-      if (
-        mutation.events.key == 'input' &&
-        mutation.events.newValue.length < mutation.events.oldValue.length
-      ) {
-        toast.warning('Bahan baku di hapus', {
-          timeout: 1000,
-        })
-      }
-    })
+    )
 
     onUpdated(() => {
       if (itemStore.items == undefined) {
@@ -202,7 +211,7 @@ export default {
 
     const searchData = useDebounceFn(() => {
       getData()
-    }, 800)
+    }, 300)
 
     return {
       // pushData,

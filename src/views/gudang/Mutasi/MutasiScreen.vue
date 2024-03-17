@@ -196,7 +196,7 @@
 
 <script>
 import { useMutationStore } from '@/stores/store'
-import { inject, ref } from 'vue'
+import { inject, ref, watch } from 'vue'
 import { computed } from '@vue/reactivity'
 import { useRouter } from 'vue-router'
 import { useDebounceFn } from '@vueuse/core'
@@ -213,14 +213,21 @@ export default {
     const router = useRouter()
     const toggle = false
     mutationStore.getMasterMutationData()
-    mutationStore.$subscribe((mutation, state) => {
-      if (mutation.events.key == 'currentLimit') {
+
+    watch(
+      () => mutationStore.currentLimit,
+      () => {
         getData()
       }
-      if (mutation.events.key == 'currentTab') {
+    )
+
+    watch(
+      () => mutationStore.currentTab,
+      () => {
         getData()
       }
-    })
+    )
+
     function onDelete(id, index) {
       swal
         .fire({

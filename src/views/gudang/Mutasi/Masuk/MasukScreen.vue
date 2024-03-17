@@ -171,11 +171,6 @@ export default {
         timeout: 1000,
       })
     }
-
-    // function submit() {
-    //   mutationStore.storeIncomingItem()
-    // }
-
     async function submit() {
       if (mutationStore.incomingItem.detail.length < 1) {
         swal.fire('Oops!', 'Data item kosong', 'error')
@@ -190,6 +185,7 @@ export default {
             cancelButtonColor: '#d33',
             confirmButtonText: 'Proses!',
             showLoaderOnConfirm: true,
+            backdrop: true,
             preConfirm: (val) => {
               mutationStore.storeIncomingItem().then((resp) => {
                 if (resp.status != 200) {
@@ -197,7 +193,6 @@ export default {
                 }
                 return true
               })
-
               // throw new Error(resp)
             },
             allowOutsideClick: () => swal.isLoading(),
@@ -209,7 +204,7 @@ export default {
               } else {
                 swal.fire('Berhasil!', 'success')
                 router.push({
-                  name: 'gudang-barang-mutasi',
+                  name: 'gudang-barang-stock-opname',
                 })
               }
             }

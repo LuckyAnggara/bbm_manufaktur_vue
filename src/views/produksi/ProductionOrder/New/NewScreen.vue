@@ -777,6 +777,7 @@ function deletePegawaiData(index, name) {
 
 onMounted(() => {
   itemStore.getItemData()
+  itemStore.getItemTypeData()
   pegawaiStore.getData()
   productionOrderStore.$reset()
 })

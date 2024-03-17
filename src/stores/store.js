@@ -163,6 +163,10 @@ export const useItemStore = defineStore('itemStore', {
       itemDetailData: {
         name: null,
       },
+      filter: {
+        type: 0,
+        dataNol: true,
+      },
     }
   },
   getters: {
@@ -207,6 +211,18 @@ export const useItemStore = defineStore('itemStore', {
         return ''
       }
       return '&from_date=' + state.fromDate + '&to_date=' + state.toDate
+    },
+    typeQuery(state) {
+      if (state.filter.type == '' && state.filter.type == 0) {
+        return ''
+      }
+      return '&type=' + state.filter.type
+    },
+    balanceQuery(state) {
+      if (state.filter.dataNol == true) {
+        return ''
+      }
+      return '&balance_nol=no'
     },
   },
   actions: {
@@ -346,7 +362,7 @@ export const useItemStore = defineStore('itemStore', {
       this.isLoading = true
       try {
         const response = await axiosIns.get(
-          `/items?limit=${this.currentLimit}${this.searchQuery}${page}${this.warehousesQuery}${this.fromToDate}`
+          `/items?limit=${this.currentLimit}${this.searchQuery}${page}${this.warehousesQuery}${this.fromToDate}${this.typeQuery}${this.balanceQuery}`
         )
         this.responsItem = response.data.data
       } catch (error) {

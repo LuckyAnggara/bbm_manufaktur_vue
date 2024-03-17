@@ -2,28 +2,79 @@
   <div class="card flex bg-neutral flex-col">
     <div class="card-body shadow-xl rounded-xl">
       <h2 class="card-title mb-2 text-2xl">Data Persediaan</h2>
-      <div class="md:flex py-2">
-        <div class="w-1/5">
-          <label for="my-modal" class="btn w-32 btn-primary modal-button shadow-md"><span class="text-xs">New Item</span></label>
+      <div class="md:flex py-2 space-x-3">
+        <div class="">
+          <label
+            for="my-modal"
+            class="btn w-32 btn-primary modal-button shadow-md"
+            ><span class="text-xs">New Item</span></label
+          >
         </div>
-        <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4">
-          <label class="mr-4">Jumlah Data </label>
-          <select v-model="itemStore.currentLimit" class="select select-bordered max-w-xs">
-            <option :selected="itemStore.currentLimit == length ? true : false" v-for="length in lengths" :key="length">
+
+        <label class="form-control w-fit">
+          <select
+            v-model="itemStore.currentLimit"
+            class="select select-bordered max-w-xs"
+          >
+            <option
+              :selected="itemStore.currentLimit == length ? true : false"
+              v-for="length in lengths"
+              :key="length"
+            >
               {{ length }}
             </option>
           </select>
-        </div>
+          <div class="label">
+            <span class="label-text-alt">Jumlah Data</span>
+          </div>
+        </label>
+
+        <label class="form-control w-full max-w-xs">
+          <select
+            @change="itemStore.getItemData()"
+            v-model="itemStore.filter.type"
+            class="select select-bordered"
+          >
+            <option value="0">SEMUA</option>
+            <option
+              :value="type.id"
+              v-for="(type, index) in itemStore.itemTypes"
+              :key="index"
+            >
+              {{ type.name.toUpperCase() }}
+            </option>
+          </select>
+          <div class="label">
+            <span class="label-text-alt">Tipe Item</span>
+          </div>
+        </label>
 
         <div class="justify-end mx-1 md:w-1/2 w-full">
           <div class="form-control">
             <div class="input-group">
-              <input v-model="itemStore.searchName" @keyup="searchData" type="text" placeholder="Search…" class="input input-bordered w-full" />
+              <input
+                v-model="itemStore.searchName"
+                @keyup="searchData"
+                type="text"
+                placeholder="Search…"
+                class="input input-bordered w-full"
+              />
             </div>
           </div>
         </div>
       </div>
-
+      <div class="form-control w-fit">
+        <label class="cursor-pointer label">
+          <input
+            @change="itemStore.getItemData()"
+            v-model="itemStore.filter.dataNol"
+            type="checkbox"
+            checked="checked"
+            class="checkbox checkbox-accent mr-4"
+          />
+          <span class="label-text">Tampilkan Saldo 0</span>
+        </label>
+      </div>
       <div class="flex mt-2 md:overflow-visible overflow-y-auto">
         <table class="table table-compact w-full">
           <!-- head -->
@@ -65,7 +116,11 @@
               <tr v-if="itemStore.items.length == 0">
                 <td colspan="6" class="text-center">Tidak ada data</td>
               </tr>
-              <tr v-else v-for="(item, index) in itemStore.items" :key="item.id">
+              <tr
+                v-else
+                v-for="(item, index) in itemStore.items"
+                :key="item.id"
+              >
                 <td class="text-center">{{ itemStore.from + index }}</td>
                 <td>{{ item.name.toUpperCase() }}</td>
                 <td>{{ item.type.name.toUpperCase() }}</td>
@@ -92,7 +147,10 @@
                         ></path>
                       </svg>
                     </button>
-                    <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52">
+                    <ul
+                      tabindex="0"
+                      class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52"
+                    >
                       <li>
                         <a @click="detail(item)"> Detail </a>
                       </li>
@@ -105,17 +163,34 @@
           </tbody>
         </table>
       </div>
-      <div class="btn-group mx-auto mt-4 mb-1 justify-center" v-if="!itemStore.isLoading">
-        <button class="btn btn-outline" @click="getData(previousPage)" :disabled="itemStore.currentPage == 1 ? true : false">«</button>
-        <button class="btn btn-outline">Page {{ itemStore.currentPage }}</button>
-        <button class="btn btn-outline" @click="getData(nextPage)" :disabled="itemStore.lastPage == itemStore.currentPage ? true : false">»</button>
+      <div
+        class="btn-group mx-auto mt-4 mb-1 justify-center"
+        v-if="!itemStore.isLoading"
+      >
+        <button
+          class="btn btn-outline"
+          @click="getData(previousPage)"
+          :disabled="itemStore.currentPage == 1 ? true : false"
+        >
+          «
+        </button>
+        <button class="btn btn-outline">
+          Page {{ itemStore.currentPage }}
+        </button>
+        <button
+          class="btn btn-outline"
+          @click="getData(nextPage)"
+          :disabled="itemStore.lastPage == itemStore.currentPage ? true : false"
+        >
+          »
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { onUnmounted, ref, watch } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { useItemStore } from '@/stores/store'
 import { useDebounceFn } from '@vueuse/core'
 
@@ -142,6 +217,10 @@ export default {
 
     onUnmounted(() => {
       itemStore.$reset()
+    })
+
+    onMounted(() => {
+      itemStore.getItemTypeData()
     })
 
     // expose to template and other options API hooks
@@ -184,7 +263,12 @@ export default {
         .then((result) => {
           if (result.isConfirmed) {
             const b = this.itemStore.deleteItemData(id, index)
-            if (b) return this.$swal.fire('Deleted!', 'Your file has been deleted.', 'success')
+            if (b)
+              return this.$swal.fire(
+                'Deleted!',
+                'Your file has been deleted.',
+                'success'
+              )
             return this.$swal('error')
           }
         })

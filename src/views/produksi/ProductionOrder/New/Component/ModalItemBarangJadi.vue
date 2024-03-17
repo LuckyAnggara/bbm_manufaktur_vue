@@ -18,11 +18,27 @@
                   v-model="itemStore.searchName"
                   @keyup.enter="searchData"
                   type="text"
-                  placeholder="Search…"
+                  placeholder="Search… tekan enter"
                   class="input input-bordered w-full"
                 />
               </div>
             </div>
+          </div>
+          <div class="form-control">
+            <select
+              @change="itemStore.getItemData()"
+              v-model="itemStore.filter.type"
+              class="select select-bordered"
+            >
+              <option value="0">SEMUA</option>
+              <option
+                :value="type.id"
+                v-for="(type, index) in itemStore.itemTypes"
+                :key="index"
+              >
+                {{ type.name.toUpperCase() }}
+              </option>
+            </select>
           </div>
         </div>
 
@@ -61,11 +77,7 @@
                   </div>
                 </td>
               </tr>
-              <tr
-                v-else
-                v-for="(item, index) in itemStore.itemByType(2)"
-                :key="item"
-              >
+              <tr v-else v-for="(item, index) in itemStore.items" :key="index">
                 <td class="text-center">{{ itemStore.from + index }}</td>
                 <td>{{ item.name.toUpperCase() }}</td>
                 <td>{{ item.unit.name.toUpperCase() }}</td>
@@ -150,7 +162,7 @@
 </template>
 
 <script>
-import { onActivated, computed } from 'vue'
+import { onActivated, computed, onUpdated, watch } from 'vue'
 import { useItemStore, useProductionOrderStore } from '@/stores/store'
 import { useToast } from 'vue-toastification'
 import { tryOnMounted, useDebounceFn } from '@vueuse/core'
@@ -169,39 +181,43 @@ export default {
       return '&page=' + (itemStore.currentPage + 1)
     })
 
-    productionOrderStore.$subscribe((mutation, state) => {
-      if (
-        mutation.events.key == 'output' &&
-        mutation.events.newValue.length > mutation.events.oldValue.length
-      ) {
-        toast.success('Barang jadi ditambahkan', {
-          timeout: 1000,
-        })
+    watch(
+      () => productionOrderStore.dataOrder.output,
+      (newValue, oldValue) => {
+        console.info(newValue.length, oldValue.length)
+        if (newValue.length > oldValue.length) {
+          toast.success('Barang jadi ditambahkan', {
+            timeout: 1000,
+          })
+        }
+        if (newValue.length < oldValue.length) {
+          toast.warning('Barang jadi di hapus', {
+            timeout: 1000,
+          })
+        }
       }
+    )
 
-      if (
-        mutation.events.key == 'output' &&
-        mutation.events.newValue.length < mutation.events.oldValue.length
-      ) {
-        toast.warning('Barang jadi di hapus', {
-          timeout: 1000,
-        })
+    onUpdated(() => {
+      if (itemStore.items == undefined) {
+        itemStore.getItemData()
       }
     })
 
-    onActivated(() => {
-      itemStore.getItemData()
-    })
+    function getData(page = '') {
+      itemStore.getItemData(page)
+    }
 
     const searchData = useDebounceFn(() => {
       itemStore.getItemData()
-    }, 800)
+    }, 300)
 
     return {
       // pushData,
       productionOrderStore,
       previousPage,
       nextPage,
+      getData,
       searchData,
       itemStore,
     }
