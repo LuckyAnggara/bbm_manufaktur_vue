@@ -4,7 +4,7 @@ import './index.css'
 import './style.css'
 import App from './App.vue'
 import axiosIns from './services/axios'
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
 import { routes } from './services/router'
 import Toast from 'vue-toastification'
 import VueSweetalert2 from 'vue-sweetalert2'
@@ -20,34 +20,8 @@ import VueQrcode from '@chenfengyuan/vue-qrcode'
 
 moment.tz.setDefault('Asia/Jakarta')
 moment.updateLocale('en', {
-  months: [
-    'Januari',
-    'Februari',
-    'Maret',
-    'April',
-    'Mei',
-    'Juni',
-    'Juli',
-    'Agustus',
-    'September',
-    'Oktober',
-    'November',
-    'Desember',
-  ],
-  monthsShort: [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'Mei',
-    'Jun',
-    'Jul',
-    'Agus',
-    'Sep',
-    'Okt',
-    'Nov',
-    'Des',
-  ],
+  months: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+  monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agus', 'Sep', 'Okt', 'Nov', 'Des'],
   weekdays: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', "Jum'at", 'Sabtu'],
   weekdaysShort: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
 })
@@ -56,7 +30,7 @@ moment().format('L')
 const router = createRouter({
   mode: 'history',
   linkExactActiveClass: 'active',
-  history: createWebHistory(),
+  history: createWebHashHistory(),
   routes,
 })
 
