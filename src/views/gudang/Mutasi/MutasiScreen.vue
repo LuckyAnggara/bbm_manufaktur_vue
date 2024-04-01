@@ -15,23 +15,12 @@
       <!-- Masuk Tab -->
       <div class="bg-neutral text-neutral-content rounded-b-lg">
         <div class="card-body">
-          <h2 class="card-title">
-            Daftar Mutasi {{ tabs[mutationStore.currentTab].name }}
-          </h2>
+          <h2 class="card-title">Daftar Mutasi {{ tabs[mutationStore.currentTab].name }}</h2>
           <div class="md:flex py-2">
             <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4">
               <label class="mr-4">Jumlah Data </label>
-              <select
-                v-model="mutationStore.currentLimit"
-                class="select select-bordered max-w-xs"
-              >
-                <option
-                  :selected="
-                    mutationStore.currentLimit == length ? true : false
-                  "
-                  v-for="length in lengths"
-                  :key="length"
-                >
+              <select v-model="mutationStore.currentLimit" class="select select-bordered max-w-xs">
+                <option :selected="mutationStore.currentLimit == length ? true : false" v-for="length in lengths" :key="length">
                   {{ length }}
                 </option>
               </select>
@@ -39,23 +28,12 @@
             <div class="justify-end mx-1 md:w-1/2 w-full">
               <div class="form-control">
                 <div class="input-group">
-                  <input
-                    v-model="mutationStore.searchName"
-                    @keyup="searchData"
-                    type="text"
-                    placeholder="Search…"
-                    class="input input-bordered w-full"
-                  />
+                  <input v-model="mutationStore.searchName" @keyup="searchData" type="text" placeholder="Search…" class="input input-bordered w-full" />
                 </div>
               </div>
             </div>
 
-            <button
-              class="btn btn-accent w-32 hover:btn-primary ml-4"
-              @click="toNew()"
-            >
-              Tambah
-            </button>
+            <button class="btn btn-accent w-32 hover:btn-primary ml-4" @click="toNew()">Tambah</button>
           </div>
 
           <div class="flex mt-2 md:overflow-visible overflow-y-auto mb-5">
@@ -101,11 +79,7 @@
                       <span>Tidak ada data.</span>
                     </td>
                   </tr>
-                  <tr
-                    v-else
-                    v-for="(item, index) in mutationStore.dataMasterMutation"
-                    :key="item"
-                  >
+                  <tr v-else v-for="(item, index) in mutationStore.dataMasterMutation" :key="item">
                     <td class="text-center">
                       {{ mutationStore.from + index }}
                     </td>
@@ -116,39 +90,13 @@
                     <td>{{ item.notes }}</td>
                     <td>{{ item.type }}</td>
                     <td class="space-x-2">
-                      <button
-                        class="btn btn-sm btn-square btn-outline hover:scale-110"
-                        @click="detailData(item.id)"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          width="24"
-                          height="24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                          />
+                      <button class="btn btn-sm btn-square btn-outline hover:scale-110" @click="detailData(item.id)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                         </svg>
                       </button>
-                      <button
-                        class="btn btn-sm btn-square btn-outline hover:scale-110"
-                        @click="onDelete(item.id, index)"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          width="24"
-                          height="24"
-                          stroke="currentColor"
-                        >
+                      <button class="btn btn-sm btn-square btn-outline hover:scale-110" @click="onDelete(item.id, index)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24" stroke="currentColor">
                           <path
                             stroke-linecap="round"
                             stroke-linejoin="round"
@@ -162,31 +110,10 @@
               </tbody>
             </table>
           </div>
-          <div
-            class="btn-group mx-auto mt-4 mb-1 justify-center"
-            v-if="!mutationStore.isLoading"
-          >
-            <button
-              class="btn btn-outline"
-              @click="getData(previousPage)"
-              :disabled="mutationStore.currentPage == 1 ? true : false"
-            >
-              «
-            </button>
-            <button class="btn btn-outline">
-              Page {{ mutationStore.currentPage }}
-            </button>
-            <button
-              class="btn btn-outline"
-              @click="getData(nextPage)"
-              :disabled="
-                mutationStore.lastPage == mutationStore.currentPage
-                  ? true
-                  : false
-              "
-            >
-              »
-            </button>
+          <div class="btn-group mx-auto mt-4 mb-1 justify-center" v-if="!mutationStore.isLoading">
+            <button class="btn btn-outline" @click="getData(previousPage)" :disabled="mutationStore.currentPage == 1 ? true : false">«</button>
+            <button class="btn btn-outline">Page {{ mutationStore.currentPage }}</button>
+            <button class="btn btn-outline" @click="getData(nextPage)" :disabled="mutationStore.lastPage == mutationStore.currentPage ? true : false">»</button>
           </div>
         </div>
       </div>
@@ -196,7 +123,7 @@
 
 <script>
 import { useMutationStore } from '@/stores/store'
-import { inject, ref } from 'vue'
+import { inject, ref, watch } from 'vue'
 import { computed } from '@vue/reactivity'
 import { useRouter } from 'vue-router'
 import { useDebounceFn } from '@vueuse/core'
@@ -213,14 +140,21 @@ export default {
     const router = useRouter()
     const toggle = false
     mutationStore.getMasterMutationData()
-    mutationStore.$subscribe((mutation, state) => {
-      if (mutation.events.key == 'currentLimit') {
+
+    watch(
+      () => mutationStore.currentLimit,
+      () => {
         getData()
       }
-      if (mutation.events.key == 'currentTab') {
+    )
+
+    watch(
+      () => mutationStore.currentTab,
+      () => {
         getData()
       }
-    })
+    )
+
     function onDelete(id, index) {
       swal
         .fire({

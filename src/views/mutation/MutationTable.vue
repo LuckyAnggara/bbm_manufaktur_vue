@@ -8,15 +8,8 @@
       <div class="md:flex py-2">
         <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4">
           <label class="mr-4">Jumlah Data </label>
-          <select
-            v-model="mutationStore.currentLimit"
-            class="select select-bordered max-w-xs"
-          >
-            <option
-              :selected="mutationStore.currentLimit == length ? true : false"
-              v-for="length in lengths"
-              :key="length"
-            >
+          <select v-model="mutationStore.currentLimit" class="select select-bordered max-w-xs">
+            <option :selected="mutationStore.currentLimit == length ? true : false" v-for="length in lengths" :key="length">
               {{ length }}
             </option>
           </select>
@@ -25,13 +18,7 @@
         <div class="justify-end mx-1 md:w-1/2 w-full">
           <div class="form-control">
             <div class="input-group">
-              <input
-                v-model="mutationStore.searchName"
-                @keyup="searchData"
-                type="text"
-                placeholder="Search…"
-                class="input input-bordered w-full"
-              />
+              <input v-model="mutationStore.searchName" @keyup="searchData" type="text" placeholder="Search…" class="input input-bordered w-full" />
             </div>
           </div>
         </div>
@@ -78,11 +65,7 @@
               <tr v-if="mutationStore.dataMutation.length == 0">
                 <td colspan="6" class="text-center">Tidak ada data</td>
               </tr>
-              <tr
-                v-else
-                v-for="(item, index) in mutationStore.dataMutation"
-                :key="item"
-              >
+              <tr v-else v-for="(item, index) in mutationStore.dataMutation" :key="item">
                 <td class="text-center">{{ index + 1 }}</td>
                 <td>{{ $moment(item.created_at).format('DD MMMM YYYY') }}</td>
                 <td>
@@ -97,29 +80,10 @@
         </table>
       </div>
 
-      <div
-        class="btn-group mx-auto mt-4 mb-1 justify-center"
-        v-if="!mutationStore.isLoading"
-      >
-        <button
-          class="btn btn-outline"
-          @click="getData(previousPage)"
-          :disabled="mutationStore.currentPage == 1 ? true : false"
-        >
-          «
-        </button>
-        <button class="btn btn-outline">
-          Page {{ mutationStore.currentPage }}
-        </button>
-        <button
-          class="btn btn-outline"
-          @click="getData(nextPage)"
-          :disabled="
-            mutationStore.lastPage == mutationStore.currentPage ? true : false
-          "
-        >
-          »
-        </button>
+      <div class="btn-group mx-auto mt-4 mb-1 justify-center" v-if="!mutationStore.isLoading">
+        <button class="btn btn-outline" @click="getData(previousPage)" :disabled="mutationStore.currentPage == 1 ? true : false">«</button>
+        <button class="btn btn-outline">Page {{ mutationStore.currentPage }}</button>
+        <button class="btn btn-outline" @click="getData(nextPage)" :disabled="mutationStore.lastPage == mutationStore.currentPage ? true : false">»</button>
       </div>
     </div>
   </div>
@@ -127,20 +91,23 @@
 
 <script>
 import { computed, ref } from '@vue/reactivity'
-import { useItemStore, useMutationStore } from '@/stores/store'
+import { useItemStore } from '@/stores/store'
+import { useMutationDetailStore } from '@/stores/mutationDetailStore'
 import { useDebounceFn } from '@vueuse/core'
+import { watch } from 'vue'
 
 export default {
   setup() {
     const lengths = ref([5, 10, 20, 30, 40, 50])
-    const mutationStore = useMutationStore()
+    const mutationStore = useMutationDetailStore()
     const itemStore = useItemStore()
 
-    mutationStore.$subscribe((mutation, state) => {
-      if (mutation.events.key == 'currentLimit') {
+    watch(
+      () => mutationStore.currentLimit,
+      () => {
         getData()
       }
-    })
+    )
 
     function getData(page = '') {
       mutationStore.getMutationData(page)
@@ -154,18 +121,26 @@ export default {
       if (mutationStore.fromDate == '' && mutationStore.toDate == '') {
         return `Data Persediaan ${itemStore.itemDetailData.name.toUpperCase()}`
       } else {
-        return `Data Persediaan ${itemStore.itemDetailData.name.toUpperCase()} Dari tanggal ${
-          mutationStore.fromDate
-        } s.d ${mutationStore.toDate}`
+        return `Data Persediaan ${itemStore.itemDetailData.name.toUpperCase()} Dari tanggal ${mutationStore.fromDate} s.d ${mutationStore.toDate}`
       }
     })
 
+    const previousPage = computed(() => {
+      return '&page=' + (mutationStore.currentPage - 1)
+    })
+
+    const nextPage = computed(() => {
+      return '&page=' + (mutationStore.currentPage + 1)
+    })
     return {
       searchData,
       lengths,
       itemStore,
       mutationStore,
       title,
+      getData,
+      nextPage,
+      previousPage,
     }
   },
 }

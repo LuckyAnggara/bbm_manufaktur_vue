@@ -13,12 +13,37 @@
       </div>
     </div>
 
-    <div class="flex-initial lg:w-max w-full stats shadow bg-base-300">
+    <div class="w-fit stats shadow bg-base-300">
+      <div class="stats bg-base-300">
+        <div class="stat">
+          <div class="stat-title">Total Penjualan</div>
+          <div class="stat-value">Rp. {{ numeral(dashboardStore.binisData.sales).format('0,0') }}</div>
+          <div class="stat-actions">
+            <select class="select select-bordered w-fit max-w-xs" v-model="dashboardStore.filter.dataSales">
+              <option value="1" selected>Hari ini</option>
+              <option value="2">Bulan ini</option>
+              <option value="3">Tahun 2024</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-title">Total Pembelian</div>
+          <div class="stat-value">Rp. {{ numeral(dashboardStore.binisData.purchasing).format('0,0') }}</div>
+          <div class="stat-actions">
+            <select class="select select-bordered w-fit max-w-xs" v-model="dashboardStore.filter.dataPurchasing">
+              <option value="1" selected>Hari ini</option>
+              <option value="2">Bulan ini</option>
+              <option value="3">Tahun 2024</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="flex-initial lg:w-max w-full stats shadow bg-base-300">
       <div class="stat">
-        <div
-          class="stat-figure text-secondary"
-          v-if="dashboardStore.isLoadingGetItemCount"
-        >
+        <div class="stat-figure text-secondary" v-if="dashboardStore.isLoadingGetItemCount">
           <svg
             aria-hidden="true"
             class="mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
@@ -38,17 +63,13 @@
         </div>
         <div class="stat-title">Barang Jadi</div>
         <div class="stat-value text-primary">
-          <span v-if="dashboardStore.isLoadingGetItemCount">Load</span
-          ><span v-else>{{ dashboardStore.dataItem.bahan_baku }}</span>
+          <span v-if="dashboardStore.isLoadingGetItemCount">Load</span><span v-else>{{ dashboardStore.dataItem.bahan_baku }}</span>
         </div>
         <div class="stat-desc">Item</div>
       </div>
 
       <div class="stat">
-        <div
-          class="stat-figure text-secondary"
-          v-if="dashboardStore.isLoadingGetItemCount"
-        >
+        <div class="stat-figure text-secondary" v-if="dashboardStore.isLoadingGetItemCount">
           <svg
             aria-hidden="true"
             class="mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
@@ -69,17 +90,13 @@
         <div class="stat-title">Bahan Baku</div>
 
         <div class="stat-value text-secondary">
-          <span v-if="dashboardStore.isLoadingGetItemCount">Load</span
-          ><span v-else>{{ dashboardStore.dataItem.barang_jadi }}</span>
+          <span v-if="dashboardStore.isLoadingGetItemCount">Load</span><span v-else>{{ dashboardStore.dataItem.barang_jadi }}</span>
         </div>
         <div class="stat-desc">Item</div>
       </div>
 
       <div class="stat">
-        <div
-          class="stat-figure text-secondary"
-          v-if="dashboardStore.isLoadingGetItemCount"
-        >
+        <div class="stat-figure text-secondary" v-if="dashboardStore.isLoadingGetItemCount">
           <svg
             aria-hidden="true"
             class="mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
@@ -99,19 +116,15 @@
         </div>
         <div class="stat-title">Barang Lainnya</div>
         <div class="stat-value text-primary">
-          <span v-if="dashboardStore.isLoadingGetItemCount">Load</span
-          ><span v-else>{{ dashboardStore.dataItem.barang_lainnya }}</span>
+          <span v-if="dashboardStore.isLoadingGetItemCount">Load</span><span v-else>{{ dashboardStore.dataItem.barang_lainnya }}</span>
         </div>
         <div class="stat-desc">Item</div>
       </div>
-    </div>
+    </div> -->
 
     <div class="lg:w-max w-full stats shadow bg-base-300">
       <div class="stat">
-        <div
-          class="stat-figure text-secondary"
-          v-if="dashboardStore.isLoadingGetItemCount"
-        >
+        <div class="stat-figure text-secondary" v-if="dashboardStore.isLoadingGetItemCount">
           <svg
             aria-hidden="true"
             class="mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
@@ -131,17 +144,13 @@
         </div>
         <div class="stat-title">Produksi dalam Proses</div>
         <div class="stat-value text-primary">
-          <span v-if="dashboardStore.isLoadingGetProductionCount">Load</span
-          ><span v-else>{{ dashboardStore.dataProduction.on_progress }}</span>
+          <span v-if="dashboardStore.isLoadingGetProductionCount">Load</span><span v-else>{{ dashboardStore.dataProduction.on_progress }}</span>
         </div>
         <div class="stat-desc">Proses</div>
       </div>
 
       <div class="stat">
-        <div
-          class="stat-figure text-secondary"
-          v-if="dashboardStore.isLoadingGetItemCount"
-        >
+        <div class="stat-figure text-secondary" v-if="dashboardStore.isLoadingGetItemCount">
           <svg
             aria-hidden="true"
             class="mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
@@ -162,8 +171,7 @@
         <div class="stat-title">Produksi Selesai</div>
 
         <div class="stat-value text-secondary">
-          <span v-if="dashboardStore.isLoadingGetProductionCount">Load</span
-          ><span v-else>{{ dashboardStore.dataProduction.done }}</span>
+          <span v-if="dashboardStore.isLoadingGetProductionCount">Load</span><span v-else>{{ dashboardStore.dataProduction.done }}</span>
         </div>
         <div class="stat-desc">Proses</div>
       </div>
@@ -171,10 +179,7 @@
 
     <div class="lg:w-max w-full stats shadow bg-base-300">
       <div class="stat">
-        <div
-          class="stat-figure text-secondary"
-          v-if="dashboardStore.isLoadingGetItemCount"
-        >
+        <div class="stat-figure text-secondary" v-if="dashboardStore.isLoadingGetItemCount">
           <svg
             aria-hidden="true"
             class="mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
@@ -194,17 +199,13 @@
         </div>
         <div class="stat-title">Produk dalam Pengiriman</div>
         <div class="stat-value text-primary">
-          <span v-if="dashboardStore.isLoadingGetProductionCount">Load</span
-          ><span v-else>{{ dashboardStore.dataShipping.on_progress }}</span>
+          <span v-if="dashboardStore.isLoadingGetProductionCount">Load</span><span v-else>{{ dashboardStore.dataShipping.on_progress }}</span>
         </div>
         <div class="stat-desc">Proses</div>
       </div>
 
       <div class="stat">
-        <div
-          class="stat-figure text-secondary"
-          v-if="dashboardStore.isLoadingGetItemCount"
-        >
+        <div class="stat-figure text-secondary" v-if="dashboardStore.isLoadingGetItemCount">
           <svg
             aria-hidden="true"
             class="mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
@@ -225,8 +226,7 @@
         <div class="stat-title">Produk selesai Pengiriman</div>
 
         <div class="stat-value text-secondary">
-          <span v-if="dashboardStore.isLoadingGetProductionCount">Load</span
-          ><span v-else>{{ dashboardStore.dataShipping.done }}</span>
+          <span v-if="dashboardStore.isLoadingGetProductionCount">Load</span><span v-else>{{ dashboardStore.dataShipping.done }}</span>
         </div>
         <div class="stat-desc">Proses</div>
       </div>
@@ -252,7 +252,10 @@
 
 <script>
 import { ref } from '@vue/reactivity'
-import { useDashboardStore } from '../../stores/store'
+import { useDashboardStore } from '@/stores/store'
+import numeral from 'numeral'
+import { onMounted, watch } from 'vue'
+
 export default {
   setup() {
     const time = ref('')
@@ -260,18 +263,9 @@ export default {
 
     var timerID = setInterval(updateTime, 1000)
 
-    dashboardStore.getItemCount()
-    dashboardStore.getProductionCount()
-    dashboardStore.getShippingCount()
-
     function updateTime() {
       var cd = new Date()
-      time.value =
-        zeroPadding(cd.getHours(), 2) +
-        ':' +
-        zeroPadding(cd.getMinutes(), 2) +
-        ':' +
-        zeroPadding(cd.getSeconds(), 2)
+      time.value = zeroPadding(cd.getHours(), 2) + ':' + zeroPadding(cd.getMinutes(), 2) + ':' + zeroPadding(cd.getSeconds(), 2)
     }
 
     function zeroPadding(num, digit) {
@@ -282,9 +276,30 @@ export default {
       return (zero + num).slice(-digit)
     }
 
+    onMounted(() => {
+      dashboardStore.getBisnisData()
+      dashboardStore.getProductionCount()
+      dashboardStore.getShippingCount()
+    })
+
+    watch(
+      () => dashboardStore.filter.dataSales,
+      () => {
+        dashboardStore.getBisnisData()
+      }
+    )
+
+    watch(
+      () => dashboardStore.filter.dataPurchasing,
+      () => {
+        dashboardStore.getBisnisData()
+      }
+    )
+
     updateTime()
 
     return {
+      numeral,
       time,
       dashboardStore,
     }

@@ -15,20 +15,12 @@
                 class="input input-bordered w-full"
               />
 
-              <ul
-                v-if="itemStore.items.length > 0"
-                tabindex="0"
-                class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full"
-              >
-                <li v-for="item in itemStore.items">
+              <ul v-if="itemStore.items.length > 0" tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full">
+                <li v-for="(item, index) in itemStore.items" :key="index">
                   <a @click="penjualanStore.addCart(item)">{{ item.name }}</a>
                 </li>
               </ul>
-              <ul
-                v-else
-                tabindex="0"
-                class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full"
-              >
+              <ul v-else tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full">
                 <li><a>Tidak ada data, silahkan cari Item lain</a></li>
               </ul>
             </div>
@@ -43,35 +35,20 @@
               <div class="label">
                 <span class="">Tanggal Transaksi</span>
               </div>
-              <input
-                required
-                v-model="penjualanStore.form.tanggal_transaksi"
-                id="date"
-                type="date"
-                class="input input-bordered w-full"
-              />
+              <input required v-model="penjualanStore.form.tanggal_transaksi" id="date" type="date" class="input input-bordered w-full" />
             </div>
 
             <div class="form-control w-full">
               <div class="label">
                 <span class="">Nomor Faktur</span>
               </div>
-              <input
-                required
-                v-model="penjualanStore.form.nomor_faktur"
-                type="text"
-                class="input input-bordered w-full"
-              />
+              <input required v-model="penjualanStore.form.nomor_faktur" type="text" class="input input-bordered w-full" />
             </div>
             <hr class="my-4" />
 
             <div class="form-control w-52">
               <label class="cursor-pointer label">
-                <input
-                  type="checkbox"
-                  class="toggle toggle-primary"
-                  v-model="penjualanStore.form.pelanggan_tetap"
-                />
+                <input type="checkbox" class="toggle toggle-primary" v-model="penjualanStore.form.pelanggan_tetap" />
                 <span class="label-text">Pelanggan Tetap</span>
               </label>
             </div>
@@ -80,34 +57,19 @@
                 <div class="label">
                   <span class="">Nama Pelanggan</span>
                 </div>
-                <input
-                  required
-                  v-model="penjualanStore.form.nama_pelanggan"
-                  type="text"
-                  class="input input-bordered w-full"
-                />
+                <input required v-model="penjualanStore.form.nama_pelanggan" type="text" class="input input-bordered w-full" />
               </div>
               <div class="form-control w-full">
                 <div class="label">
                   <span class="">Alamat</span>
                 </div>
-                <textarea
-                  required
-                  v-model="penjualanStore.form.alamat"
-                  type="text"
-                  class="textarea textarea-bordered w-full"
-                ></textarea>
+                <textarea required v-model="penjualanStore.form.alamat" type="text" class="textarea textarea-bordered w-full"></textarea>
               </div>
               <div class="form-control w-full">
                 <div class="label">
                   <span class="">Nomor Telepon</span>
                 </div>
-                <input
-                  required
-                  v-model="penjualanStore.form.nomor_telepon"
-                  type="text"
-                  class="input input-bordered w-full"
-                />
+                <input required v-model="penjualanStore.form.nomor_telepon" type="text" class="input input-bordered w-full" />
               </div>
             </template>
             <template v-else>
@@ -125,20 +87,12 @@
                     class="input input-bordered w-full"
                   />
 
-                  <ul
-                    v-if="pelangganStore.items.length > 0"
-                    tabindex="0"
-                    class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full"
-                  >
+                  <ul v-if="pelangganStore.items.length > 0" tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full">
                     <li v-for="item in pelangganStore.items">
                       <a @click="setPelanggan(item)">{{ item.name }}</a>
                     </li>
                   </ul>
-                  <ul
-                    v-else
-                    tabindex="0"
-                    class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full"
-                  >
+                  <ul v-else tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-full">
                     <li><a>Tidak ada data, silahkan cari Item lain</a></li>
                   </ul>
                 </div>
@@ -147,23 +101,13 @@
                 <div class="label">
                   <span class="">Alamat</span>
                 </div>
-                <textarea
-                  required
-                  v-model="penjualanStore.form.pelanggan.alamat"
-                  type="text"
-                  class="textarea textarea-bordered w-full"
-                ></textarea>
+                <textarea required v-model="penjualanStore.form.pelanggan.alamat" type="text" class="textarea textarea-bordered w-full"></textarea>
               </div>
               <div class="form-control w-full">
                 <div class="label">
                   <span class="">Nomor Telepon</span>
                 </div>
-                <input
-                  required
-                  v-model="penjualanStore.form.pelanggan.nomor_telepon"
-                  type="text"
-                  class="input input-bordered w-full"
-                />
+                <input required v-model="penjualanStore.form.pelanggan.nomor_telepon" type="text" class="input input-bordered w-full" />
               </div>
             </template>
 
@@ -172,64 +116,33 @@
               <div class="label">
                 <span class="">Total (IDR) </span>
               </div>
-              <input
-                required
-                readonly
-                type="text"
-                :value="numeral(penjualanStore.cartTotal).format('0,0')"
-                class="input input-bordered w-full"
-              />
+              <input required readonly type="text" :value="numeral(penjualanStore.cartTotal).format('0,0')" class="input input-bordered w-full" />
             </div>
 
             <div class="form-control w-full">
               <div class="label">
                 <span class="">Pajak (IDR) </span>
               </div>
-              <select
-                v-model="penjualanStore.tipePajak"
-                class="select select-bordered w-full"
-              >
+              <select v-model="penjualanStore.tipePajak" class="select select-bordered w-full">
                 <option value="0" selected>Tanpa Pajak</option>
                 <option value="11">PPN 11%</option>
               </select>
-              <input
-                required
-                readonly
-                type="text"
-                :value="numeral(penjualanStore.pajakTotal).format('0,0')"
-                class="input input-bordered w-full"
-              />
+              <input required readonly type="text" :value="numeral(penjualanStore.pajakTotal).format('0,0')" class="input input-bordered w-full" />
             </div>
             <div class="form-control w-full">
               <div class="label">
                 <span class="">Ongkos Kirim</span>
               </div>
-              <InputCurrency
-                v-model="penjualanStore.form.ongkir"
-                :options="{ currency: 'IDR' }"
-              />
+              <InputCurrency v-model="penjualanStore.form.ongkir" :options="{ currency: 'IDR' }" />
             </div>
             <div class="form-control w-full">
               <div class="label">
                 <span class="">Grand Total (IDR)</span>
               </div>
-              <input
-                required
-                readonly
-                :value="numeral(penjualanStore.grandTotal).format('0,0')"
-                type="text"
-                class="input input-bordered w-full"
-              />
+              <input required readonly :value="numeral(penjualanStore.grandTotal).format('0,0')" type="text" class="input input-bordered w-full" />
             </div>
-            <button
-              type="submit"
-              :disabled="penjualanStore.isStoreLoading"
-              class="mt-6 btn btn-accent w-32 hover:btn-primary my-2"
-            >
-              <span
-                v-if="penjualanStore.isStoreLoading"
-                class="loading loading-infinity loading-lg"
-              ></span>
+            <button type="submit" :disabled="penjualanStore.isStoreLoading" class="mt-6 btn btn-accent w-32 hover:btn-primary my-2">
+              <span v-if="penjualanStore.isStoreLoading" class="loading loading-infinity loading-lg"></span>
               <span v-else>Submit</span>
             </button>
           </form>
@@ -261,56 +174,34 @@
               <tr v-if="penjualanStore.form.cart.length == 0">
                 <td colspan="8" class="text-center">Tidak ada data</td>
               </tr>
-              <tr
-                v-else
-                v-for="(item, index) in penjualanStore.form.cart"
-                :key="index"
-              >
+              <tr v-else v-for="(item, index) in penjualanStore.form.cart" :key="index">
                 <td class="text-center">
                   {{ 1 + index }}
                 </td>
                 <td>{{ item.name }}</td>
                 <td>
-                  <input
-                    v-model="item.jumlah"
-                    type="text"
-                    placeholder="Jumlah Pembelian"
-                    class="input input-bordered w-full max-w-xs"
-                  />
+                  <input v-model="item.jumlah" type="text" placeholder="Jumlah Pembelian" class="input input-bordered w-full max-w-xs" />
                 </td>
                 <td>
                   {{ item.unit?.name }}
                 </td>
                 <td>
-                  <InputCurrency
-                    v-model="item.harga"
-                    :options="{ currency: 'IDR' }"
-                  />
+                  <InputCurrency v-model="item.harga" :options="{ currency: 'IDR' }" />
                 </td>
                 <td>
-                  <InputCurrency
-                    v-model="item.discount"
-                    :options="{ currency: 'IDR' }"
-                  />
+                  <InputCurrency v-model="item.discount" :options="{ currency: 'IDR' }" />
                 </td>
                 <td>
                   <input
                     readonly
-                    :value="
-                      numeral(item.harga * item.jumlah - item.discount).format(
-                        '0,0'
-                      )
-                    "
+                    :value="numeral(item.harga * item.jumlah - item.discount).format('0,0')"
                     type="text"
                     placeholder="Jumlah Pembelian"
                     class="input input-bordered w-full max-w-xs"
                   />
                 </td>
                 <td>
-                  <TrashIcon
-                    @click="removeItem(index)"
-                    class="w-6 h-6 cursor-pointer transition duration-150 ease-in-out hover:scale-120"
-                  />
+                  <TrashIcon @click="removeItem(index)" class="w-6 h-6 cursor-pointer transition duration-150 ease-in-out hover:scale-120" />
                 </td>
               </tr>
             </tbody>
@@ -383,7 +274,7 @@ function proses() {
     swal
       .fire({
         title: 'Proses',
-        text: 'Transaksi Pembelian akan di Proses!',
+        text: 'Transaksi Penjualan akan di Proses!',
         showCancelButton: true,
         confirmButtonText: 'Proses',
         showLoaderOnConfirm: true,
@@ -396,12 +287,12 @@ function proses() {
         if (result.value == true) {
           swal
             .fire({
-              title: 'Do you want to save the changes?',
+              title: 'Transaksi berhasil',
               icon: 'success',
               showDenyButton: true,
               showCancelButton: true,
               confirmButtonText: 'Print Faktur',
-              denyButtonText: `Daftar Pembelian`,
+              denyButtonText: `Daftar Penjualan`,
               allowOutsideClick: false,
               allowEscapeKey: false,
             })
@@ -417,7 +308,7 @@ function proses() {
                 // })
               } else if (result.isDenied) {
                 router.push({
-                  name: 'pembelian-list',
+                  name: 'penjualan-list',
                 })
               }
             })
