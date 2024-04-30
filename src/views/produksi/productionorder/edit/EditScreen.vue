@@ -663,11 +663,11 @@ import {
 } from '@/stores/store'
 import { usePegawaiStore } from '@/stores/pegawaiStore'
 import { useRouter, useRoute } from 'vue-router'
-import ModalItemBahanBaku from './Component/ModalItemBahanBaku.vue'
-import ModalItemBarangJadi from './Component/ModalItemBarangJadi.vue'
-import ModalMachine from './Component/ModalMachine.vue'
-import ModalOverhead from './Component/ModalOverhead.vue'
-import ModalPegawai from './Component/ModalPegawai.vue'
+import ModalItemBahanBaku from './component/ModalItemBahanBaku.vue'
+import ModalItemBarangJadi from './component/ModalItemBarangJadi.vue'
+import ModalMachine from './component/ModalMachine.vue'
+import ModalOverhead from './component/ModalOverhead.vue'
+import ModalPegawai from './component/ModalPegawai.vue'
 
 const pegawaiStore = usePegawaiStore()
 const router = useRouter()

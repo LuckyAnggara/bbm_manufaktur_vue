@@ -241,7 +241,7 @@
 <script>
 import { inject, ref } from 'vue'
 import { useToast } from 'vue-toastification'
-import { useItemStore, useProductionOrderStore } from '../../../../stores/store'
+import { useItemStore, useProductionOrderStore } from '@/stores/store'
 import { useRouter } from 'vue-router'
 import ModalItemBarangJadi from './component/ModalItemBarangJadi.vue'
 
