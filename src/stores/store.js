@@ -10,12 +10,16 @@ const toast = useToast()
 export const useAuthStore = defineStore('authStore', {
   state: () => {
     return {
+      user: null,
       username: null,
       password: null,
       isLoading: false,
     }
   },
   getters: {
+    userData(state) {
+      return state.user
+    },
     token() {
       return JSON.parse(localStorage.getItem('token'))
     },
@@ -82,6 +86,17 @@ export const useAuthStore = defineStore('authStore', {
         this.isLoading = false
       }
     },
+    async getAuthUser() {
+      try {
+        const respo = await axiosIns.get(`/auth/user`)
+        this.user = respo.data
+        return respo.data
+      } catch (error) {
+      } finally {
+        this.isLoading = false
+      }
+      return false
+    },
   },
 })
 
@@ -143,6 +158,7 @@ export const useItemStore = defineStore('itemStore', {
   state: () => {
     return {
       responsItem: {},
+      detailItem: {},
       itemTypes: [],
       itemUnits: [],
       itemMachines: [],
@@ -154,6 +170,7 @@ export const useItemStore = defineStore('itemStore', {
       toDate: '',
       isLoading: true,
       isLoading2: true,
+      isUpdateLoading: false,
       isLoadingDownload: false,
       isDeleteLoading: false,
       modalSubmitLoading: false,
@@ -226,13 +243,33 @@ export const useItemStore = defineStore('itemStore', {
     },
   },
   actions: {
+    async itemUpdate() {
+      this.isUpdateLoading = true
+      try {
+        const response = await axiosIns.put(
+          `/items/${this.detailItem.id}`,
+          this.detailItem
+        )
+        this.isUpdateLoading = false
+        toast.success('Update sukses', {
+          timeout: 2000,
+        })
+        this.getItemData()
+      } catch (error) {
+        toast.error(error.message, {
+          timeout: 2000,
+        })
+      } finally {
+        this.isUpdateLoading = false
+      }
+    },
     async storeItemData(data) {
       this.modalSubmitLoading = true
       try {
         const response = await axiosIns.post(`/items`, data)
         this.modalToggle = false
         this.modalSubmitLoading = false
-        toast.success('My toast content', {
+        toast.success('Item baru selesai di buat', {
           timeout: 2000,
         })
         this.getItemData()

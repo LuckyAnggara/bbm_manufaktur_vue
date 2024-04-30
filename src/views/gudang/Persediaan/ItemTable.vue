@@ -123,7 +123,7 @@
               >
                 <td class="text-center">{{ itemStore.from + index }}</td>
                 <td>{{ item.name.toUpperCase() }}</td>
-                <td>{{ item.type.name.toUpperCase() }}</td>
+                <td>{{ item.type?.name.toUpperCase() }}</td>
                 <!-- <td>{{ item.warehouse.name.toUpperCase() }}</td> -->
                 <td>{{ item.unit.name.toUpperCase() }}</td>
 
@@ -153,6 +153,9 @@
                     >
                       <li>
                         <a @click="detail(item)"> Detail </a>
+                      </li>
+                      <li>
+                        <a @click="mutasi(item)"> Mutasi </a>
                       </li>
                       <li><a @click="onDelete(item.id, index)">Hapus</a></li>
                     </ul>
@@ -186,16 +189,29 @@
         </button>
       </div>
     </div>
+
+    <!-- Modal -->
+    <Teleport to="body">
+      <!-- use the modal component, pass in the prop -->
+      <EditModal
+        :show="showEditModal"
+        @close="closeEditModal()"
+        @submitUpdate="update()"
+      >
+      </EditModal>
+    </Teleport>
   </div>
 </template>
 
 <script>
-import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { defineAsyncComponent, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useItemStore } from '@/stores/store'
 import { useDebounceFn } from '@vueuse/core'
+import EditModal from './DetailItemModal.vue'
 
 export default {
   setup() {
+    const showEditModal = ref(false)
     const itemStore = useItemStore()
     const dataApi = ref()
     const lengths = ref([5, 10, 20, 30, 40, 50])
@@ -225,6 +241,7 @@ export default {
 
     // expose to template and other options API hooks
     return {
+      showEditModal,
       searchData,
       getData,
       dataApi,
@@ -246,8 +263,18 @@ export default {
     },
   },
   methods: {
-    detail(data) {
+    closeEditModal() {
+      this.showEditModal = !this.showEditModal
+    },
+    mutasi(data) {
       this.$router.push({ name: 'mutation', params: data })
+    },
+    detail(data) {
+      this.itemStore.$patch((x) => {
+        x.detailItem = data
+      })
+
+      this.showEditModal = true
     },
     onDelete(id, index) {
       this.$swal
@@ -273,12 +300,19 @@ export default {
           }
         })
     },
+    update() {
+      const resp = this.itemStore.itemUpdate()
+      this.showEditModal = false
+    },
     position(index) {
       if (index < 2) {
         return 'dropdown-end'
       }
       return 'dropdown-top dropdown-left'
     },
+  },
+  components: {
+    EditModal,
   },
   created() {
     this.getData(this.itemStore.searchName)

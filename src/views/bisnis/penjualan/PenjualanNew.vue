@@ -401,7 +401,7 @@ function proses() {
               showDenyButton: true,
               showCancelButton: true,
               confirmButtonText: 'Print Faktur',
-              denyButtonText: `Daftar Pembelian`,
+              denyButtonText: `Daftar Penjualan`,
               allowOutsideClick: false,
               allowEscapeKey: false,
             })
@@ -409,15 +409,9 @@ function proses() {
               /* Read more about isConfirmed, isDenied below */
               if (result.isConfirmed) {
                 penjualanStore.showFaktur(penjualanStore.resultId)
-                // router.push({
-                //   name: 'pembelian-faktur',
-                //   params: {
-                //     id: penjualanStore.resultId,
-                //   },
-                // })
               } else if (result.isDenied) {
                 router.push({
-                  name: 'pembelian-list',
+                  name: 'penjualan-list',
                 })
               }
             })

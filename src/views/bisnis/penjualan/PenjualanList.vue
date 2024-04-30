@@ -241,55 +241,6 @@
         </div>
       </div>
     </div>
-
-    <TransitionRoot appear :show="qrDialogShow" as="template">
-      <Dialog as="div" @close="closeModal" class="relative z-10">
-        <TransitionChild
-          as="template"
-          enter="duration-300 ease-out"
-          enter-from="opacity-0"
-          enter-to="opacity-100"
-          leave="duration-200 ease-in"
-          leave-from="opacity-100"
-          leave-to="opacity-0"
-        >
-          <div class="fixed inset-0 bg-black/25" />
-        </TransitionChild>
-
-        <div class="fixed inset-0 overflow-y-auto">
-          <div
-            class="flex min-h-full items-center justify-center p-4 text-center"
-          >
-            <TransitionChild
-              as="template"
-              enter="duration-300 ease-out"
-              enter-from="opacity-0 scale-95"
-              enter-to="opacity-100 scale-100"
-              leave="duration-200 ease-in"
-              leave-from="opacity-100 scale-100"
-              leave-to="opacity-0 scale-95"
-            >
-              <DialogPanel
-                class="w-fit transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
-              >
-                <DialogTitle
-                  as="h3"
-                  class="text-lg font-medium leading-6 text-gray-900"
-                >
-                  QR Code
-                </DialogTitle>
-                <div class="mt-2">
-                  <vue-qrcode
-                    :value="link"
-                    :options="{ width: 400 }"
-                  ></vue-qrcode>
-                </div>
-              </DialogPanel>
-            </TransitionChild>
-          </div>
-        </div>
-      </Dialog>
-    </TransitionRoot>
   </div>
 </template>
 
@@ -315,17 +266,16 @@ import {
   ArrowPathIcon,
   EllipsisVerticalIcon,
   PrinterIcon,
-  QrCodeIcon,
   TrashIcon,
 } from '@heroicons/vue/24/solid'
 import numeral from 'numeral'
+const swal = inject('$swal')
 
 const router = useRouter()
 const penjualanStore = usePenjualanStore()
 const mainStore = useMainStore()
 const indexDestroy = ref(null)
 
-const qrDialogShow = ref(false)
 const link = ref(null)
 function closeModal() {
   qrDialogShow.value = false
@@ -337,19 +287,13 @@ const itemMenu = [
     label: 'Faktur',
     icon: PrinterIcon,
   },
-  {
-    function: toQr,
-    label: 'QR Code',
-    icon: QrCodeIcon,
-  },
+
   {
     function: destroy,
     label: 'Hapus',
     icon: TrashIcon,
   },
 ]
-
-const swal = inject('$swal')
 
 const searchData = useDebounceFn(() => {
   penjualanStore.getData()
@@ -387,9 +331,27 @@ function toQr(item) {
 }
 
 function destroy(item) {
-  // swal("Hello Vue world!!!");
-  penjualanStore.destroy(item.id)
-  indexDestroy.value = item.id
+  swal
+    .fire({
+      title: 'Hapus Faktur!',
+      text: 'Kembalikan persediaan ke Gudang ?',
+      icon: 'info',
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: 'Ya, kembalikan',
+      denyButtonText: `Tidak`,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+    })
+    .then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        penjualanStore.destroy(item.id, 1)
+      } else if (result.isDenied) {
+        penjualanStore.destroy(item.id, 0)
+      }
+      indexDestroy.value = item.id
+    })
 }
 
 watch(

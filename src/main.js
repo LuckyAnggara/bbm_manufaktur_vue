@@ -5,7 +5,7 @@ import './style.css'
 import App from './App.vue'
 import axiosIns from './services/axios'
 import { createRouter, createWebHashHistory } from 'vue-router'
-import { routes } from './services/router'
+import router from './services/router'
 import Toast from 'vue-toastification'
 import VueSweetalert2 from 'vue-sweetalert2'
 import moment from 'moment-timezone'
@@ -52,25 +52,6 @@ moment.updateLocale('en', {
   weekdaysShort: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
 })
 moment().format('L')
-
-const router = createRouter({
-  mode: 'history',
-  linkExactActiveClass: 'active',
-  history: createWebHashHistory(),
-  routes,
-})
-
-router.beforeResolve(async (to, _, next) => {
-  const auth = useAuthStore()
-  const isLogin = JSON.parse(localStorage.getItem('userData'))
-
-  if (to.meta.requiresAuth == true) {
-    if (to.name !== 'login' && !isLogin) next({ name: 'login' })
-    else next()
-  } else {
-    return next()
-  }
-})
 
 const pinia = createPinia()
 const app = createApp(App)

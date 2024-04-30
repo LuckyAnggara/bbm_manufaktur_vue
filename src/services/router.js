@@ -6,8 +6,15 @@ import MutationScreen from '../views/mutation/MutationScreen.vue'
 import LoginScreen from '../views/LoginScreen.vue'
 import { getUserData, isUserLoggedIn } from './auth'
 import { bisnisRoutes } from './router/BisnisRoute'
+import { useAuthStore } from '@/stores/store'
 
-export const routes = [
+import {
+  createRouter,
+  createWebHashHistory,
+  createWebHistory,
+} from 'vue-router'
+
+const routes = [
   {
     path: '/login',
     name: 'login',
@@ -24,6 +31,7 @@ export const routes = [
     name: 'mutation',
     component: MutationScreen,
     meta: {
+      requiresAuth: true,
       title: 'Mutasi Item',
       layout: 'layout-normal',
     },
@@ -35,17 +43,60 @@ export const routes = [
   ...bisnisRoutes,
 ]
 
-export const getNavigation = () => {
-  const isLoggedIn = isUserLoggedIn()
-  const userData = getUserData()
-  if (isLoggedIn) {
-    if (userData.role == 'USER') {
-      return user
-    } else if (userData.role == 'ADMIN') {
-      return admin
+const router = createRouter({
+  mode: 'history',
+  linkExactActiveClass: 'active',
+  history: createWebHashHistory(),
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    return savedPosition || { top: 0 }
+  },
+})
+
+router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore()
+
+  const authUser = authStore.userData
+  const reqAuth = to.matched.some((record) => record.meta.requiresAuth)
+  const loginQuery = { path: '/login' }
+  const dashboardQuery = { path: '/dashboard' }
+
+  if (reqAuth && !authUser) {
+    const isAuth = await authStore.getAuthUser()
+    if (to.fullPath == loginQuery) {
+    }
+    if (!isAuth) {
+      next(loginQuery)
+    } else {
+      next()
     }
   } else {
-    return nonUser
+    if (to.fullPath == '/login') {
+      const isAuth = await authStore.getAuthUser()
+      if (isAuth) {
+        next(dashboardQuery)
+      } else {
+        next()
+      }
+    } else {
+      next()
+    }
   }
-  // return localStorage.getItem('userData') && localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName)
-}
+})
+
+export default router
+
+// export const getNavigation = () => {
+//   const isLoggedIn = isUserLoggedIn()
+//   const userData = getUserData()
+//   if (isLoggedIn) {
+//     if (userData.role == 'USER') {
+//       return user
+//     } else if (userData.role == 'ADMIN') {
+//       return admin
+//     }
+//   } else {
+//     return nonUser
+//   }
+//   // return localStorage.getItem('userData') && localStorage.getItem(useJwt.jwtConfig.storageTokenKeyName)
+// }

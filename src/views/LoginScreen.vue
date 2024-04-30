@@ -156,21 +156,17 @@
   </section> -->
 </template>
 
-<script>
-import { useAuthStore } from '../stores/store'
+<script setup>
 import { useRouter } from 'vue-router'
-export default {
-  setup() {
-    const router = useRouter()
-    const authStore = useAuthStore()
-    async function login() {
-      const response = await authStore.login()
-      router.push({ name: 'dashboard' })
-    }
-    return {
-      login,
-      authStore,
-    }
-  },
+import { useAuthStore } from '@/stores/store'
+
+const authStore = useAuthStore()
+const router = useRouter()
+
+const login = async () => {
+  const success = await authStore.login()
+  if (success) {
+    router.push({ name: 'dashboard' })
+  }
 }
 </script>

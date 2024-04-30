@@ -176,11 +176,11 @@ export const usePenjualanStore = defineStore('penjualanStore', {
       }
       this.isLoading = false
     },
-    async destroy(id) {
+    async destroy(id, retur = 0) {
       this.isDestroyLoading = true
       setTimeout(() => {}, 500)
       try {
-        await axiosIns.delete(`/penjualan/${id}`)
+        await axiosIns.delete(`/penjualan/${id}`, { data: { retur: retur } })
         toast.success('Data berhasil di hapus', {
           timeout: 2000,
         })
