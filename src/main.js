@@ -4,7 +4,6 @@ import './index.css'
 import './style.css'
 import App from './App.vue'
 import axiosIns from './services/axios'
-import { createRouter, createWebHashHistory } from 'vue-router'
 import router from './services/router'
 import Toast from 'vue-toastification'
 import VueSweetalert2 from 'vue-sweetalert2'
@@ -13,10 +12,6 @@ import 'sweetalert2/dist/sweetalert2.min.css'
 import 'vue-toastification/dist/index.css'
 import VueNumerals from 'vue-numerals'
 import '@sweetalert2/themes/dark/dark.css'
-import { isUserLoggedIn } from './services/auth'
-import { useAuthStore } from './stores/store'
-
-import VueQrcode from '@chenfengyuan/vue-qrcode'
 
 moment.tz.setDefault('Asia/Jakarta')
 moment.updateLocale('en', {

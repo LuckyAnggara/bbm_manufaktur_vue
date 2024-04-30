@@ -192,7 +192,7 @@
 </template>
 
 <script>
-import { useMutationStore, useAuthStore } from '@/stores/store'
+import { useMutationStore } from '@/stores/store'
 import ModalItem from './component/ModalItem.vue'
 import { useToast } from 'vue-toastification'
 import { inject } from 'vue'
@@ -202,7 +202,6 @@ export default {
   setup() {
     const toast = useToast()
     const mutationStore = useMutationStore()
-    const authStore = useAuthStore()
     const swal = inject('$swal')
     const router = useRouter()
 
