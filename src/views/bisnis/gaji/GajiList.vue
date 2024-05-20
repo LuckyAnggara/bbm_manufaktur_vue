@@ -1,9 +1,7 @@
 <template>
   <section>
     <div class="md:flex">
-      <div
-        class="flex-col md:w-1/4 w-full mr-10 self-start card bg-neutral shadow-xl"
-      >
+      <div class="flex-col md:w-1/4 w-full mr-10 self-start card shadow-xl">
         <div class="card-body">
           <h2 class="card-title">Filter Data</h2>
           <div class="justify-center my-4">
@@ -12,61 +10,30 @@
                 <span class="label-text">Tanggal Data</span>
               </label>
               <div class="flex justify-between items-center">
-                <input
-                  v-model="gajiStore.filter.date.fromDate"
-                  id="date"
-                  type="date"
-                  placeholder="Type here"
-                  class="input input-bordered w-auto"
-                />
+                <input v-model="gajiStore.filter.date.fromDate" id="date" type="date" placeholder="Type here" class="input input-bordered w-auto" />
                 <label class="">s.d</label>
-                <input
-                  v-model="gajiStore.filter.date.toDate"
-                  id="date"
-                  type="date"
-                  placeholder="Type here"
-                  class="input input-bordered w-auto"
-                />
+                <input v-model="gajiStore.filter.date.toDate" id="date" type="date" placeholder="Type here" class="input input-bordered w-auto" />
               </div>
             </div>
           </div>
 
           <div class="card-actions justify-end">
-            <button
-              class="btn btn-primary w-32 hover:btn-primary"
-              @click="gajiStore.getData()"
-            >
-              Filter
-            </button>
+            <button class="btn btn-primary w-32 hover:btn-primary" @click="gajiStore.getData()">Filter</button>
           </div>
         </div>
       </div>
       <div class="md:w-3/4 mt-10 md:mt-0 justify-self-end">
-        <div class="card flex bg-neutral flex-col">
+        <div class="card flex flex-col">
           <div class="card-body shadow-xl rounded-xl">
             <h2 class="card-title mb-2 text-2xl">Data Biaya</h2>
             <div class="md:flex py-2">
               <div class="w-1/5">
-                <button
-                  class="btn w-32 btn-primary modal-button shadow-md"
-                  @click="onNew()"
-                >
-                  Tambah
-                </button>
+                <button class="btn w-32 btn-primary modal-button shadow-md" @click="onNew()">Tambah</button>
               </div>
               <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4">
                 <label class="mr-4">Jumlah Data </label>
-                <select
-                  v-model="gajiStore.filter.currentLimit"
-                  class="select select-bordered max-w-xs"
-                >
-                  <option
-                    :selected="
-                      gajiStore.filter.currentLimit == length ? true : false
-                    "
-                    v-for="length in mainStore.limitDataOptions"
-                    :key="length"
-                  >
+                <select v-model="gajiStore.filter.currentLimit" class="select select-bordered max-w-xs">
+                  <option :selected="gajiStore.filter.currentLimit == length ? true : false" v-for="length in mainStore.limitDataOptions" :key="length">
                     {{ length }}
                   </option>
                 </select>
@@ -112,56 +79,28 @@
                     <tr v-if="gajiStore.items.length == 0">
                       <td colspan="4" class="text-center">Tidak ada data</td>
                     </tr>
-                    <tr
-                      v-else
-                      v-for="(item, index) in gajiStore.items"
-                      :key="item.id"
-                    >
+                    <tr v-else v-for="(item, index) in gajiStore.items" :key="item.id">
                       <td class="text-center">{{ gajiStore.from + index }}</td>
                       <td>{{ item.created_at }}</td>
                       <td>
-                        {{
-                          numeralFormat(
-                            item.total_bonus +
-                              item.total_gaji +
-                              item.total_uang_makan
-                          )
-                        }}
+                        {{ numeralFormat(item.total_bonus + item.total_gaji + item.total_uang_makan) }}
                       </td>
 
                       <td class="before:hidden lg:w-1 whitespace-nowrap">
                         <div>
-                          <Menu
-                            as="div"
-                            class="relative inline-block text-left"
-                          >
+                          <Menu as="div" class="relative inline-block text-left">
                             <div>
                               <MenuButton
-                                :disabled="
-                                  gajiStore.isDestroyLoading &&
-                                  indexDestroy == item.id
-                                "
-                                :class="
-                                  gajiStore.isDestroyLoading &&
-                                  indexDestroy == item.id
-                                    ? ''
-                                    : 'hover:scale-125 ease-in-out duration-300'
-                                "
+                                :disabled="gajiStore.isDestroyLoading && indexDestroy == item.id"
+                                :class="gajiStore.isDestroyLoading && indexDestroy == item.id ? '' : 'hover:scale-125 ease-in-out duration-300'"
                                 class="flex w-full rounded-md font-medium text-black dark:text-gray-400"
                               >
                                 <ArrowPathIcon
-                                  v-if="
-                                    gajiStore.isDestroyLoading &&
-                                    indexDestroy == item.id
-                                  "
+                                  v-if="gajiStore.isDestroyLoading && indexDestroy == item.id"
                                   class="animate-spin h-5 w-5 text-black dark:text-gray-400"
                                   aria-hidden="true"
                                 />
-                                <EllipsisVerticalIcon
-                                  v-else
-                                  class="h-5 w-5 text-black dark:text-gray-400"
-                                  aria-hidden="true"
-                                />
+                                <EllipsisVerticalIcon v-else class="h-5 w-5 text-black dark:text-gray-400" aria-hidden="true" />
                               </MenuButton>
                             </div>
 
@@ -177,23 +116,15 @@
                                 class="z-50 py-1 absolute right-0 mt-2 w-40 origin-top-right divide-y divide-gray-100 rounded-md bg-white dark:bg-gray-800 dark:text-gray-100 shadow-lg ring-1 ring-black dark:ring-gray-700 ring-opacity-5 focus:outline-none"
                               >
                                 <div class="px-2 py-1">
-                                  <MenuItem
-                                    v-for="menu in itemMenu"
-                                    v-slot="{ active }"
-                                  >
+                                  <MenuItem v-for="menu in itemMenu" v-slot="{ active }">
                                     <button
                                       @click="menu.function(item)"
                                       :class="[
-                                        active
-                                          ? 'bg-blue-500 text-white'
-                                          : 'text-gray-900 dark:text-gray-400',
+                                        active ? 'bg-blue-500 text-white' : 'text-gray-900 dark:text-gray-400',
                                         'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                       ]"
                                     >
-                                      <component
-                                        :is="menu.icon"
-                                        class="w-5 h-5 mr-3"
-                                      />
+                                      <component :is="menu.icon" class="w-5 h-5 mr-3" />
                                       {{ menu.label }}
                                     </button>
                                   </MenuItem>
@@ -214,29 +145,10 @@
                 </tfoot>
               </table>
             </div>
-            <div
-              class="btn-group mx-auto mt-4 mb-1 justify-center"
-              v-if="!gajiStore.isLoading"
-            >
-              <button
-                class="btn btn-outline"
-                @click="getData(previousPage)"
-                :disabled="gajiStore.currentPage == 1 ? true : false"
-              >
-                «
-              </button>
-              <button class="btn btn-outline">
-                Page {{ gajiStore.currentPage }}
-              </button>
-              <button
-                class="btn btn-outline"
-                @click="getData(nextPage)"
-                :disabled="
-                  gajiStore.lastPage == gajiStore.currentPage ? true : false
-                "
-              >
-                »
-              </button>
+            <div class="btn-group mx-auto mt-4 mb-1 justify-center" v-if="!gajiStore.isLoading">
+              <button class="btn btn-outline" @click="getData(previousPage)" :disabled="gajiStore.currentPage == 1 ? true : false">«</button>
+              <button class="btn btn-outline">Page {{ gajiStore.currentPage }}</button>
+              <button class="btn btn-outline" @click="getData(nextPage)" :disabled="gajiStore.lastPage == gajiStore.currentPage ? true : false">»</button>
             </div>
           </div>
         </div>
@@ -251,12 +163,7 @@ import { useMainStore } from '@/stores/mainStore'
 import { inject, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
-import {
-  ArrowPathIcon,
-  EllipsisVerticalIcon,
-  PrinterIcon,
-  TrashIcon,
-} from '@heroicons/vue/24/solid'
+import { ArrowPathIcon, EllipsisVerticalIcon, PrinterIcon, TrashIcon } from '@heroicons/vue/24/solid'
 
 import moment from 'moment'
 
@@ -301,14 +208,12 @@ async function onDelete(item, index) {
       allowEscapeKey: false,
       preConfirm: (value) => {
         indexDestroy.value = item.id
-        return gajiStore
-          .destroy(moment(item.created_at).format('yyyy-MM-DD'), index)
-          .then((resp) => {
-            if (resp.status == 200) {
-              return resp
-            }
-            throw new Error(resp)
-          })
+        return gajiStore.destroy(moment(item.created_at).format('yyyy-MM-DD'), index).then((resp) => {
+          if (resp.status == 200) {
+            return resp
+          }
+          throw new Error(resp)
+        })
       },
     })
     .then((result) => {

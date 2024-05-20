@@ -1,26 +1,14 @@
 <template>
   <div class="flex">
-    <div class="card flex bg-neutral flex-col h-5/6 w-full">
+    <div class="card flex flex-col h-5/6 w-full">
       <div class="card-body shadow-xl rounded-xl">
-        <button
-          class="btn btn-accent w-32 hover:btn-primary my-2"
-          @click="toNew()"
-        >
-          Tambah
-        </button>
+        <button class="btn btn-accent w-32 hover:btn-primary my-2" @click="toNew()">Tambah</button>
         <h2 class="card-title mb-2 text-2xl">Daftar Penjualan</h2>
         <div class="md:flex py-2">
           <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4">
             <label class="mr-4">Jumlah Data </label>
-            <select
-              v-model="penjualanStore.filter.currentLimit"
-              class="select select-bordered max-w-xs"
-            >
-              <option
-                v-for="option in mainStore.limitDataOptions"
-                :key="option"
-                :value="option"
-              >
+            <select v-model="penjualanStore.filter.currentLimit" class="select select-bordered max-w-xs">
+              <option v-for="option in mainStore.limitDataOptions" :key="option" :value="option">
                 {{ option == 100000 ? 'SEMUA' : option }}
               </option>
             </select>
@@ -28,13 +16,7 @@
 
           <div class="justify-end mx-1 md:w-1/2 w-full">
             <div class="form-control">
-              <input
-                v-model="penjualanStore.filter.searchQuery"
-                @keyup="searchData"
-                type="text"
-                placeholder="Cari Data"
-                class="input input-bordered w-full"
-              />
+              <input v-model="penjualanStore.filter.searchQuery" @keyup="searchData" type="text" placeholder="Cari Data" class="input input-bordered w-full" />
             </div>
           </div>
         </div>
@@ -81,20 +63,14 @@
                 <tr v-if="penjualanStore.items.length == 0">
                   <td colspan="7" class="text-center">Tidak ada data</td>
                 </tr>
-                <tr
-                  v-else
-                  v-for="(item, index) in penjualanStore.items"
-                  :key="index"
-                >
+                <tr v-else v-for="(item, index) in penjualanStore.items" :key="index">
                   <td class="text-center">
                     {{ penjualanStore.from + index }}
                   </td>
                   <td>{{ item.nomor_faktur }}</td>
                   <td>{{ item.created_at }}</td>
                   <td>
-                    {{
-                      item.pelanggan ? item.pelanggan.name : item.nama_pelanggan
-                    }}
+                    {{ item.pelanggan ? item.pelanggan.name : item.nama_pelanggan }}
                   </td>
                   <td>{{ numeral(item.total).format('0,0') }}</td>
                   <!-- <td>Lunas</td> -->
@@ -103,31 +79,16 @@
                       <Menu as="div" class="relative inline-block text-left">
                         <div>
                           <MenuButton
-                            :disabled="
-                              penjualanStore.isDestroyLoading &&
-                              indexDestroy == item.id
-                            "
-                            :class="
-                              penjualanStore.isDestroyLoading &&
-                              indexDestroy == item.id
-                                ? ''
-                                : 'hover:scale-125 ease-in-out duration-300'
-                            "
+                            :disabled="penjualanStore.isDestroyLoading && indexDestroy == item.id"
+                            :class="penjualanStore.isDestroyLoading && indexDestroy == item.id ? '' : 'hover:scale-125 ease-in-out duration-300'"
                             class="flex w-full rounded-md font-medium text-black dark:text-gray-400"
                           >
                             <ArrowPathIcon
-                              v-if="
-                                penjualanStore.isDestroyLoading &&
-                                indexDestroy == item.id
-                              "
+                              v-if="penjualanStore.isDestroyLoading && indexDestroy == item.id"
                               class="animate-spin h-5 w-5 text-black dark:text-gray-400"
                               aria-hidden="true"
                             />
-                            <EllipsisVerticalIcon
-                              v-else
-                              class="h-5 w-5 text-black dark:text-gray-400"
-                              aria-hidden="true"
-                            />
+                            <EllipsisVerticalIcon v-else class="h-5 w-5 text-black dark:text-gray-400" aria-hidden="true" />
                           </MenuButton>
                         </div>
 
@@ -143,23 +104,15 @@
                             class="z-50 py-1 absolute right-0 mt-2 w-40 origin-top-right divide-y divide-gray-100 rounded-md bg-white dark:bg-gray-800 dark:text-gray-100 shadow-lg ring-1 ring-black dark:ring-gray-700 ring-opacity-5 focus:outline-none"
                           >
                             <div class="px-2 py-1">
-                              <MenuItem
-                                v-for="menu in itemMenu"
-                                v-slot="{ active }"
-                              >
+                              <MenuItem v-for="menu in itemMenu" v-slot="{ active }">
                                 <button
                                   @click="menu.function(item)"
                                   :class="[
-                                    active
-                                      ? 'bg-blue-500 text-white'
-                                      : 'text-gray-900 dark:text-gray-400',
+                                    active ? 'bg-blue-500 text-white' : 'text-gray-900 dark:text-gray-400',
                                     'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                   ]"
                                 >
-                                  <component
-                                    :is="menu.icon"
-                                    class="w-5 h-5 mr-3"
-                                  />
+                                  <component :is="menu.icon" class="w-5 h-5 mr-3" />
                                   {{ menu.label }}
                                 </button>
                               </MenuItem>
@@ -174,38 +127,15 @@
             </tbody>
           </table>
         </div>
-        <div
-          class="btn-group mx-auto mt-4 mb-20 justify-center"
-          v-if="!penjualanStore.isLoading"
-        >
-          <button
-            class="btn btn-outline"
-            @click="previousPage"
-            :disabled="penjualanStore.currentPage == 1 ? true : false"
-          >
-            «
-          </button>
-          <button class="btn btn-outline">
-            Page {{ penjualanStore.currentPage }}
-          </button>
-          <button
-            class="btn btn-outline"
-            @click="nextPage"
-            :disabled="
-              penjualanStore.lastPage == penjualanStore.currentPage
-                ? true
-                : false
-            "
-          >
-            »
-          </button>
+        <div class="btn-group mx-auto mt-4 mb-20 justify-center" v-if="!penjualanStore.isLoading">
+          <button class="btn btn-outline" @click="previousPage" :disabled="penjualanStore.currentPage == 1 ? true : false">«</button>
+          <button class="btn btn-outline">Page {{ penjualanStore.currentPage }}</button>
+          <button class="btn btn-outline" @click="nextPage" :disabled="penjualanStore.lastPage == penjualanStore.currentPage ? true : false">»</button>
         </div>
       </div>
     </div>
 
-    <div
-      class="flex-col md:w-1/4 w-full ml-10 self-start card bg-neutral shadow-xl"
-    >
+    <div class="flex-col md:w-1/4 w-full ml-10 self-start card shadow-xl">
       <div class="card-body">
         <h2 class="card-title">Filter Data</h2>
         <div class="justify-center my-4">
@@ -213,31 +143,14 @@
             <label class="label">
               <span class="label-text">Tanggal Data</span>
             </label>
-            <input
-              v-model="penjualanStore.filter.date.fromDate"
-              id="date"
-              type="date"
-              placeholder="Type here"
-              class="input input-bordered w-auto"
-            />
+            <input v-model="penjualanStore.filter.date.fromDate" id="date" type="date" placeholder="Type here" class="input input-bordered w-auto" />
             <label class="my-4">s.d</label>
-            <input
-              v-model="penjualanStore.filter.date.toDate"
-              id="date"
-              type="date"
-              placeholder="Type here"
-              class="input input-bordered w-auto"
-            />
+            <input v-model="penjualanStore.filter.date.toDate" id="date" type="date" placeholder="Type here" class="input input-bordered w-auto" />
           </div>
         </div>
 
         <div class="card-actions justify-end">
-          <button
-            class="btn btn-accent w-32 hover:btn-primary"
-            @click="penjualanStore.getData()"
-          >
-            Filter
-          </button>
+          <button class="btn btn-accent w-32 hover:btn-primary" @click="penjualanStore.getData()">Filter</button>
         </div>
       </div>
     </div>
@@ -257,9 +170,7 @@
         </TransitionChild>
 
         <div class="fixed inset-0 overflow-y-auto">
-          <div
-            class="flex min-h-full items-center justify-center p-4 text-center"
-          >
+          <div class="flex min-h-full items-center justify-center p-4 text-center">
             <TransitionChild
               as="template"
               enter="duration-300 ease-out"
@@ -269,20 +180,10 @@
               leave-from="opacity-100 scale-100"
               leave-to="opacity-0 scale-95"
             >
-              <DialogPanel
-                class="w-fit transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all"
-              >
-                <DialogTitle
-                  as="h3"
-                  class="text-lg font-medium leading-6 text-gray-900"
-                >
-                  QR Code
-                </DialogTitle>
+              <DialogPanel class="w-fit transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <DialogTitle as="h3" class="text-lg font-medium leading-6 text-gray-900"> QR Code </DialogTitle>
                 <div class="mt-2">
-                  <vue-qrcode
-                    :value="link"
-                    :options="{ width: 400 }"
-                  ></vue-qrcode>
+                  <vue-qrcode :value="link" :options="{ width: 400 }"></vue-qrcode>
                 </div>
               </DialogPanel>
             </TransitionChild>
@@ -299,25 +200,9 @@ import { usePenjualanStore } from '@/stores/penjualanStore'
 import { useMainStore } from '@/stores/mainStore'
 import { useDebounceFn } from '@vueuse/core'
 import { useRouter } from 'vue-router'
-import {
-  Menu,
-  MenuButton,
-  MenuItems,
-  MenuItem,
-  TransitionRoot,
-  TransitionChild,
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-} from '@headlessui/vue'
+import { Menu, MenuButton, MenuItems, MenuItem, TransitionRoot, TransitionChild, Dialog, DialogPanel, DialogTitle } from '@headlessui/vue'
 
-import {
-  ArrowPathIcon,
-  EllipsisVerticalIcon,
-  PrinterIcon,
-  QrCodeIcon,
-  TrashIcon,
-} from '@heroicons/vue/24/solid'
+import { ArrowPathIcon, EllipsisVerticalIcon, PrinterIcon, QrCodeIcon, TrashIcon } from '@heroicons/vue/24/solid'
 import numeral from 'numeral'
 
 const router = useRouter()

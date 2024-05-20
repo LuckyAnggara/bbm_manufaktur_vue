@@ -99,6 +99,7 @@
                   <span class="pe-12 font-bold">Sub Total:</span>{{ numeral(pembelianStore.singleResponses?.sub_total).format('0,0') }}
                 </td>
               </tr>
+
               <tr>
                 <td colspan="5" class="pe-5 border border-white text-base font-normal text-end">
                   <span class="pe-12 font-bold">Diskon:</span>{{ numeral(pembelianStore.singleResponses?.diskon).format('0,0') }}

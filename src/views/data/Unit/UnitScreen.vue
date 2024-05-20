@@ -1,15 +1,10 @@
 <template>
-  <div class="card flex bg-neutral flex-col lg:w-1/3 w-full">
+  <div class="card flex flex-col lg:w-1/3 w-full">
     <div class="card-body shadow-xl rounded-xl">
       <h2 class="card-title mb-2 text-2xl">Data Unit Item</h2>
       <div class="md:flex py-2">
         <div class="w-1/5">
-          <button
-            class="btn w-32 btn-secondary modal-button shadow-md"
-            @click="newUnit()"
-          >
-            New Item
-          </button>
+          <button class="btn w-32 btn-secondary modal-button shadow-md" @click="newUnit()">New Item</button>
         </div>
       </div>
 
@@ -51,29 +46,15 @@
               <tr v-if="itemStore.itemUnits.length == 0">
                 <td colspan="3" class="text-center">Tidak ada data</td>
               </tr>
-              <tr
-                v-else
-                v-for="(item, index) in itemStore.itemUnits"
-                :key="item.id"
-              >
+              <tr v-else v-for="(item, index) in itemStore.itemUnits" :key="item.id">
                 <td class="text-center">{{ from + index }}</td>
                 <td>
                   {{ item.name.toUpperCase() }}
                 </td>
 
                 <td>
-                  <button
-                    class="btn btn-sm btn-square btn-ghost hover:scale-110"
-                    @click="onDelete(item.id, index)"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      width="36"
-                      height="36"
-                      class="inline-block w-5 h-5 stroke-current"
-                    >
+                  <button class="btn btn-sm btn-square btn-ghost hover:scale-110" @click="onDelete(item.id, index)">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" width="36" height="36" class="inline-block w-5 h-5 stroke-current">
                       <path
                         stroke-linecap="round"
                         stroke-linejoin="round"

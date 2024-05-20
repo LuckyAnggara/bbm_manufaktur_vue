@@ -1,9 +1,7 @@
 <template>
   <section>
     <div class="md:flex">
-      <div
-        class="flex-col md:w-1/4 w-full mr-10 self-start card bg-neutral shadow-xl"
-      >
+      <div class="flex-col md:w-1/4 w-full mr-10 self-start card shadow-xl">
         <div class="card-body">
           <h2 class="card-title">Data</h2>
           <form class="justify-center" @submit.prevent="submit">
@@ -36,19 +34,9 @@
               </div>
             </div>
             <div class="card-actions justify-end my-4">
-              <button
-                :disabled="mutationStore.storeLoading"
-                type="submit"
-                class="btn btn-secondary modal-button"
-              >
+              <button :disabled="mutationStore.storeLoading" type="submit" class="btn btn-secondary modal-button">
                 <template v-if="mutationStore.storeLoading">
-                  <svg
-                    role="status"
-                    class="inline mr-3 w-4 h-4 text-white animate-spin"
-                    viewBox="0 0 100 101"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
+                  <svg role="status" class="inline mr-3 w-4 h-4 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                       d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
                       fill="#E5E7EB"
@@ -67,17 +55,13 @@
         </div>
       </div>
       <div class="md:w-3/4 mt-10 md:mt-0 justify-self-end">
-        <div class="bg-neutral text-neutral-content rounded-lg">
+        <div class="text-neutral-content rounded-lg">
           <div class="card-body">
             <h2 class="card-title">Detail Item Masuk</h2>
             <p>Isi dengan data Item yang masuk ke persediaan</p>
 
             <div class="card-actions justify-end">
-              <label
-                for="my-modal-item"
-                class="btn w-32 btn-secondary modal-button shadow-md"
-                ><span class="text-xs">Tambah</span></label
-              >
+              <label for="my-modal-item" class="btn w-32 btn-secondary modal-button shadow-md"><span class="text-xs">Tambah</span></label>
             </div>
 
             <div class="flex mt-2 md:overflow-visible overflow-y-auto mb-5">
@@ -99,37 +83,16 @@
                       <span>Tidak ada data.</span>
                     </td>
                   </tr>
-                  <tr
-                    v-else
-                    v-for="(item, index) in mutationStore.incomingItem.detail"
-                    :key="item"
-                  >
+                  <tr v-else v-for="(item, index) in mutationStore.incomingItem.detail" :key="item">
                     <td class="text-center"></td>
                     <td>{{ item.name.toUpperCase() }}</td>
                     <td>{{ item.unit.name.toUpperCase() }}</td>
                     <td>
-                      <input
-                        v-model="item.qty"
-                        type="number"
-                        placeholder="0"
-                        min="0"
-                        class="input input-bordered input-sm w-1/2 max-w-xs"
-                      />
+                      <input v-model="item.qty" type="number" placeholder="0" min="0" class="input input-bordered input-sm w-1/2 max-w-xs" />
                     </td>
                     <td>
-                      <button
-                        class="btn btn-sm btn-square btn-outline"
-                        @click="deleteData(index)"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          width="24"
-                          height="24"
-                          stroke="currentColor"
-                        >
+                      <button class="btn btn-sm btn-square btn-outline" @click="deleteData(index)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24" stroke="currentColor">
                           <path
                             stroke-linecap="round"
                             stroke-linejoin="round"

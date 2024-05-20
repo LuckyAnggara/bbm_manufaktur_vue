@@ -1,72 +1,41 @@
 <template>
   <section>
     <template v-if="productionOrderStore.isLoading">
-      <div
-        wire:loading
-        class="top-0 left-0 right-0 bottom-0 overflow-hidden opacity-75 flex flex-col items-center justify-center"
-      >
-        <div
-          class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"
-        ></div>
+      <div wire:loading class="top-0 left-0 right-0 bottom-0 overflow-hidden opacity-75 flex flex-col items-center justify-center">
+        <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
         <h2 class="text-center text-white text-xl font-semibold">Loading...</h2>
-        <p class="w-1/3 text-center text-white">
-          Sedang mencari data, tolong jangan tutup halaman ini.
-        </p>
+        <p class="w-1/3 text-center text-white">Sedang mencari data, tolong jangan tutup halaman ini.</p>
       </div>
     </template>
     <template v-else>
       <template v-if="productionOrderStore.isDataEmpty">
-        <div
-          class="min-w-screen flex items-center p-5 lg:p-20 overflow-hidden relative"
-        >
-          <div
-            class="flex-1 min-h-full min-w-full rounded-3xl bg-neutral shadow-xl p-10 lg:p-20 text-gray-800 relative md:flex items-center text-center md:text-left"
-          >
+        <div class="min-w-screen flex items-center p-5 lg:p-20 overflow-hidden relative">
+          <div class="flex-1 min-h-full min-w-full rounded-3xl shadow-xl p-10 lg:p-20 text-gray-800 relative md:flex items-center text-center md:text-left">
             <div class="w-full md:w-1/2">
               <div class="mb-10 md:mb-20 text-gray-600 font-light">
-                <h1
-                  class="font-black uppercase text-3xl lg:text-5xl text-yellow-500 mb-10"
-                >
-                  Opss, ada masalah!
-                </h1>
+                <h1 class="font-black uppercase text-3xl lg:text-5xl text-yellow-500 mb-10">Opss, ada masalah!</h1>
                 <p class="text-white">Data yang kamu cari tidak tersedia.</p>
-                <p class="text-white">
-                  Silahkan klik tombol di bawah ini untuk kembali.
-                </p>
+                <p class="text-white">Silahkan klik tombol di bawah ini untuk kembali.</p>
               </div>
               <div class="mb-20 md:mb-0">
-                <button
-                  class="btn btn-warning hover:scale-110 text-black-500 hover:text-black-600"
-                >
-                  Kembali
-                </button>
+                <button class="btn btn-warning hover:scale-110 text-black-500 hover:text-black-600">Kembali</button>
               </div>
             </div>
           </div>
           <div
             class="w-64 md:w-96 h-96 md:h-full bg-blue-200 bg-opacity-30 absolute -top-64 md:-top-96 right-20 md:right-32 rounded-full pointer-events-none -rotate-45 transform"
           ></div>
-          <div
-            class="w-96 h-full bg-yellow-200 bg-opacity-20 absolute -bottom-96 right-64 rounded-full pointer-events-none -rotate-45 transform"
-          ></div>
+          <div class="w-96 h-full bg-yellow-200 bg-opacity-20 absolute -bottom-96 right-64 rounded-full pointer-events-none -rotate-45 transform"></div>
         </div>
       </template>
       <template v-else>
         <div class="mx-auto justify-center w-full md:w-full lg:w-3/4 sm:w-full">
           <div class="tabs tabs-boxed bg-base rounded-t-l">
-            <a
-              class="tab tab-lg"
-              :class="{ 'tab-active': tabIndex == item.index }"
-              v-for="item in tabList"
-              :key="item.index"
-            >
+            <a class="tab tab-lg" :class="{ 'tab-active': tabIndex == item.index }" v-for="item in tabList" :key="item.index">
               {{ item.name }}
             </a>
           </div>
-          <div
-            class="bg-neutral text-neutral-content rounded-b-lg"
-            :class="{ hidden: tabIndex != 0 }"
-          >
+          <div class="text-neutral-content rounded-b-lg" :class="{ hidden: tabIndex != 0 }">
             <div class="card-body">
               <h2 class="card-title">Data Production Order</h2>
               <p>Lengkapi data dibawah</p>
@@ -74,24 +43,14 @@
                 <div class="form-control">
                   <label class="join">
                     <span class="w-1/4">Tanggal Order</span>
-                    <input
-                      v-model="productionOrderStore.editOrder.order_date"
-                      type="date"
-                      placeholder="Type here"
-                      class="input input-bordered w-3/4"
-                    />
+                    <input v-model="productionOrderStore.editOrder.order_date" type="date" placeholder="Type here" class="input input-bordered w-3/4" />
                   </label>
                 </div>
                 <hr />
                 <div class="form-control">
                   <label class="join">
                     <span class="w-1/4">Shift</span>
-                    <input
-                      v-model="productionOrderStore.editOrder.shift"
-                      type="number"
-                      required
-                      class="input input-bordered w-3/4"
-                    />
+                    <input v-model="productionOrderStore.editOrder.shift" type="number" required class="input input-bordered w-3/4" />
                   </label>
                 </div>
                 <div class="form-control">
@@ -106,35 +65,17 @@
                         placeholder="Isi dengan Pengawai Penanggu Jawab Shift"
                         class="input input-bordered w-full"
                       />
-                      <ul
-                        v-if="pegawaiStore.isLoading"
-                        tabindex="0"
-                        class="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-full"
-                      >
+                      <ul v-if="pegawaiStore.isLoading" tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-full">
                         <li class="mx-auto">
                           <span class="loading loading-dots loading-lg"></span>
                         </li>
                       </ul>
-                      <ul
-                        v-else-if="pegawaiStore.items.length > 0"
-                        tabindex="0"
-                        class="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-full"
-                      >
+                      <ul v-else-if="pegawaiStore.items.length > 0" tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-300 rounded-box w-full">
                         <li v-for="item in pegawaiStore.items">
-                          <a
-                            @click="
-                              productionOrderStore.dataOrder.pic_name =
-                                item.name
-                            "
-                            >{{ item.name }}</a
-                          >
+                          <a @click="productionOrderStore.dataOrder.pic_name = item.name">{{ item.name }}</a>
                         </li>
                       </ul>
-                      <ul
-                        v-else
-                        tabindex="0"
-                        class="dropdown-content z-50 menu p-2 shadow bg-base-100 rounded-box w-full"
-                      >
+                      <ul v-else tabindex="0" class="dropdown-content z-50 menu p-2 shadow bg-base-100 rounded-box w-full">
                         <li><a>Tidak ada data, silahkan cari Item lain</a></li>
                       </ul>
                     </div>
@@ -143,11 +84,7 @@
                 <div class="form-control">
                   <label class="join">
                     <span class="w-1/4">Catatan</span>
-                    <textarea
-                      v-model="productionOrderStore.editOrder.notes"
-                      class="textarea textarea-bordered w-3/4"
-                      placeholder="Bio"
-                    ></textarea>
+                    <textarea v-model="productionOrderStore.editOrder.notes" class="textarea textarea-bordered w-3/4" placeholder="Bio"></textarea>
                   </label>
                 </div>
                 <hr />
@@ -169,20 +106,13 @@
               </div>
             </div>
           </div>
-          <div
-            class="bg-neutral text-neutral-content rounded-b-lg"
-            :class="{ hidden: tabIndex != 1 }"
-          >
+          <div class="text-neutral-content rounded-b-lg" :class="{ hidden: tabIndex != 1 }">
             <div class="card-body">
               <h2 class="card-title">Detail Bahan Baku</h2>
               <p>Isi dengan bahan baku yang di gunakan</p>
 
               <div class="card-actions justify-end">
-                <label
-                  for="my-modal"
-                  class="btn w-32 btn-secondary modal-button shadow-md"
-                  ><span class="text-xs">Tambah</span></label
-                >
+                <label for="my-modal" class="btn w-32 btn-secondary modal-button shadow-md"><span class="text-xs">Tambah</span></label>
               </div>
 
               <div class="flex mt-2 md:overflow-visible overflow-y-auto mb-5">
@@ -204,31 +134,16 @@
                         <span>Tidak ada data.</span>
                       </td>
                     </tr>
-                    <tr
-                      v-else
-                      v-for="(
-                        item, index
-                      ) in productionOrderStore.inputDataEdit"
-                      :key="item"
-                    >
+                    <tr v-else v-for="(item, index) in productionOrderStore.inputDataEdit" :key="item">
                       <td class="text-center">{{ index + 1 }}</td>
                       <td>{{ item.name.toUpperCase() }}</td>
                       <td>
-                        <input
-                          v-model="item.estimate_quantity"
-                          type="number"
-                          placeholder="0"
-                          min="0"
-                          class="input input-bordered input-sm w-1/2 max-w-xs"
-                        />
+                        <input v-model="item.estimate_quantity" type="number" placeholder="0" min="0" class="input input-bordered input-sm w-1/2 max-w-xs" />
                       </td>
                       <td>{{ item.unit.name.toUpperCase() }}</td>
 
                       <td>
-                        <button
-                          class="btn btn-sm btn-square btn-outline"
-                          @click="deleteInputData(index, item.name)"
-                        >
+                        <button class="btn btn-sm btn-square btn-outline" @click="deleteInputData(index, item.name)">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -252,29 +167,19 @@
               </div>
 
               <div class="card-actions justify-between">
-                <button type="button" class="btn btn-primary" @click="prevTab">
-                  Back
-                </button>
-                <button type="button" class="btn btn-primary" @click="nextTab">
-                  Next
-                </button>
+                <button type="button" class="btn btn-primary" @click="prevTab">Back</button>
+                <button type="button" class="btn btn-primary" @click="nextTab">Next</button>
               </div>
             </div>
           </div>
 
-          <div
-            class="bg-neutral text-neutral-content rounded-b-lg"
-            :class="{ hidden: tabIndex != 2 }"
-          >
+          <div class="text-neutral-content rounded-b-lg" :class="{ hidden: tabIndex != 2 }">
             <div class="card-body">
               <h2 class="card-title">Detail Mesin</h2>
               <p>Isi dengan mesin yang dipergunakan</p>
 
               <div class="card-actions justify-end">
-                <label
-                  for="my-modal-machine"
-                  class="btn w-32 btn-secondary modal-button shadow-md"
-                  @click="etcStore.getMachineData()"
+                <label for="my-modal-machine" class="btn w-32 btn-secondary modal-button shadow-md" @click="etcStore.getMachineData()"
                   ><span class="text-xs">Tambah</span></label
                 >
               </div>
@@ -298,32 +203,17 @@
                         <span>Tidak ada data.</span>
                       </td>
                     </tr>
-                    <tr
-                      v-else
-                      v-for="(
-                        item, index
-                      ) in productionOrderStore.machineDataEdit"
-                      :key="item"
-                    >
+                    <tr v-else v-for="(item, index) in productionOrderStore.machineDataEdit" :key="item">
                       <td class="text-center">{{ index + 1 }}</td>
                       <td>{{ item.name.toUpperCase() }}</td>
                       <td>
-                        <input
-                          v-model="item.usage_meter"
-                          type="number"
-                          placeholder="0"
-                          min="0"
-                          class="input input-bordered input-sm w-1/2 max-w-xs"
-                        />
+                        <input v-model="item.usage_meter" type="number" placeholder="0" min="0" class="input input-bordered input-sm w-1/2 max-w-xs" />
                       </td>
                       <td>
                         {{ item.unit == null ? '-' : item.unit.toUpperCase() }}
                       </td>
                       <td>
-                        <button
-                          class="btn btn-sm btn-square btn-outline"
-                          @click="deleteMachineData(index, item.name)"
-                        >
+                        <button class="btn btn-sm btn-square btn-outline" @click="deleteMachineData(index, item.name)">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -347,28 +237,18 @@
               </div>
 
               <div class="card-actions justify-between">
-                <button type="button" class="btn btn-primary" @click="prevTab">
-                  Back
-                </button>
-                <button type="button" class="btn btn-primary" @click="nextTab">
-                  Next
-                </button>
+                <button type="button" class="btn btn-primary" @click="prevTab">Back</button>
+                <button type="button" class="btn btn-primary" @click="nextTab">Next</button>
               </div>
             </div>
           </div>
-          <div
-            class="bg-neutral text-neutral-content rounded-b-lg"
-            :class="{ hidden: tabIndex != 3 }"
-          >
+          <div class="text-neutral-content rounded-b-lg" :class="{ hidden: tabIndex != 3 }">
             <div class="card-body">
               <h2 class="card-title">Detail Overhead</h2>
               <p>Isi dengan bahan baku yang di gunakan</p>
 
               <div class="card-actions justify-end">
-                <label
-                  for="my-modal-overhead"
-                  class="btn w-32 btn-secondary modal-button shadow-md"
-                  @click="etcStore.getOverheadData()"
+                <label for="my-modal-overhead" class="btn w-32 btn-secondary modal-button shadow-md" @click="etcStore.getOverheadData()"
                   ><span class="text-xs">Tambah</span></label
                 >
               </div>
@@ -392,31 +272,16 @@
                         <span>Tidak ada data.</span>
                       </td>
                     </tr>
-                    <tr
-                      v-else
-                      v-for="(
-                        item, index
-                      ) in productionOrderStore.overheadDataEdit"
-                      :key="item"
-                    >
+                    <tr v-else v-for="(item, index) in productionOrderStore.overheadDataEdit" :key="item">
                       <td class="text-center">{{ index + 1 }}</td>
                       <td>{{ item.name.toUpperCase() }}</td>
                       <td>
-                        <input
-                          v-model="item.usage_meter"
-                          type="number"
-                          placeholder="0"
-                          min="0"
-                          class="input input-bordered input-sm w-1/2 max-w-xs"
-                        />
+                        <input v-model="item.usage_meter" type="number" placeholder="0" min="0" class="input input-bordered input-sm w-1/2 max-w-xs" />
                       </td>
                       <td>{{ item.unit.toUpperCase() }}</td>
 
                       <td>
-                        <button
-                          class="btn btn-sm btn-square btn-outline"
-                          @click="deleteOverheadData(index, item.name)"
-                        >
+                        <button class="btn btn-sm btn-square btn-outline" @click="deleteOverheadData(index, item.name)">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -440,22 +305,15 @@
               </div>
 
               <div class="card-actions justify-between">
-                <button type="button" class="btn btn-primary" @click="prevTab">
-                  Back
-                </button>
-                <button type="button" class="btn btn-primary" @click="nextTab">
-                  Next
-                </button>
+                <button type="button" class="btn btn-primary" @click="prevTab">Back</button>
+                <button type="button" class="btn btn-primary" @click="nextTab">Next</button>
               </div>
 
               <h2 class="card-title mt-4">Detail Pegawai</h2>
               <p>Isi dengan Operator yang bertugas</p>
 
               <div class="card-actions justify-end">
-                <label
-                  for="my-modal-pegawai"
-                  class="btn w-32 btn-secondary modal-button shadow-md"
-                  @click="getDataPegawai()"
+                <label for="my-modal-pegawai" class="btn w-32 btn-secondary modal-button shadow-md" @click="getDataPegawai()"
                   ><span class="text-xs">Tambah</span></label
                 >
               </div>
@@ -473,28 +331,18 @@
                   </thead>
 
                   <tbody>
-                    <tr
-                      v-if="productionOrderStore.editOrder.pegawai.length < 1"
-                    >
+                    <tr v-if="productionOrderStore.editOrder.pegawai.length < 1">
                       <td colspan="4" class="text-center">
                         <span>Tidak ada data.</span>
                       </td>
                     </tr>
-                    <tr
-                      v-else
-                      v-for="(item, index) in productionOrderStore.editOrder
-                        .pegawai"
-                      :key="item"
-                    >
+                    <tr v-else v-for="(item, index) in productionOrderStore.editOrder.pegawai" :key="item">
                       <td class="text-center">{{ index + 1 }}</td>
                       <td>{{ item.pegawai.name.toUpperCase() }}</td>
                       <td>{{ item.pegawai.jabatan }}</td>
 
                       <td>
-                        <button
-                          class="btn btn-sm btn-square btn-outline"
-                          @click="deletePegawaiData(index, item.name)"
-                        >
+                        <button class="btn btn-sm btn-square btn-outline" @click="deletePegawaiData(index, item.name)">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -517,20 +365,13 @@
                 </table>
               </div>
               <div class="card-actions justify-between">
-                <button type="button" class="btn btn-primary" @click="prevTab">
-                  Back
-                </button>
-                <button type="button" class="btn btn-primary" @click="nextTab">
-                  Next
-                </button>
+                <button type="button" class="btn btn-primary" @click="prevTab">Back</button>
+                <button type="button" class="btn btn-primary" @click="nextTab">Next</button>
               </div>
             </div>
           </div>
 
-          <div
-            class="bg-neutral text-neutral-content rounded-b-lg"
-            :class="{ hidden: tabIndex != 4 }"
-          >
+          <div class="text-neutral-content rounded-b-lg" :class="{ hidden: tabIndex != 4 }">
             <div class="card-body">
               <h2 class="card-title">Detail Hasil Produksi</h2>
               <p>Isi dengan Item hasil produksi</p>
@@ -563,13 +404,7 @@
                         <span>Tidak ada data.</span>
                       </td>
                     </tr>
-                    <tr
-                      v-else
-                      v-for="(
-                        item, index
-                      ) in productionOrderStore.outputDataEdit"
-                      :key="item"
-                    >
+                    <tr v-else v-for="(item, index) in productionOrderStore.outputDataEdit" :key="item">
                       <td class="text-center"></td>
                       <td>{{ item.name.toUpperCase() }}</td>
                       <td>
@@ -612,25 +447,9 @@
               </div>
 
               <div class="card-actions justify-between">
-                <button
-                  :disabled="productionOrderStore.storeLoading"
-                  type="button"
-                  class="btn btn-primary"
-                  @click="prevTab"
-                >
-                  Back
-                </button>
-                <button
-                  v-if="!productionOrderStore.storeLoading"
-                  type="button"
-                  class="btn btn-accent text-white"
-                  @click="onSubmit()"
-                >
-                  Submit
-                </button>
-                <button v-else class="btn btn-accent text-white loading">
-                  Prosesing
-                </button>
+                <button :disabled="productionOrderStore.storeLoading" type="button" class="btn btn-primary" @click="prevTab">Back</button>
+                <button v-if="!productionOrderStore.storeLoading" type="button" class="btn btn-accent text-white" @click="onSubmit()">Submit</button>
+                <button v-else class="btn btn-accent text-white loading">Prosesing</button>
               </div>
             </div>
           </div>
@@ -656,11 +475,7 @@
 <script setup>
 import { inject, onBeforeMount, onMounted, ref } from 'vue'
 import { useToast } from 'vue-toastification'
-import {
-  useEtcStore,
-  useItemStore,
-  useProductionOrderStore,
-} from '@/stores/store'
+import { useEtcStore, useItemStore, useProductionOrderStore } from '@/stores/store'
 import { usePegawaiStore } from '@/stores/pegawaiStore'
 import { useRouter, useRoute } from 'vue-router'
 import ModalItemBahanBaku from './Component/ModalItemBahanBaku.vue'

@@ -1,7 +1,7 @@
 <template>
   <section>
     <div class="md:flex">
-      <div class="flex-col md:w-1/4 w-full mr-10 self-start card bg-neutral shadow-xl">
+      <div class="flex-col md:w-1/4 w-full mr-10 self-start card shadow-xl">
         <div class="card-body">
           <h2 class="card-title">Filter Data</h2>
           <div class="justify-center my-4">

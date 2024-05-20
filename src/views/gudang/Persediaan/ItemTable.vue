@@ -1,18 +1,29 @@
 <template>
-  <div class="card flex bg-neutral flex-col">
+  <div class="card flex flex-col">
     <div class="card-body shadow-xl rounded-xl">
       <h2 class="card-title mb-2 text-2xl">Data Persediaan</h2>
       <div class="md:flex py-2">
         <div class="w-1/5">
           <label for="my-modal" class="btn w-32 btn-primary modal-button shadow-md"><span class="text-xs">New Item</span></label>
         </div>
-        <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4">
-          <label class="mr-4">Jumlah Data </label>
-          <select v-model="itemStore.currentLimit" class="select select-bordered max-w-xs">
-            <option :selected="itemStore.currentLimit == length ? true : false" v-for="length in lengths" :key="length">
-              {{ length }}
-            </option>
-          </select>
+        <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4 flex flex-row space-x-4">
+          <div>
+            <label class="mr-4">Jumlah Data </label>
+            <select v-model="itemStore.currentLimit" class="select select-bordered max-w-xs">
+              <option :selected="itemStore.currentLimit == length ? true : false" v-for="length in lengths" :key="length">
+                {{ length }}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label class="mr-4">Tipe </label>
+            <select v-model="itemStore.filter.tipe" class="select select-bordered max-w-xs" @change="itemStore.getItemData()">
+              <option value="0">Semua</option>
+              <option :value="tipe.id" v-for="(tipe, index) in itemStore.itemTypes" :key="index">
+                {{ tipe.name }}
+              </option>
+            </select>
+          </div>
         </div>
 
         <div class="justify-end mx-1 md:w-1/2 w-full">
@@ -25,7 +36,7 @@
       </div>
 
       <div class="flex mt-2 md:overflow-visible overflow-y-auto">
-        <table class="table table-compact w-full">
+        <table class="table table-compact w-full table-zebra table-xs">
           <!-- head -->
           <thead>
             <tr>
@@ -115,7 +126,7 @@
 </template>
 
 <script>
-import { onUnmounted, ref, watch } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import { useItemStore } from '@/stores/store'
 import { useDebounceFn } from '@vueuse/core'
 
@@ -142,6 +153,10 @@ export default {
 
     onUnmounted(() => {
       itemStore.$reset()
+    })
+
+    onMounted(() => {
+      itemStore.getItemTypeData
     })
 
     // expose to template and other options API hooks

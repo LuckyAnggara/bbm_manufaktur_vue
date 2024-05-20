@@ -3,7 +3,7 @@
     <template v-if="!mutationStore.isLoading">
       <template v-if="mutationStore.dataDetailMasterMutation != null">
         <div class="md:flex">
-          <div class="flex-col md:w-1/4 w-full mr-10 self-start card bg-neutral shadow-xl">
+          <div class="flex-col md:w-1/4 w-full mr-10 self-start card shadow-xl">
             <div class="card-body">
               <h2 class="card-title">Data</h2>
               <div class="form-control">
@@ -38,7 +38,7 @@
           </div>
 
           <div class="md:w-3/4 mt-10 md:mt-0 justify-self-end">
-            <div class="bg-neutral text-neutral-content rounded-lg">
+            <div class="text-neutral-content rounded-lg">
               <div class="card-body">
                 <h2 v-if="mutationStore.dataDetailMasterMutation.type == 'MASUK'" class="card-title">Detail Item Masuk</h2>
                 <h2 v-else class="card-title">Detail Item Keluar</h2>

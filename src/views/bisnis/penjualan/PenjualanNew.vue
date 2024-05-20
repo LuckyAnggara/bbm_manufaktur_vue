@@ -1,7 +1,7 @@
 <template>
   <div class="flex">
     <div class="flex-col md:w-2/6 w-full mr-10 space-y-5">
-      <div class="card bg-neutral">
+      <div class="card">
         <div class="card-body">
           <h2 class="card-title">Cari Data Item</h2>
           <div class="justify-center my-4">
@@ -27,7 +27,7 @@
           </div>
         </div>
       </div>
-      <div class="card bg-neutral">
+      <div class="card">
         <div class="card-body">
           <h2 class="card-title">Detail Transaksi</h2>
           <form class="justify-center my-4" @submit.prevent="proses">
@@ -150,7 +150,7 @@
       </div>
     </div>
 
-    <div class="card flex bg-neutral flex-col h-fit w-full">
+    <div class="card flex flex-col h-fit w-full">
       <div class="card-body shadow-xl rounded-xl">
         <h2 class="card-title mb-2 text-2xl">Daftar Penjualan</h2>
 

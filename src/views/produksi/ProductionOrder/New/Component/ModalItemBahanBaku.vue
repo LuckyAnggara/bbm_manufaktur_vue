@@ -3,11 +3,7 @@
     <input type="checkbox" id="my-modal" class="modal-toggle" />
     <div class="modal">
       <div class="modal-box relative">
-        <label
-          for="my-modal"
-          class="btn btn-sm btn-circle absolute right-2 top-2"
-          >✕</label
-        >
+        <label for="my-modal" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
         <h3 class="text-lg font-bold">Tambah Data</h3>
         <small>Data yang tersedia adalah Item dengan tipe Bahan Baku</small>
 
@@ -15,13 +11,7 @@
           <div class="justify-end mx-1 md:w-1/2 w-full">
             <div class="form-control">
               <div class="input-group input-group-sm">
-                <input
-                  v-model="itemStore.searchName"
-                  @keyup="searchData"
-                  type="text"
-                  placeholder="Search…"
-                  class="input input-bordered w-full"
-                />
+                <input v-model="itemStore.searchName" @keyup="searchData" type="text" placeholder="Search…" class="input input-bordered w-full" />
               </div>
             </div>
           </div>
@@ -62,22 +52,14 @@
                   </div>
                 </td>
               </tr>
-              <tr
-                v-else
-                v-for="(item, index) in itemStore.itemByType(1)"
-                :key="item"
-              >
+              <tr v-else v-for="(item, index) in itemStore.itemByType(1)" :key="item">
                 <td class="text-center">{{ itemStore.from + index }}</td>
                 <td>{{ item.name.toUpperCase() }}</td>
                 <td class="text-center">{{ item.balance }}</td>
                 <td class="text-center">
                   <label class="swap">
                     <!-- this hidden checkbox controls the state -->
-                    <input
-                      type="checkbox"
-                      v-model.lazy="productionOrderStore.dataOrder.input"
-                      :value="item"
-                    />
+                    <input type="checkbox" v-model.lazy="productionOrderStore.dataOrder.input" :value="item" />
 
                     <!-- volume on icon -->
                     <svg
@@ -90,11 +72,7 @@
                       stroke="green"
                       stroke-width="2"
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M12 4v16m8-8H4"
-                      />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                     </svg>
 
                     <!-- volume off icon -->
@@ -109,11 +87,7 @@
                       stroke="red"
                       stroke-width="2"
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M4.5 19.5l15-15m-15 0l15 15"
-                      />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m-15 0l15 15" />
                     </svg>
                   </label>
                 </td>
@@ -121,29 +95,10 @@
             </tbody>
           </table>
         </div>
-        <div
-          class="btn-group mx-auto mt-4 mb-1 justify-center"
-          v-if="!itemStore.isLoading"
-        >
-          <button
-            class="btn btn-outline"
-            @click="getData(previousPage)"
-            :disabled="itemStore.currentPage == 1 ? true : false"
-          >
-            «
-          </button>
-          <button class="btn btn-outline">
-            Page {{ itemStore.currentPage }}
-          </button>
-          <button
-            class="btn btn-outline"
-            @click="getData(nextPage)"
-            :disabled="
-              itemStore.lastPage == itemStore.currentPage ? true : false
-            "
-          >
-            »
-          </button>
+        <div class="btn-group mx-auto mt-4 mb-1 justify-center" v-if="!itemStore.isLoading">
+          <button class="btn btn-outline" @click="getData(previousPage)" :disabled="itemStore.currentPage == 1 ? true : false">«</button>
+          <button class="btn btn-outline">Page {{ itemStore.currentPage }}</button>
+          <button class="btn btn-outline" @click="getData(nextPage)" :disabled="itemStore.lastPage == itemStore.currentPage ? true : false">»</button>
         </div>
       </div>
     </div>
@@ -151,7 +106,7 @@
 </template>
 
 <script>
-import { onUpdated, computed } from 'vue'
+import { onUpdated, computed, onMounted } from 'vue'
 import { useToast } from 'vue-toastification'
 import { useItemStore, useProductionOrderStore } from '@/stores/store'
 import { useDebounceFn } from '@vueuse/core'
@@ -163,37 +118,33 @@ export default {
     const productionOrderStore = useProductionOrderStore()
 
     const previousPage = computed(() => {
-      return '&page=' + (this.itemStore.currentPage - 1)
+      return '&page=' + (itemStore.currentPage - 1)
     })
 
     const nextPage = computed(() => {
-      return '&page=' + (this.itemStore.currentPage + 1)
+      return '&page=' + (itemStore.currentPage + 1)
     })
 
     productionOrderStore.$subscribe((mutation, state) => {
-      if (
-        mutation.events.key == 'input' &&
-        mutation.events.newValue.length > mutation.events.oldValue.length
-      ) {
+      if (mutation.events.key == 'input' && mutation.events.newValue.length > mutation.events.oldValue.length) {
         toast.success('Bahan baku baru ditambahkan', {
           timeout: 1000,
         })
       }
 
-      if (
-        mutation.events.key == 'input' &&
-        mutation.events.newValue.length < mutation.events.oldValue.length
-      ) {
+      if (mutation.events.key == 'input' && mutation.events.newValue.length < mutation.events.oldValue.length) {
         toast.warning('Bahan baku di hapus', {
           timeout: 1000,
         })
       }
     })
 
-    onUpdated(() => {
-      if (itemStore.items == undefined) {
-        itemStore.getItemData()
-      }
+    onMounted(() => {
+      itemStore.$patch((state) => {
+        state.filter.tipe = 1
+        state.filter.showZero = false
+      })
+      itemStore.getItemData()
     })
 
     function getData(page = '') {

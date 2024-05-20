@@ -15,17 +15,6 @@
       class="btn btn-lg btn-wide hover:scale-110"
       @click="
         router.push({
-          name: 'data-tipe',
-        })
-      "
-    >
-      Data Tipe
-    </button>
-
-    <button
-      class="btn btn-lg btn-wide hover:scale-110"
-      @click="
-        router.push({
           name: 'data-machine',
         })
       "

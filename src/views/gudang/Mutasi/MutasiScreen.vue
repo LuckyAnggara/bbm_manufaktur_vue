@@ -13,7 +13,7 @@
         >
       </div>
       <!-- Masuk Tab -->
-      <div class="bg-neutral text-neutral-content rounded-b-lg">
+      <div class="text-neutral-content rounded-b-lg">
         <div class="card-body">
           <h2 class="card-title">Daftar Mutasi {{ tabs[mutationStore.currentTab].name }}</h2>
           <div class="md:flex py-2">

@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar mb-2 shadow-lg bg-neutral">
+  <div class="navbar mb-2 shadow-lg">
     <div class="flex-1 px-2 mx-2">
       <span class="text-lg font-bold"> BBM Manufaktur </span>
     </div>
@@ -17,7 +17,7 @@
             <img src="https://placehold.co/40x40" />
           </div>
         </label>
-        <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-neutral rounded-box w-52 z-50">
+        <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content rounded-box w-52 z-50">
           <li>
             <a class="justify-between">
               Profile

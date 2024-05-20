@@ -23,6 +23,7 @@ export const usePembelianStore = defineStore('pembelianStore', {
       form: {
         nomor_faktur: null,
         nama_supplier: null,
+        nomor_rekening: null,
         tanggal_transaksi: moment().format('YYYY-MM-DD'),
         cart: [],
         total: 0,
@@ -60,11 +61,7 @@ export const usePembelianStore = defineStore('pembelianStore', {
       return sum
     },
     grandTotal(state) {
-      return (
-        parseFloat(this.cartTotal) +
-        parseFloat(state.form.ongkir) +
-        parseFloat(state.form.pajak)
-      )
+      return parseFloat(this.cartTotal) + parseFloat(state.form.ongkir) + parseFloat(state.form.pajak)
     },
     currentPage(state) {
       return state.responses?.current_page
@@ -91,18 +88,10 @@ export const usePembelianStore = defineStore('pembelianStore', {
       return '&page=' + state.filter.page
     },
     dateQuery(state) {
-      if (
-        state.filter.date.fromDate == null ||
-        state.filter.date.toDate == null
-      ) {
+      if (state.filter.date.fromDate == null || state.filter.date.toDate == null) {
         return ''
       }
-      return (
-        '&start-date=' +
-        state.filter.date.fromDate +
-        '&end-date=' +
-        state.filter.date.toDate
-      )
+      return '&start-date=' + state.filter.date.fromDate + '&end-date=' + state.filter.date.toDate
     },
     searchQuery(state) {
       if (state.filter.searchQuery == '' || state.filter.searchQuery == null) {
@@ -115,9 +104,7 @@ export const usePembelianStore = defineStore('pembelianStore', {
     async getData() {
       this.isLoading = true
       try {
-        const response = await axiosIns.get(
-          `/pembelian?limit=${this.filter.currentLimit}${this.searchQuery}${this.pageQuery}${this.dateQuery}`
-        )
+        const response = await axiosIns.get(`/pembelian?limit=${this.filter.currentLimit}${this.searchQuery}${this.pageQuery}${this.dateQuery}`)
         this.responses = response.data.data
       } catch (error) {
         alert(error.message)
@@ -155,9 +142,7 @@ export const usePembelianStore = defineStore('pembelianStore', {
       try {
         const response = await axiosIns.get(`/pembelian/${id}`)
         this.singleResponses = JSON.parse(JSON.stringify(response.data.data))
-        this.originalSingleResponses = JSON.parse(
-          JSON.stringify(response.data.data)
-        )
+        this.originalSingleResponses = JSON.parse(JSON.stringify(response.data.data))
       } catch (error) {
         toast.error('Data not found', {
           position: 'bottom-right',

@@ -1,5 +1,5 @@
 <template>
-  <div class="card flex bg-neutral flex-col">
+  <div class="card flex flex-col">
     <div class="card-body shadow-xl rounded-xl">
       <h2 class="card-title mb-2 text-2xl" v-if="!itemStore.isLoading">
         {{ title }}

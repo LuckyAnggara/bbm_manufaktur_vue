@@ -166,6 +166,10 @@ export const useItemStore = defineStore('itemStore', {
       itemDetailData: {
         name: null,
       },
+      filter: {
+        tipe: 0,
+        showZero: true,
+      },
     }
   },
   getters: {
@@ -210,6 +214,18 @@ export const useItemStore = defineStore('itemStore', {
         return ''
       }
       return '&from_date=' + state.fromDate + '&to_date=' + state.toDate
+    },
+    itemByTipe(state) {
+      if (state.filter.tipe == '' || state.filter.tipe == null || state.filter.tipe == 0) {
+        return ''
+      }
+      return '&tipe=' + state.filter.tipe
+    },
+    itemShowZero(state) {
+      if (state.filter.showZero == false) {
+        return '&show_zero=false'
+      }
+      return ''
     },
   },
   actions: {
@@ -348,7 +364,9 @@ export const useItemStore = defineStore('itemStore', {
     async getItemData(page = '') {
       this.isLoading = true
       try {
-        const response = await axiosIns.get(`/items?limit=${this.currentLimit}${this.searchQuery}${page}${this.warehousesQuery}${this.fromToDate}`)
+        const response = await axiosIns.get(
+          `/items?limit=${this.currentLimit}${this.searchQuery}${page}${this.warehousesQuery}${this.fromToDate}${this.itemByTipe}${this.itemShowZero}`
+        )
         this.responsItem = response.data.data
       } catch (error) {
         alert(error)
