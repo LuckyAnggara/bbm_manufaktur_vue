@@ -5,7 +5,7 @@
       <div class="modal-box relative">
         <label for="my-modal" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
         <h3 class="text-lg font-bold">Tambah Data</h3>
-        <small>Data yang tersedia adalah Item dengan tipe Bahan Baku</small>
+        <small>Data yang tersedia adalah Item dengan tipe Bahan</small>
 
         <div class="md:flex py-2">
           <div class="justify-end mx-1 md:w-1/2 w-full">
@@ -13,6 +13,16 @@
               <div class="input-group input-group-sm">
                 <input v-model="itemStore.searchName" @keyup="searchData" type="text" placeholder="Search…" class="input input-bordered w-full" />
               </div>
+            </div>
+          </div>
+          <div class="justify-end mx-1 md:w-1/2 w-full">
+            <div class="form-control">
+              <select v-model="itemStore.filter.tipe" class="select select-bordered max-w-xs" @change="itemStore.getItemData()">
+                <option value="0">Semua</option>
+                <option :value="tipe.id" v-for="(tipe, index) in itemStore.itemTypes" :key="index">
+                  {{ tipe.name }}
+                </option>
+              </select>
             </div>
           </div>
         </div>
@@ -52,7 +62,7 @@
                   </div>
                 </td>
               </tr>
-              <tr v-else v-for="(item, index) in itemStore.itemByType(1)" :key="item">
+              <tr v-else v-for="(item, index) in itemStore.items" :key="item">
                 <td class="text-center">{{ itemStore.from + index }}</td>
                 <td>{{ item.name.toUpperCase() }}</td>
                 <td class="text-center">{{ item.balance }}</td>
@@ -96,9 +106,11 @@
           </table>
         </div>
         <div class="btn-group mx-auto mt-4 mb-1 justify-center" v-if="!itemStore.isLoading">
-          <button class="btn btn-outline" @click="getData(previousPage)" :disabled="itemStore.currentPage == 1 ? true : false">«</button>
+          <button class="btn btn-outline" @click="itemStore.getItemData(previousPage)" :disabled="itemStore.currentPage == 1 ? true : false">«</button>
           <button class="btn btn-outline">Page {{ itemStore.currentPage }}</button>
-          <button class="btn btn-outline" @click="getData(nextPage)" :disabled="itemStore.lastPage == itemStore.currentPage ? true : false">»</button>
+          <button class="btn btn-outline" @click="itemStore.getItemData(nextPage)" :disabled="itemStore.lastPage == itemStore.currentPage ? true : false">
+            »
+          </button>
         </div>
       </div>
     </div>
@@ -127,13 +139,13 @@ export default {
 
     productionOrderStore.$subscribe((mutation, state) => {
       if (mutation.events.key == 'input' && mutation.events.newValue.length > mutation.events.oldValue.length) {
-        toast.success('Bahan baku baru ditambahkan', {
+        toast.success('Bahan baru ditambahkan', {
           timeout: 1000,
         })
       }
 
       if (mutation.events.key == 'input' && mutation.events.newValue.length < mutation.events.oldValue.length) {
-        toast.warning('Bahan baku di hapus', {
+        toast.warning('Bahan di hapus', {
           timeout: 1000,
         })
       }
@@ -141,7 +153,6 @@ export default {
 
     onMounted(() => {
       itemStore.$patch((state) => {
-        state.filter.tipe = 1
         state.filter.showZero = false
       })
       itemStore.getItemData()

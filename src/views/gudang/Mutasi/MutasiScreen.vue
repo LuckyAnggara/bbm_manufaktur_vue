@@ -1,6 +1,6 @@
 <template>
   <section>
-    <div class="w-full lg:w-2/3 mt-10 md:mt-0 mx-auto">
+    <div class="w-full lg:w-2/3 my-10 md:mt-0 mx-auto card">
       <div role="tablist" class="tabs tabs-boxed tab-lg w-fit">
         <a
           v-for="(tab, index) in tabs"
@@ -13,7 +13,7 @@
         >
       </div>
       <!-- Masuk Tab -->
-      <div class="text-neutral-content rounded-b-lg">
+      <div class="rounded-b-lg card shadow-xl">
         <div class="card-body">
           <h2 class="card-title">Daftar Mutasi {{ tabs[mutationStore.currentTab].name }}</h2>
           <div class="md:flex py-2">

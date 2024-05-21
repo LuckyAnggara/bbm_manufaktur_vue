@@ -54,8 +54,8 @@
           </form>
         </div>
       </div>
-      <div class="md:w-3/4 mt-10 md:mt-0 justify-self-end">
-        <div class="text-neutral-content rounded-lg">
+      <div class="md:w-3/4 mt-10 md:mt-0 justify-self-end card shadow-xl">
+        <div class="rounded-lg">
           <div class="card-body">
             <h2 class="card-title">Detail Item Masuk</h2>
             <p>Isi dengan data Item yang masuk ke persediaan</p>
@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import { useMutationStore } from '../../../../stores/store'
+import { useMutationStore } from '@/stores/store'
 import ModalItem from './Component/ModalItem.vue'
 import { useToast } from 'vue-toastification'
 import { inject } from 'vue'
@@ -172,7 +172,7 @@ export default {
               } else {
                 swal.fire('Berhasil!', 'success')
                 router.push({
-                  name: 'gudang-barang-mutasi',
+                  name: 'gudang-barang-stock-opname',
                 })
               }
             }

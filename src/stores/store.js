@@ -683,6 +683,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         pic_name: null,
         shift: 1,
         notes: null,
+        jenis_hasil: 1,
         target_date: moment().format('yyyy-MM-DD'),
         output: [],
         input: [],

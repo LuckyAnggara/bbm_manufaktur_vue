@@ -1,20 +1,20 @@
 <template>
   <section>
-    <div class="mx-auto justify-center w-full md:w-full lg:w-3/4 sm:w-full">
-      <div class="tabs tabs-boxed bg-base rounded-t-l">
-        <a class="tab tab-lg" :class="{ 'tab-active': tabIndex == item.index }" v-for="item in tabList" :key="item.index">
+    <div class="mx-auto justify-center w-full md:w-full lg:w-3/4 sm:w-full card shadow-xl">
+      <div class="tabs tabs-boxed bg-primary-content rounded-t-l">
+        <a class="tab tab-lg font-bold text-md" :class="{ 'tab-active': tabIndex == item.index }" v-for="item in tabList" :key="item.index">
           {{ item.name }}
         </a>
       </div>
       <div class="rounded-b-lg" :class="{ hidden: tabIndex != 0 }">
         <div class="card-body">
-          <h2 class="card-title">Data Production Order</h2>
+          <h2 class="card-title">Data Production</h2>
           <p>Lengkapi data dibawah</p>
           <form @submit.prevent="nextTab">
             <div class="grid gap-y-5">
               <div class="form-control">
                 <label class="join">
-                  <span class="w-1/4">Tanggal Order</span>
+                  <span class="w-1/4">Tanggal Produksi</span>
                   <input
                     v-model="productionOrderStore.dataOrder.order_date"
                     id="date"
@@ -37,6 +37,16 @@
                   />
                 </label>
               </div> -->
+              <div class="form-control">
+                <label class="join">
+                  <span class="w-1/4">Jenis Hasil</span>
+                  <select v-model="productionOrderStore.dataOrder.jenis_hasil" class="select select-bordered w-3/4">
+                    <option :value="jenis.id" v-for="(jenis, index) in mainStore.jenisHasil" :key="index">
+                      {{ jenis.name }}
+                    </option>
+                  </select>
+                </label>
+              </div>
               <div class="form-control">
                 <label class="join">
                   <span class="w-1/4">Shift</span>
@@ -113,20 +123,21 @@
       </div>
       <div class="rounded-b-lg" :class="{ hidden: tabIndex != 1 }">
         <div class="card-body">
-          <h2 class="card-title">Detail Bahan Baku</h2>
-          <p>Isi dengan bahan baku yang di gunakan</p>
+          <h2 class="card-title">Detail Bahan / Input</h2>
+          <p>Isi dengan bahan yang di gunakan</p>
 
           <div class="card-actions justify-end">
             <label for="my-modal" class="btn w-32 btn-secondary modal-button shadow-md"><span class="text-xs">Tambah</span></label>
           </div>
 
           <div class="flex mt-2 md:overflow-visible overflow-y-auto mb-5">
-            <table class="table table-compact w-full">
+            <table class="table w-full table-xs">
               <!-- head -->
               <thead>
                 <tr>
                   <th></th>
                   <th>Nama</th>
+                  <th>Jenis</th>
                   <th>Quantity</th>
                   <th>Satuan</th>
                   <th>Action</th>
@@ -135,13 +146,14 @@
 
               <tbody>
                 <tr v-if="productionOrderStore.inputData.length < 1">
-                  <td colspan="5" class="text-center">
+                  <td colspan="6" class="text-center">
                     <span>Tidak ada data.</span>
                   </td>
                 </tr>
                 <tr v-else v-for="(item, index) in productionOrderStore.inputData" :key="item">
                   <td class="text-center">{{ index + 1 }}</td>
                   <td>{{ item.name.toUpperCase() }}</td>
+                  <td>{{ item.type.name.toUpperCase() }}</td>
                   <td>
                     <input v-model="item.estimate_quantity" type="number" placeholder="0" min="0" class="input input-bordered input-sm w-1/2 max-w-xs" />
                   </td>
@@ -342,7 +354,7 @@
 
       <div class="rounded-b-lg" :class="{ hidden: tabIndex != 4 }">
         <div class="card-body">
-          <h2 class="card-title">Detail Hasil Produksi</h2>
+          <h2 class="card-title">Detail Hasil / Output</h2>
           <p>Isi dengan Item hasil produksi</p>
 
           <div class="card-actions justify-end">
@@ -423,6 +435,7 @@
 import { inject, onMounted, onUnmounted, ref } from 'vue'
 import { useToast } from 'vue-toastification'
 import { useEtcStore, useItemStore, useProductionOrderStore } from '@/stores/store'
+import { useMainStore } from '@/stores/mainStore'
 import { useRouter } from 'vue-router'
 import ModalItemBahanBaku from './Component/ModalItemBahanBaku.vue'
 import ModalItemBarangJadi from './Component/ModalItemBarangJadi.vue'
@@ -433,6 +446,8 @@ import { usePegawaiStore } from '@/stores/pegawaiStore'
 import { useDebounceFn } from '@vueuse/core'
 
 const pegawaiStore = usePegawaiStore()
+const mainStore = useMainStore()
+
 const dataForm = ref({
   name: null,
   unit_id: 1,
@@ -458,21 +473,36 @@ const searchData = useDebounceFn(() => {
 
 const tabIndex = ref(0)
 const tabList = [
-  { index: 0, name: 'Data Order' },
-  { index: 1, name: 'Bahan Baku' },
+  { index: 0, name: 'Data Umum' },
+  { index: 1, name: 'Input / Bahan' },
   { index: 2, name: 'Mesin' },
   { index: 3, name: 'Overhead / Lainnya' },
-  { index: 4, name: 'Hasil Produksi' },
+  { index: 4, name: 'Output / Hasil' },
 ]
 
 function getDataPegawai() {
   pegawaiStore.$patch((state) => {
     state.filter.searchQuery = ''
+    state.filter.currentLimit = 5
   })
   pegawaiStore.getData()
 }
 
 function nextTab() {
+  if (tabIndex.value == 0) {
+    if (productionOrderStore.dataOrder.pic_name == null || productionOrderStore.dataOrder.pic_name == '') {
+      swal.fire({
+        title: 'Peringatan',
+        text: 'Penanggung jawab belum di isi!',
+        icon: 'warning',
+      })
+      return
+    } else {
+      tabIndex.value++
+      return
+    }
+  }
+
   if (tabIndex.value == 1 && productionOrderStore.inputData.length < 1) {
     swal
       .fire({
@@ -489,8 +519,14 @@ function nextTab() {
           tabIndex.value++
         }
       })
+    return
   } else {
+    itemStore.$patch((state) => {
+      state.filter.tipe = 0
+      state.filter.showZero = true
+    })
     tabIndex.value++
+    return
   }
 }
 
@@ -588,7 +624,9 @@ function deletePegawaiData(index, name) {
 }
 
 onMounted(() => {
-  pegawaiStore.getData()
+  itemStore.getItemTypeData()
+
+  getDataPegawai()
   productionOrderStore.$reset()
 })
 
@@ -596,6 +634,10 @@ onUnmounted(() => {
   itemStore.$patch((state) => {
     state.filter.tipe = 0
     state.filter.showZero = true
+  })
+  pegawaiStore.$patch((state) => {
+    state.filter.searchQuery = ''
+    state.filter.currentLimit = 10
   })
 })
 </script>

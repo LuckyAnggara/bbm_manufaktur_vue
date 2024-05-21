@@ -31,7 +31,7 @@ export const productionOrderRoutes = [
     name: 'produksi-order-list',
     component: ProductionListScreen,
     meta: {
-      title: 'Data Produksi Order',
+      title: 'Data Produksi',
       layout: 'layout-normal',
       requiresAuth: true,
     },
@@ -41,7 +41,7 @@ export const productionOrderRoutes = [
     name: 'produksi-order-new',
     component: NewScreen,
     meta: {
-      title: 'Produksi Order',
+      title: 'Produksi Baru',
       layout: 'layout-normal',
       requiresAuth: true,
     },

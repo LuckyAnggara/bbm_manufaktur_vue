@@ -3,31 +3,31 @@
     <input type="checkbox" id="my-modal-barang-jadi" class="modal-toggle" />
     <div class="modal">
       <div class="modal-box relative overflow-hidden">
-        <label
-          for="my-modal-barang-jadi"
-          class="btn btn-sm btn-circle absolute right-2 top-2"
-          >✕</label
-        >
+        <label for="my-modal-barang-jadi" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
         <h3 class="text-lg font-bold">Tambah Data</h3>
 
         <div class="md:flex py-2">
           <div class="justify-end mx-1 md:w-1/2 w-full">
             <div class="form-control">
               <div class="input-group input-group-sm">
-                <input
-                  v-model="itemStore.searchName"
-                  @keyup.enter="searchData"
-                  type="text"
-                  placeholder="Search…"
-                  class="input input-bordered w-full"
-                />
+                <input v-model="itemStore.searchName" @keyup.enter="searchData" type="text" placeholder="Search…" class="input input-bordered w-full" />
               </div>
+            </div>
+          </div>
+          <div class="justify-end mx-1 md:w-1/2 w-full">
+            <div class="form-control">
+              <select v-model="itemStore.filter.tipe" class="select select-bordered max-w-xs" @change="itemStore.getItemData()">
+                <option value="0">Semua</option>
+                <option :value="tipe.id" v-for="(tipe, index) in itemStore.itemTypes" :key="index">
+                  {{ tipe.name }}
+                </option>
+              </select>
             </div>
           </div>
         </div>
 
         <div class="flex mt-2 md:overflow-visible overflow-y-auto">
-          <table class="table table-compact w-full">
+          <table class="table table-xs w-full">
             <!-- head -->
             <thead>
               <tr>
@@ -61,22 +61,14 @@
                   </div>
                 </td>
               </tr>
-              <tr
-                v-else
-                v-for="(item, index) in itemStore.itemByType(2)"
-                :key="item"
-              >
+              <tr v-else v-for="(item, index) in itemStore.items" :key="item">
                 <td class="text-center">{{ itemStore.from + index }}</td>
                 <td>{{ item.name.toUpperCase() }}</td>
                 <td>{{ item.unit.name.toUpperCase() }}</td>
                 <td class="text-center">
                   <label class="swap">
                     <!-- this hidden checkbox controls the state -->
-                    <input
-                      type="checkbox"
-                      v-model.lazy="productionOrderStore.dataOrder.output"
-                      :value="item"
-                    />
+                    <input type="checkbox" v-model.lazy="productionOrderStore.dataOrder.output" :value="item" />
 
                     <!-- volume on icon -->
                     <svg
@@ -89,11 +81,7 @@
                       stroke="green"
                       stroke-width="2"
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M12 4v16m8-8H4"
-                      />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                     </svg>
 
                     <!-- volume off icon -->
@@ -108,11 +96,7 @@
                       stroke="red"
                       stroke-width="2"
                     >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M4.5 19.5l15-15m-15 0l15 15"
-                      />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m-15 0l15 15" />
                     </svg>
                   </label>
                 </td>
@@ -120,27 +104,10 @@
             </tbody>
           </table>
         </div>
-        <div
-          class="btn-group mx-auto mt-4 mb-1 justify-center"
-          v-if="!itemStore.isLoading"
-        >
-          <button
-            class="btn btn-outline"
-            @click="getData(previousPage)"
-            :disabled="itemStore.currentPage == 1 ? true : false"
-          >
-            «
-          </button>
-          <button class="btn btn-outline">
-            Page {{ itemStore.currentPage }}
-          </button>
-          <button
-            class="btn btn-outline"
-            @click="getData(nextPage)"
-            :disabled="
-              itemStore.lastPage == itemStore.currentPage ? true : false
-            "
-          >
+        <div class="btn-group mx-auto mt-4 mb-1 justify-center" v-if="!itemStore.isLoading">
+          <button class="btn btn-outline" @click="itemStore.getItemData(previousPage)" :disabled="itemStore.currentPage == 1 ? true : false">«</button>
+          <button class="btn btn-outline">Page {{ itemStore.currentPage }}</button>
+          <button class="btn btn-outline" @click="itemStore.getItemData(nextPage)" :disabled="itemStore.lastPage == itemStore.currentPage ? true : false">
             »
           </button>
         </div>
@@ -170,27 +137,17 @@ export default {
     })
 
     productionOrderStore.$subscribe((mutation, state) => {
-      if (
-        mutation.events.key == 'output' &&
-        mutation.events.newValue.length > mutation.events.oldValue.length
-      ) {
+      if (mutation.events.key == 'output' && mutation.events.newValue.length > mutation.events.oldValue.length) {
         toast.success('Barang jadi ditambahkan', {
           timeout: 1000,
         })
       }
 
-      if (
-        mutation.events.key == 'output' &&
-        mutation.events.newValue.length < mutation.events.oldValue.length
-      ) {
+      if (mutation.events.key == 'output' && mutation.events.newValue.length < mutation.events.oldValue.length) {
         toast.warning('Barang jadi di hapus', {
           timeout: 1000,
         })
       }
-    })
-
-    onActivated(() => {
-      itemStore.getItemData()
     })
 
     const searchData = useDebounceFn(() => {
