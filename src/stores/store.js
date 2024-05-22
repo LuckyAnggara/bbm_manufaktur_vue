@@ -697,6 +697,9 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
         machine: [],
         overhead: [],
       },
+      filter: {
+        tipe: 0,
+      },
     }
   },
   getters: {
@@ -812,6 +815,12 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
       })
       return state.editOrder.pegawai
     },
+    itemByTipe(state) {
+      if (state.filter.tipe == '' || state.filter.tipe == null || state.filter.tipe == 0) {
+        return ''
+      }
+      return '&tipe=' + state.filter.tipe
+    },
   },
   actions: {
     deleteInputEditData(index) {
@@ -868,7 +877,7 @@ export const useProductionOrderStore = defineStore('productionOrderStore', {
     async getAllData(page = '') {
       this.isLoading = true
       try {
-        const response = await axiosIns.get(`/production-order?limit=${this.currentLimit}${this.searchQuery}${this.fromToDate}`)
+        const response = await axiosIns.get(`/production-order?limit=${this.currentLimit}${this.searchQuery}${this.fromToDate}${this.itemByTipe}`)
         this.responseListData = response.data.data
       } catch (error) {
         Swal.fire({

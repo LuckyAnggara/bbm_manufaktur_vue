@@ -1,15 +1,26 @@
 <template>
   <div class="card flex flex-col h-5/6">
     <div class="card-body shadow-xl rounded-xl">
-      <h2 class="card-title mb-2 text-2xl">Daftar Produksi Order</h2>
+      <h2 class="card-title mb-2 text-2xl">Daftar Produksi</h2>
       <div class="md:flex py-2">
-        <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4">
-          <label class="mr-4">Jumlah Data </label>
-          <select v-model="productionOrderStore.currentLimit" class="select select-bordered max-w-xs">
-            <option :selected="productionOrderStore.currentLimit == length ? true : false" v-for="length in length" :key="length">
-              {{ length }}
-            </option>
-          </select>
+        <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4 flex flex-row space-x-4">
+          <div>
+            <label class="mr-4">Jumlah Data </label>
+            <select v-model="productionOrderStore.currentLimit" class="select select-bordered max-w-xs">
+              <option :selected="productionOrderStore.currentLimit == length ? true : false" v-for="length in length" :key="length">
+                {{ length }}
+              </option>
+            </select>
+          </div>
+          <div>
+            <label class="mr-4">Tipe </label>
+            <select v-model="productionOrderStore.filter.tipe" class="select select-bordered max-w-xs" @change="getData()">
+              <option value="0">Semua</option>
+              <option :value="tipe.id" v-for="(tipe, index) in mainStore.jenisHasil" :key="index">
+                {{ tipe.name }}
+              </option>
+            </select>
+          </div>
         </div>
 
         <div class="justify-end mx-1 md:w-1/2 w-full">
@@ -28,7 +39,8 @@
             <tr>
               <th></th>
               <th>Nomor Produksi</th>
-              <th>Nama Pelanggan</th>
+              <!-- <th>Nama Pelanggan</th> -->
+              <th>Jenis Hasil</th>
               <th>Penanggung Jawab</th>
               <th>Tanggal Order</th>
               <th>Tanggal Selesai</th>
@@ -69,7 +81,11 @@
                   {{ productionOrderStore.from + index }}
                 </td>
                 <td>{{ data.sequence }}</td>
-                <td>{{ data.customer_name }}</td>
+                <td>
+                  <div v-if="data.jenis" class="badge badge-secondary badge-outline">
+                    {{ data.jenis?.name }}
+                  </div>
+                </td>
                 <td>{{ data.pic_name }}</td>
                 <td>
                   {{ $moment(data.order_date).format('DD MMMM YYYY') }}
@@ -148,11 +164,13 @@
 <script>
 import { ref, watch } from 'vue'
 import { useProductionOrderStore } from '@/stores/store'
+import { useMainStore } from '@/stores/mainStore'
 import { useDebounceFn } from '@vueuse/core'
 
 export default {
   setup() {
     const productionOrderStore = useProductionOrderStore()
+    const mainStore = useMainStore()
     const length = ref([5, 10, 20, 30, 40, 50])
     // productionOrderStore.$subscribe((mutation, state) => {
     //   if (mutation.events.key == 'currentLimit') {
@@ -177,6 +195,7 @@ export default {
 
     // expose to template and other options API hooks
     return {
+      mainStore,
       searchData,
       dataOrder,
       getData,

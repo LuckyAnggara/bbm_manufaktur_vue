@@ -20,9 +20,9 @@ export const useMainStore = defineStore('main', {
       { id: 12, label: 'Desember' },
     ],
     jenisHasil: [
-      { id: 1, name: 'Bahan Baku' },
-      { id: 2, name: 'Bahan 1/2 Jadi' },
-      { id: 3, name: 'Bahan Jadi' },
+      { id: 1, name: 'Bahan Jadi' },
+      { id: 2, name: 'Bahan Baku' },
+      { id: 3, name: 'Barabg 1/2 Jadi' },
     ],
   }),
   actions: {},

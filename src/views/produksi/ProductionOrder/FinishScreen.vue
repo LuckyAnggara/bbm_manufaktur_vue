@@ -30,7 +30,7 @@
       </template>
       <template v-else>
         <div class="md:flex md:gap-x-4 grid grid-cols-2 gap-2 mb-6">
-          <button v-show="dataOrder.status == 'NEW ORDER'" class="btn gap-2 btn-primary hover:btn-secondary w-32" @click="onEdit">
+          <button v-show="dataOrder.status == 'NEW ORDER'" class="btn gap-2 btn-accent hover:btn-secondary w-32" @click="onEdit">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 stroke-linecap="round"
@@ -41,7 +41,7 @@
             Edit
           </button>
 
-          <button v-if="doneProduction ? false : true" class="btn gap-2 w-32 btn-primary hover:btn-secondary" @click="onUpdateStatus">
+          <button v-if="doneProduction ? false : true" class="btn gap-2 w-32 btn-accent hover:btn-secondary" @click="onUpdateStatus">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 stroke-linecap="round"
@@ -54,7 +54,7 @@
 
           <button
             v-if="dataOrder.status == 'NEW ORDER' || !dataOrder.status == 'WORK IN PROGRESS'"
-            class="btn gap-2 w-32 btn-primary hover:btn-secondary"
+            class="btn gap-2 w-32 btn-accent hover:btn-secondary"
             @click="onDelete"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -67,7 +67,7 @@
             Delete
           </button>
 
-          <button class="btn gap-2 btn-primary hover:btn-secondary w-32" @click="printData">
+          <button class="btn gap-2 btn-accent hover:btn-secondary w-32" @click="printData">
             <template v-if="productionOrderStore.isLoadingPrint">
               <svg role="status" class="inline mr-3 w-4 h-4 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -93,7 +93,7 @@
             </template>
           </button>
 
-          <button v-if="dataOrder.status == 'WORK IN PROGRESS'" class="btn gap-2 btn-primary hover:btn-secondary w-32" @click="onUpdate">
+          <button v-if="dataOrder.status == 'WORK IN PROGRESS'" class="btn gap-2 btn-accent hover:btn-secondary w-32" @click="onUpdate">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 stroke-linecap="round"
@@ -104,7 +104,7 @@
             Update
           </button>
 
-          <button v-if="dataOrder.status == 'DONE PRODUCTION'" class="btn gap-2 btn-primary hover:btn-secondary" @click="onWarehouse">
+          <button v-if="dataOrder.status == 'DONE PRODUCTION'" class="btn gap-2 btn-accent hover:btn-secondary" @click="onWarehouse">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 stroke-linecap="round"
@@ -115,7 +115,7 @@
             Warehouse
           </button>
 
-          <button v-if="dataOrder.status == 'WAREHOUSE' || dataOrder.status == 'RETUR'" class="btn gap-2 btn-primary hover:btn-secondary" @click="onShipping">
+          <button v-if="dataOrder.status == 'WAREHOUSE' || dataOrder.status == 'RETUR'" class="btn gap-2 btn-accent hover:btn-secondary" @click="onShipping">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 stroke-linecap="round"
@@ -127,7 +127,7 @@
             Shipping
           </button>
 
-          <button v-if="dataOrder.status == 'SHIPPING'" class="btn gap-2 btn-primary hover:btn-secondary" @click="onRetur">
+          <button v-if="dataOrder.status == 'SHIPPING'" class="btn gap-2 btn-accent hover:btn-secondary" @click="onRetur">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
             </svg>
@@ -135,7 +135,7 @@
             Retur
           </button>
 
-          <button v-if="dataOrder.status == 'SHIPPING'" class="btn gap-2 btn-primary hover:btn-secondary" @click="onReceive">
+          <button v-if="dataOrder.status == 'SHIPPING'" class="btn gap-2 btn-accent hover:btn-secondary" @click="onReceive">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 stroke-linecap="round"
@@ -187,6 +187,20 @@
                   <div class="w-7/12 px-3 py-2">
                     <div class="text-sm text-left font-medium">
                       {{ dataOrder.pic_name }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex px-3">
+                  <div class="w-4/12 px-3 py-2">
+                    <div class="text-left font-medium">Jenis Hasil</div>
+                  </div>
+                  <div class="w-1/12 px-3 py-2">
+                    <div class="text-left font-medium">:</div>
+                  </div>
+                  <div class="w-7/12 px-3 py-2">
+                    <div class="text-sm text-left font-medium">
+                      {{ dataOrder.jenis.name }}
                     </div>
                   </div>
                 </div>
@@ -376,9 +390,12 @@
 
 <script>
 import { computed, ref } from '@vue/runtime-core'
-import { useItemStore, useProductionOrderStore } from '../../../stores/store'
+import { useItemStore, useProductionOrderStore } from '@/stores/store'
+import { useMainStore } from '@/stores/mainStore'
+
 export default {
   setup() {
+    const mainStore = useMainStore()
     const editMaker = ref(false)
     const productionOrderStore = useProductionOrderStore()
     const itemStore = useItemStore()
@@ -397,6 +414,7 @@ export default {
     return {
       editMaker,
       itemStore,
+      mainStore,
       printData,
       randomBg,
       productionOrderStore,

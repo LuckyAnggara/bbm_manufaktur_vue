@@ -21,7 +21,7 @@ export const productionOrderRoutes = [
     name: 'produksi-order-finish',
     component: FinishScreen,
     meta: {
-      title: 'Deetail Produksi',
+      title: 'Detail Produksi',
       layout: 'layout-normal',
       requiresAuth: true,
     },
