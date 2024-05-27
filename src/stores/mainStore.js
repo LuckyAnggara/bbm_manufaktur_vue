@@ -22,7 +22,7 @@ export const useMainStore = defineStore('main', {
     jenisHasil: [
       { id: 1, name: 'Bahan Jadi' },
       { id: 2, name: 'Bahan Baku' },
-      { id: 3, name: 'Barabg 1/2 Jadi' },
+      { id: 3, name: 'Barang 1/2 Jadi' },
     ],
   }),
   actions: {},

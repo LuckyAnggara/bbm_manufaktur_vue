@@ -8,6 +8,16 @@
       </div>
     </template>
     <template v-else>
+      <div class="lg:w-max w-full my-2">
+        <div class="">
+          <div class="stat-value">
+            {{ $moment().format('DD MMMM YYYY') }}
+          </div>
+          <div class="stat-desc" id="clock">
+            <p class="time text-black">{{ time }}</p>
+          </div>
+        </div>
+      </div>
       <template v-if="productionOrderStore.isDataEmpty">
         <div class="min-w-screen flex items-center p-5 lg:p-20 overflow-hidden relative">
           <div class="flex-1 min-h-full min-w-full rounded-3xl shadow-xl p-10 lg:p-20 text-gray-800 relative md:flex items-center text-center md:text-left">
@@ -389,7 +399,7 @@
 </template>
 
 <script>
-import { computed, ref } from '@vue/runtime-core'
+import { computed, ref, watch } from '@vue/runtime-core'
 import { useItemStore, useProductionOrderStore } from '@/stores/store'
 import { useMainStore } from '@/stores/mainStore'
 
@@ -411,7 +421,27 @@ export default {
       return array.at(Math.floor(Math.random() * 3))
     })
 
+    const time = ref('')
+
+    var timerID = setInterval(updateTime, 1000)
+
+    function updateTime() {
+      var cd = new Date()
+      time.value = zeroPadding(cd.getHours(), 2) + ':' + zeroPadding(cd.getMinutes(), 2) + ':' + zeroPadding(cd.getSeconds(), 2)
+    }
+
+    function zeroPadding(num, digit) {
+      var zero = ''
+      for (var i = 0; i < digit; i++) {
+        zero += '0'
+      }
+      return (zero + num).slice(-digit)
+    }
+
+    updateTime()
+
     return {
+      time,
       editMaker,
       itemStore,
       mainStore,
@@ -752,5 +782,19 @@ export default {
   100% {
     transform: rotate(360deg);
   }
+}
+
+#clock {
+  font-family: 'Share Tech Mono', monospace;
+  color: #ffffff;
+  text-align: right;
+  color: #daf6ff;
+  text-shadow: 0 0 20px rgba(10, 175, 230, 1), 0 0 20px rgba(10, 175, 230, 0);
+}
+
+.time {
+  letter-spacing: 0.05em;
+  font-size: 20px;
+  padding: 5px 0;
 }
 </style>
