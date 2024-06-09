@@ -7,16 +7,36 @@
             <h2 class="card-title mb-2 text-2xl">Data Penggajian</h2>
             <div class="flex flex-col py-2">
               <div class="w-1/5">
-                <button v-if="gajiStore.pegawaiList.length == 0" class="btn w-32 btn-primary modal-button shadow-md" @click="getPegawai()">
-                  <ArrowPathIcon v-if="gajiStore.isLoading" class="animate-spin h-5 w-5 text-black dark:text-gray-400" aria-hidden="true" />
+                <button
+                  v-if="gajiStore.pegawaiList.length == 0"
+                  class="btn w-32 btn-primary modal-button shadow-md"
+                  @click="getPegawai()"
+                >
+                  <ArrowPathIcon
+                    v-if="gajiStore.isLoading"
+                    class="animate-spin h-5 w-5 text-black dark:text-gray-400"
+                    aria-hidden="true"
+                  />
                   <span v-else>Fetch Pegawai</span>
                 </button>
 
                 <template v-else>
                   <div class="flex space-x-4">
-                    <button class="text-white w-32 btn bg-red-500 modal-button shadow-md" @click="onCancel()">Cancel</button>
-                    <button class="btn w-32 btn-primary modal-button shadow-md" @click="onSubmit()">
-                      <ArrowPathIcon v-if="gajiStore.isStoreLoading" class="animate-spin h-5 w-5 text-black dark:text-gray-400" aria-hidden="true" />
+                    <button
+                      class="text-white w-32 btn bg-red-500 modal-button shadow-md"
+                      @click="onCancel()"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      class="btn w-32 btn-primary modal-button shadow-md"
+                      @click="onSubmit()"
+                    >
+                      <ArrowPathIcon
+                        v-if="gajiStore.isStoreLoading"
+                        class="animate-spin h-5 w-5 text-black dark:text-gray-400"
+                        aria-hidden="true"
+                      />
                       <span v-else>Proses</span>
                     </button>
                   </div>
@@ -80,21 +100,36 @@
                     <tr v-if="gajiStore.pegawaiList.length == 0">
                       <td colspan="6" class="text-center">Tidak ada data</td>
                     </tr>
-                    <tr v-else v-for="(item, index) in gajiStore.pegawaiList" :key="item.id">
+                    <tr
+                      v-else
+                      v-for="(item, index) in gajiStore.pegawaiList"
+                      :key="item.id"
+                    >
                       <td class="text-center">{{ index + 1 }}</td>
                       <td>
-                        <input v-model="item.bayarkan" type="checkbox" checked="checked" class="checkbox" />
+                        <input
+                          v-model="item.bayarkan"
+                          type="checkbox"
+                          checked="checked"
+                          class="checkbox"
+                        />
                       </td>
                       <td>
-                        <span :class="item.bayarkan ? '' : 'line-through text-gray-500'">{{ item.name }}</span>
+                        <span
+                          :class="
+                            item.bayarkan ? '' : 'line-through text-gray-500'
+                          "
+                          >{{ item.name }}</span
+                        >
                       </td>
                       <td>
                         <input
                           :disabled="!item.bayarkan"
                           required
                           v-model="item.gaji"
-                          type="text"
-                          placeholder="Nama Biaya"
+                          :min="0"
+                          type="number"
+                          placeholder="Gaji Pokok"
                           class="input input-bordered w-full"
                         />
                       </td>
@@ -102,9 +137,10 @@
                         <input
                           :disabled="!item.bayarkan"
                           required
+                          :min="0"
                           v-model="item.uang_makan"
-                          type="text"
-                          placeholder="Nama Biaya"
+                          type="number"
+                          placeholder="Uang Makan"
                           class="input input-bordered w-full"
                         />
                       </td>
@@ -112,26 +148,37 @@
                         <input
                           :disabled="!item.bayarkan"
                           required
+                          :min="0"
                           v-model="item.bonus"
-                          type="text"
-                          placeholder="Nama Biaya"
+                          type="number"
+                          placeholder="Bonus"
                           class="input input-bordered w-full"
                         />
                       </td>
                       <td>
                         <input
                           disabled
-                          :value="parseFloat(item.gaji) + parseFloat(item.uang_makan) + parseFloat(item.bonus)"
+                          :value="
+                            parseFloat(item.gaji) +
+                            parseFloat(item.uang_makan) +
+                            parseFloat(item.bonus)
+                          "
                           type="text"
                           placeholder="Nama Biaya"
                           class="input input-bordered w-full"
                         />
                       </td>
                       <td>
-                        <button class="btn btn-sm btn-square btn-ghost hover:scale-110" @click="onDelete(item, index)">
+                        <button
+                          class="btn btn-sm btn-square btn-ghost hover:scale-110"
+                          @click="onDelete(item, index)"
+                        >
                           <span>
                             <ArrowPathIcon
-                              v-if="gajiStore.isDestroyLoading && indexDestroy == item.id"
+                              v-if="
+                                gajiStore.isDestroyLoading &&
+                                indexDestroy == item.id
+                              "
                               class="animate-spin h-5 w-5 text-black dark:text-gray-400"
                               aria-hidden="true"
                             />
@@ -157,7 +204,9 @@
                   </template>
                 </tbody>
                 <tfoot>
-                  <td colspan="5" class="text-end text-lg text-white">Total Bayar</td>
+                  <td colspan="5" class="text-end text-lg text-white">
+                    Total Bayar
+                  </td>
                   <td class="text-lg text-white">
                     {{ numeralFormat(gajiStore.gajiTotal) }}
                   </td>
@@ -174,7 +223,7 @@
 <script setup>
 import { useGajiStore } from '@/stores/gajiStore'
 import { ArrowPathIcon } from '@heroicons/vue/24/solid'
-import { ref } from 'vue'
+import { onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const gajiStore = useGajiStore()
@@ -212,7 +261,7 @@ function onDelete(item, index) {
   indexDestroy.value = item.id
 }
 
-// onMounted(() => {
-//   gajiStore.getData()
-// })
+onUnmounted(() => {
+  gajiStore.$reset()
+})
 </script>

@@ -141,6 +141,21 @@ export const useBiayaStore = defineStore('biayaStore', {
         this.isDestroyLoading = false
       }
     },
+    async showBiaya(date) {
+      this.isLoadingDownload = true
+      try {
+        const response = await axiosIns.get(
+          `/report/biaya/${moment(date).format('yyyy-MM-DD')}`
+        )
+        let responseHtml = response.data
+        // console.log(responseHtml, 'Faktur penjualan')
+        var myWindow = window.open('response')
+        myWindow.document.write(responseHtml)
+      } catch (error) {
+        console.info(error)
+      }
+      this.isLoadingDownload = false
+    },
     reset() {
       this.form.tanggal_transaksi = null
       this.form.nama = null

@@ -3,61 +3,22 @@
     <div class="md:flex">
       <div class="flex-col md:w-1/4 w-full mr-10 self-start card shadow-xl">
         <div class="card-body">
-          <div>
-            <h2 class="card-title">Filter Data</h2>
-            <div class="justify-center my-4">
-              <div class="form-control">
-                <label class="label">
-                  <span class="label-text">Tanggal Data</span>
-                </label>
-                <div class="flex justify-between items-center">
-                  <input
-                    v-model="biayaStore.filter.date.fromDate"
-                    id="date"
-                    type="date"
-                    placeholder="Type here"
-                    class="input input-bordered w-auto"
-                  />
-                  <label class="">s.d</label>
-                  <input
-                    v-model="biayaStore.filter.date.toDate"
-                    id="date"
-                    type="date"
-                    placeholder="Type here"
-                    class="input input-bordered w-auto"
-                  />
-                </div>
+          <h2 class="card-title">Filter Data</h2>
+          <div class="justify-center my-4">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Tanggal Data</span>
+              </label>
+              <div class="flex justify-between items-center">
+                <input v-model="biayaStore.filter.date.fromDate" id="date" type="date" placeholder="Type here" class="input input-bordered w-auto" />
+                <label class="">s.d</label>
+                <input v-model="biayaStore.filter.date.toDate" id="date" type="date" placeholder="Type here" class="input input-bordered w-auto" />
               </div>
-            </div>
-
-            <div class="card-actions justify-end">
-              <button
-                class="btn btn-primary w-32 hover:btn-primary"
-                @click="biayaStore.getData()"
-              >
-                Filter
-              </button>
             </div>
           </div>
-          <div>
-            <h2 class="card-title my-4">Laporan Biaya</h2>
-            <div class="flex items-center space-x-4">
-              <input
-                v-model="biayaStore.tanggalData"
-                id="date"
-                type="date"
-                placeholder="Type here"
-                class="input input-bordered w-auto"
-              />
-              <div class="card-actions justify-end">
-                <button
-                  class="btn btn-primary w-32 hover:btn-primary"
-                  @click="biayaStore.showBiaya(biayaStore.tanggalData)"
-                >
-                  Download
-                </button>
-              </div>
-            </div>
+
+          <div class="card-actions justify-end">
+            <button class="btn btn-primary w-32 hover:btn-primary" @click="biayaStore.getData()">Filter</button>
           </div>
 
           <!-- <div class="divider"></div>
@@ -87,26 +48,12 @@
             <h2 class="card-title mb-2 text-2xl">Data Biaya</h2>
             <div class="md:flex py-2">
               <div class="w-1/5">
-                <button
-                  class="btn w-32 btn-primary modal-button shadow-md"
-                  @click="onNew()"
-                >
-                  Tambah
-                </button>
+                <button class="btn w-32 btn-primary modal-button shadow-md" @click="onNew()">Tambah</button>
               </div>
               <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4">
                 <label class="mr-4">Jumlah Data </label>
-                <select
-                  v-model="biayaStore.filter.currentLimit"
-                  class="select select-bordered max-w-xs"
-                >
-                  <option
-                    :selected="
-                      biayaStore.filter.currentLimit == length ? true : false
-                    "
-                    v-for="length in mainStore.limitDataOptions"
-                    :key="length"
-                  >
+                <select v-model="biayaStore.filter.currentLimit" class="select select-bordered max-w-xs">
+                  <option :selected="biayaStore.filter.currentLimit == length ? true : false" v-for="length in mainStore.limitDataOptions" :key="length">
                     {{ length }}
                   </option>
                 </select>
@@ -115,13 +62,7 @@
               <div class="justify-end mx-1 md:w-1/2 w-full">
                 <div class="form-control">
                   <div class="input-group">
-                    <input
-                      v-model="biayaStore.filter.searchQuery"
-                      @keyup="searchData"
-                      type="text"
-                      placeholder="Search…"
-                      class="input input-bordered w-full"
-                    />
+                    <input v-model="biayaStore.filter.searchQuery" @keyup="searchData" type="text" placeholder="Search…" class="input input-bordered w-full" />
                   </div>
                 </div>
               </div>
@@ -168,11 +109,7 @@
                     <tr v-if="biayaStore.items.length == 0">
                       <td colspan="6" class="text-center">Tidak ada data</td>
                     </tr>
-                    <tr
-                      v-else
-                      v-for="(item, index) in biayaStore.items"
-                      :key="item.id"
-                    >
+                    <tr v-else v-for="(item, index) in biayaStore.items" :key="item.id">
                       <td class="text-center">{{ biayaStore.from + index }}</td>
                       <td>{{ item.tanggal_transaksi }}</td>
                       <td>{{ item.nama }}</td>
@@ -180,16 +117,10 @@
 
                       <td>{{ numeralFormat(item.jumlah) }}</td>
                       <td>
-                        <button
-                          class="btn btn-sm btn-square btn-ghost hover:scale-110"
-                          @click="onDelete(item, index)"
-                        >
+                        <button class="btn btn-sm btn-square btn-ghost hover:scale-110" @click="onDelete(item, index)">
                           <span>
                             <ArrowPathIcon
-                              v-if="
-                                biayaStore.isDestroyLoading &&
-                                indexDestroy == item.id
-                              "
+                              v-if="biayaStore.isDestroyLoading && indexDestroy == item.id"
                               class="animate-spin h-5 w-5 text-black dark:text-gray-400"
                               aria-hidden="true"
                             />
@@ -222,29 +153,10 @@
                 </tfoot>
               </table>
             </div>
-            <div
-              class="btn-group mx-auto mt-4 mb-1 justify-center"
-              v-if="!biayaStore.isLoading"
-            >
-              <button
-                class="btn btn-outline"
-                @click="getData(previousPage)"
-                :disabled="biayaStore.currentPage == 1 ? true : false"
-              >
-                «
-              </button>
-              <button class="btn btn-outline">
-                Page {{ biayaStore.currentPage }}
-              </button>
-              <button
-                class="btn btn-outline"
-                @click="getData(nextPage)"
-                :disabled="
-                  biayaStore.lastPage == biayaStore.currentPage ? true : false
-                "
-              >
-                »
-              </button>
+            <div class="btn-group mx-auto mt-4 mb-1 justify-center" v-if="!biayaStore.isLoading">
+              <button class="btn btn-outline" @click="getData(previousPage)" :disabled="biayaStore.currentPage == 1 ? true : false">«</button>
+              <button class="btn btn-outline">Page {{ biayaStore.currentPage }}</button>
+              <button class="btn btn-outline" @click="getData(nextPage)" :disabled="biayaStore.lastPage == biayaStore.currentPage ? true : false">»</button>
             </div>
           </div>
         </div>
@@ -253,11 +165,7 @@
 
     <Teleport to="body">
       <!-- use the modal component, pass in the prop -->
-      <ModalNewItem
-        :show-modal="showModal"
-        @submitStore="onSubmit()"
-        @close="showModal = !showModal"
-      />
+      <ModalNewItem :show-modal="showModal" @submitStore="onSubmit()" @close="showModal = !showModal" />
     </Teleport>
   </section>
 </template>

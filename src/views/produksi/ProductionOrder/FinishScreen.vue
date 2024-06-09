@@ -1,10 +1,17 @@
 <template>
   <section>
     <template v-if="productionOrderStore.isLoading">
-      <div wire:loading class="top-0 left-0 right-0 bottom-0 overflow-hidden opacity-75 flex flex-col items-center justify-center">
-        <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+      <div
+        wire:loading
+        class="top-0 left-0 right-0 bottom-0 overflow-hidden opacity-75 flex flex-col items-center justify-center"
+      >
+        <div
+          class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"
+        ></div>
         <h2 class="text-center text-white text-xl font-semibold">Loading...</h2>
-        <p class="w-1/3 text-center text-white">Sedang mencari data, tolong jangan tutup halaman ini.</p>
+        <p class="w-1/3 text-center text-white">
+          Sedang mencari data, tolong jangan tutup halaman ini.
+        </p>
       </div>
     </template>
     <template v-else>
@@ -19,29 +26,55 @@
         </div>
       </div>
       <template v-if="productionOrderStore.isDataEmpty">
-        <div class="min-w-screen flex items-center p-5 lg:p-20 overflow-hidden relative">
-          <div class="flex-1 min-h-full min-w-full rounded-3xl shadow-xl p-10 lg:p-20 text-gray-800 relative md:flex items-center text-center md:text-left">
+        <div
+          class="min-w-screen flex items-center p-5 lg:p-20 overflow-hidden relative"
+        >
+          <div
+            class="flex-1 min-h-full min-w-full rounded-3xl shadow-xl p-10 lg:p-20 text-gray-800 relative md:flex items-center text-center md:text-left"
+          >
             <div class="w-full md:w-1/2">
               <div class="mb-10 md:mb-20 text-gray-600 font-light">
-                <h1 class="font-black uppercase text-3xl lg:text-5xl text-yellow-500 mb-10">Opss, ada masalah!</h1>
+                <h1
+                  class="font-black uppercase text-3xl lg:text-5xl text-yellow-500 mb-10"
+                >
+                  Opss, ada masalah!
+                </h1>
                 <p class="text-white">Data yang kamu cari tidak tersedia.</p>
-                <p class="text-white">Silahkan klik tombol di bawah ini untuk kembali.</p>
+                <p class="text-white">
+                  Silahkan klik tombol di bawah ini untuk kembali.
+                </p>
               </div>
               <div class="mb-20 md:mb-0">
-                <button class="btn btn-warning hover:scale-110 text-black-500 hover:text-black-600">Kembali</button>
+                <button
+                  class="btn btn-warning hover:scale-110 text-black-500 hover:text-black-600"
+                >
+                  Kembali
+                </button>
               </div>
             </div>
           </div>
           <div
             class="w-64 md:w-96 h-96 md:h-full bg-blue-200 bg-opacity-30 absolute -top-64 md:-top-96 right-20 md:right-32 rounded-full pointer-events-none -rotate-45 transform"
           ></div>
-          <div class="w-96 h-full bg-yellow-200 bg-opacity-20 absolute -bottom-96 right-64 rounded-full pointer-events-none -rotate-45 transform"></div>
+          <div
+            class="w-96 h-full bg-yellow-200 bg-opacity-20 absolute -bottom-96 right-64 rounded-full pointer-events-none -rotate-45 transform"
+          ></div>
         </div>
       </template>
       <template v-else>
         <div class="md:flex md:gap-x-4 grid grid-cols-2 gap-2 mb-6">
-          <button v-show="dataOrder.status == 'NEW ORDER'" class="btn gap-2 btn-accent hover:btn-secondary w-32" @click="onEdit">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <button
+            v-show="dataOrder.status == 'NEW ORDER'"
+            class="btn gap-2 btn-accent hover:btn-secondary w-32"
+            @click="onEdit"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -51,8 +84,18 @@
             Edit
           </button>
 
-          <button v-if="doneProduction ? false : true" class="btn gap-2 w-32 btn-accent hover:btn-secondary" @click="onUpdateStatus">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <button
+            v-if="doneProduction ? false : true"
+            class="btn gap-2 w-32 btn-accent hover:btn-secondary"
+            @click="onUpdateStatus"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -63,11 +106,20 @@
           </button>
 
           <button
-            v-if="dataOrder.status == 'NEW ORDER' || !dataOrder.status == 'WORK IN PROGRESS'"
+            v-if="
+              dataOrder.status == 'NEW ORDER' ||
+              !dataOrder.status == 'WORK IN PROGRESS'
+            "
             class="btn gap-2 w-32 btn-accent hover:btn-secondary"
             @click="onDelete"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -77,9 +129,18 @@
             Delete
           </button>
 
-          <button class="btn gap-2 btn-accent hover:btn-secondary w-32" @click="printData">
+          <button
+            class="btn gap-2 btn-accent hover:btn-secondary w-32"
+            @click="printData"
+          >
             <template v-if="productionOrderStore.isLoadingPrint">
-              <svg role="status" class="inline mr-3 w-4 h-4 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                role="status"
+                class="inline mr-3 w-4 h-4 text-white animate-spin"
+                viewBox="0 0 100 101"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <path
                   d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
                   fill="#E5E7EB"
@@ -92,7 +153,13 @@
               Loading...
             </template>
             <template v-else>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-8 w-8"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -103,8 +170,18 @@
             </template>
           </button>
 
-          <button v-if="dataOrder.status == 'WORK IN PROGRESS'" class="btn gap-2 btn-accent hover:btn-secondary w-32" @click="onUpdate">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <button
+            v-if="dataOrder.status == 'WORK IN PROGRESS'"
+            class="btn gap-2 btn-accent hover:btn-secondary w-32"
+            @click="onUpdate"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -114,8 +191,18 @@
             Update
           </button>
 
-          <button v-if="dataOrder.status == 'DONE PRODUCTION'" class="btn gap-2 btn-accent hover:btn-secondary" @click="onWarehouse">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <button
+            v-if="dataOrder.status == 'DONE PRODUCTION'"
+            class="btn gap-2 btn-accent hover:btn-secondary"
+            @click="onWarehouse"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -125,8 +212,20 @@
             Warehouse
           </button>
 
-          <button v-if="dataOrder.status == 'WAREHOUSE' || dataOrder.status == 'RETUR'" class="btn gap-2 btn-accent hover:btn-secondary" @click="onShipping">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <button
+            v-if="
+              dataOrder.status == 'WAREHOUSE' || dataOrder.status == 'RETUR'
+            "
+            class="btn gap-2 btn-accent hover:btn-secondary"
+            @click="onShipping"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -137,16 +236,40 @@
             Shipping
           </button>
 
-          <button v-if="dataOrder.status == 'SHIPPING'" class="btn gap-2 btn-accent hover:btn-secondary" @click="onRetur">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" />
+          <button
+            v-if="dataOrder.status == 'SHIPPING'"
+            class="btn gap-2 btn-accent hover:btn-secondary"
+            @click="onRetur"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
+              />
             </svg>
 
             Retur
           </button>
 
-          <button v-if="dataOrder.status == 'SHIPPING'" class="btn gap-2 btn-accent hover:btn-secondary" @click="onReceive">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <button
+            v-if="dataOrder.status == 'SHIPPING'"
+            class="btn gap-2 btn-accent hover:btn-secondary"
+            @click="onReceive"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -161,12 +284,17 @@
           <div class="md:mb-0 mb-4 md:w-3/5 w-full mr-5" id="printArea">
             <div class="card card-compact w-full shadow-xl p-5">
               <h2 class="text-3xl mb-5 px-2">Kertas Kerja Produksi</h2>
-              <h2 class="card-title px-2">Status Pekerjaan : {{ dataOrder.status }}</h2>
+              <h2 class="card-title px-2">
+                Status Pekerjaan : {{ dataOrder.status }}
+              </h2>
               <div class="card-body">
                 <div class="flex items-center justify-between mb-8 px-3">
                   <div>
-                    <span class="text-2xl">Production Order #</span>{{ dataOrder.sequence }}<br />
-                    <span>Tanggal</span>: {{ $moment(dataOrder.order_date).format('DD MMMM YYYY') }}<br />
+                    <span class="text-2xl">Production Order #</span
+                    >{{ dataOrder.sequence }}<br />
+                    <span>Tanggal</span>:
+                    {{ $moment(dataOrder.order_date).format('DD MMMM YYYY')
+                    }}<br />
                   </div>
                   <div class="text-right">
                     <span class="text-gray-600 text-4xl">BBM. </span>
@@ -210,7 +338,7 @@
                   </div>
                   <div class="w-7/12 px-3 py-2">
                     <div class="text-sm text-left font-medium">
-                      {{ dataOrder.jenis.name }}
+                      {{ dataOrder.jenis?.name }}
                     </div>
                   </div>
                 </div>
@@ -219,16 +347,26 @@
 
                 <div class="flex px-3">
                   <div class="w-1/3 px-3 py-2">
-                    <div class="text-left font-medium">Bahan baku yang di pergunakan</div>
+                    <div class="text-left font-medium">
+                      Bahan baku yang di pergunakan
+                    </div>
                   </div>
                   <div class="w-2/3 px-3 border-solid border-2 border-grey-500">
-                    <div class="flex justify-between my-2" v-for="input in dataOrder.input" :key="input.id">
+                    <div
+                      class="flex justify-between my-2"
+                      v-for="input in dataOrder.input"
+                      :key="input.id"
+                    >
                       <div class="text-left font-medium w-1/12">-</div>
                       <div class="text-left font-medium w-8/12">
                         {{ input.item.name }}
                       </div>
                       <div class="text-left font-medium w-3/12">
-                        {{ doneProduction ? input.real_quantity : input.estimate_quantity }}
+                        {{
+                          doneProduction
+                            ? input.real_quantity
+                            : input.estimate_quantity
+                        }}
                         {{ input.item.unit.name }}
                       </div>
                     </div>
@@ -237,15 +375,23 @@
 
                 <div class="flex px-3">
                   <div class="w-1/3 px-3 py-2">
-                    <div class="text-left font-medium">Mesin yang di pergunakan</div>
+                    <div class="text-left font-medium">
+                      Mesin yang di pergunakan
+                    </div>
                   </div>
                   <div class="w-2/3 px-3 border-solid border-2 border-grey-500">
-                    <div class="flex justify-between my-2" v-for="machine in dataOrder.machine" :key="machine.id">
+                    <div
+                      class="flex justify-between my-2"
+                      v-for="machine in dataOrder.machine"
+                      :key="machine.id"
+                    >
                       <div class="text-left font-medium w-1/12">-</div>
                       <div class="text-left font-medium w-8/12">
                         {{ machine.machine.name }}
                       </div>
-                      <div class="text-left font-medium w-3/12">{{ machine.usage_meter }} {{ machine.machine.unit }}</div>
+                      <div class="text-left font-medium w-3/12">
+                        {{ machine.usage_meter }} {{ machine.machine.unit }}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -255,12 +401,18 @@
                     <div class="text-left font-medium">Alat lainnya</div>
                   </div>
                   <div class="w-2/3 px-3 border-solid border-2 border-grey-500">
-                    <div class="flex justify-between my-2" v-for="overhead in dataOrder.overhead" :key="overhead.id">
+                    <div
+                      class="flex justify-between my-2"
+                      v-for="overhead in dataOrder.overhead"
+                      :key="overhead.id"
+                    >
                       <div class="text-left font-medium w-1/12">-</div>
                       <div class="text-left font-medium w-8/12">
                         {{ overhead.overhead.name }}
                       </div>
-                      <div class="text-left font-medium w-3/12">{{ overhead.usage_meter }} {{ overhead.overhead.unit }}</div>
+                      <div class="text-left font-medium w-3/12">
+                        {{ overhead.usage_meter }} {{ overhead.overhead.unit }}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -270,13 +422,21 @@
                     <div class="text-left font-medium">Output Produksi</div>
                   </div>
                   <div class="w-2/3 px-3 border-solid border-2 border-grey-500">
-                    <div class="flex justify-between my-2" v-for="output in dataOrder.output" :key="output.id">
+                    <div
+                      class="flex justify-between my-2"
+                      v-for="output in dataOrder.output"
+                      :key="output.id"
+                    >
                       <div class="text-left font-medium w-1/12">-</div>
                       <div class="text-left font-medium w-8/12">
                         {{ output.item.name }}
                       </div>
                       <div class="text-left w-3/12">
-                        {{ doneProduction ? output.real_quantity : output.target_quantity }}
+                        {{
+                          doneProduction
+                            ? output.real_quantity
+                            : output.target_quantity
+                        }}
                         {{ output.item.unit.name }}
                       </div>
                     </div>
@@ -294,7 +454,9 @@
                   </div>
                   <div class="w-7/12 px-3 py-2">
                     <div class="text-sm text-right font-medium">
-                      {{ $moment(dataOrder.target_date).format('DD MMMM YYYY') }}
+                      {{
+                        $moment(dataOrder.target_date).format('DD MMMM YYYY')
+                      }}
                     </div>
                   </div>
                 </div>
@@ -318,7 +480,10 @@
                 <div class="border border-t-2 border-gray-200 mb-5 px-3"></div>
 
                 <div class="mb-8 px-3">
-                  <span>Kertas kerja ini agar dilaksanakan sesuai dengan Prosedur yang berlaku.</span>
+                  <span
+                    >Kertas kerja ini agar dilaksanakan sesuai dengan Prosedur
+                    yang berlaku.</span
+                  >
                 </div>
 
                 <div class="flex justify-between items-center mt-4 px-3">
@@ -331,8 +496,14 @@
                 </div>
 
                 <div class="flex justify-between items-center mt-12 px-3">
-                  <div v-if="!editMaker" class="text-1xl leading-none w-1/2 text-center" @dblclick="editMaker = true">
-                    <span class="">{{ productionOrderStore.currentData.user.name.toUpperCase() }}</span>
+                  <div
+                    v-if="!editMaker"
+                    class="text-1xl leading-none w-1/2 text-center"
+                    @dblclick="editMaker = true"
+                  >
+                    <span class="">{{
+                      productionOrderStore.currentData.user.name.toUpperCase()
+                    }}</span>
                   </div>
                   <div class="text-1xl leading-none w-1/2 text-center" v-else>
                     <input
@@ -362,19 +533,36 @@
           <div class="card md:w-1/3 w-full">
             <body class="rounded-xl pb-5">
               <div class="p-4 mt-4">
-                <h1 class="text-4xl text-center font-semibold mb-6">Timeline Pekerjaan</h1>
+                <h1 class="text-4xl text-center font-semibold mb-6">
+                  Timeline Pekerjaan
+                </h1>
                 <div class="container overflow-y-auto max-h-screen">
-                  <div class="flex flex-col md:grid grid-cols-12 text-gray-50" v-for="timeline in dataOrder.timeline" :key="timeline.id">
+                  <div
+                    class="flex flex-col md:grid grid-cols-12 text-gray-50"
+                    v-for="timeline in dataOrder.timeline"
+                    :key="timeline.id"
+                  >
                     <div class="flex md:contents">
-                      <div class="col-start-2 col-end-4 mr-10 md:mx-auto relative">
-                        <div class="h-full w-6 flex items-center justify-center">
-                          <div class="h-full w-1 bg-green-500 pointer-events-none"></div>
+                      <div
+                        class="col-start-2 col-end-4 mr-10 md:mx-auto relative"
+                      >
+                        <div
+                          class="h-full w-6 flex items-center justify-center"
+                        >
+                          <div
+                            class="h-full w-1 bg-green-500 pointer-events-none"
+                          ></div>
                         </div>
-                        <div class="w-6 h-6 absolute top-1/2 -mt-3 rounded-full bg-green-500 shadow text-center">
+                        <div
+                          class="w-6 h-6 absolute top-1/2 -mt-3 rounded-full bg-green-500 shadow text-center"
+                        >
                           <i class="fas fa-check-circle text-white"></i>
                         </div>
                       </div>
-                      <div class="col-start-4 col-end-12 p-4 rounded-xl my-4 mr-auto shadow-md w-full" :class="randomBg">
+                      <div
+                        class="col-start-4 col-end-12 p-4 rounded-xl my-4 mr-auto shadow-md w-full"
+                        :class="randomBg"
+                      >
                         <h3 class="font-semibold text-lg mb-1">
                           {{ timeline.status }}
                         </h3>
@@ -417,7 +605,12 @@ export default {
     }
 
     const randomBg = computed(() => {
-      const array = ['bg-green-500', 'bg-red-500', 'bg-blue-500', 'bg-yellow-500']
+      const array = [
+        'bg-green-500',
+        'bg-red-500',
+        'bg-blue-500',
+        'bg-yellow-500',
+      ]
       return array.at(Math.floor(Math.random() * 3))
     })
 
@@ -427,7 +620,12 @@ export default {
 
     function updateTime() {
       var cd = new Date()
-      time.value = zeroPadding(cd.getHours(), 2) + ':' + zeroPadding(cd.getMinutes(), 2) + ':' + zeroPadding(cd.getSeconds(), 2)
+      time.value =
+        zeroPadding(cd.getHours(), 2) +
+        ':' +
+        zeroPadding(cd.getMinutes(), 2) +
+        ':' +
+        zeroPadding(cd.getSeconds(), 2)
     }
 
     function zeroPadding(num, digit) {
@@ -507,7 +705,9 @@ export default {
             if (value !== this.productionOrderStore.currentData.status) {
               resolve()
             } else {
-              resolve(`Status sekarang adalah ${this.productionOrderStore.currentData.status}`)
+              resolve(
+                `Status sekarang adalah ${this.productionOrderStore.currentData.status}`
+              )
             }
           })
         },
@@ -531,12 +731,14 @@ export default {
           confirmButtonText: 'Ya, Hapus!',
           showLoaderOnConfirm: true,
           preConfirm: (value) => {
-            return this.productionOrderStore.deleteProductionOrderData(this.dataOrder.id).then((resp) => {
-              if (resp.status == 200) {
-                return resp
-              }
-              throw new Error(resp)
-            })
+            return this.productionOrderStore
+              .deleteProductionOrderData(this.dataOrder.id)
+              .then((resp) => {
+                if (resp.status == 200) {
+                  return resp
+                }
+                throw new Error(resp)
+              })
           },
         })
         .then((result) => {
@@ -559,11 +761,13 @@ export default {
           confirmButtonText: 'Ya, Kirim!',
           showLoaderOnConfirm: true,
           preConfirm: (value) => {
-            return this.productionOrderStore.warehouseProductionOrder().then((resp) => {
-              if (resp.status == 200) {
-                return resp
-              }
-            })
+            return this.productionOrderStore
+              .warehouseProductionOrder()
+              .then((resp) => {
+                if (resp.status == 200) {
+                  return resp
+                }
+              })
           },
         })
         .then((result) => {
@@ -602,13 +806,22 @@ export default {
                 confirmButtonText: 'Ya!',
                 cancelButtonText: 'Tidak!',
                 backdrop: true,
-                allowOutsideClick: () => this.productionOrderStore.isUpdateLoading,
+                allowOutsideClick: () =>
+                  this.productionOrderStore.isUpdateLoading,
                 showLoaderOnConfirm: true,
                 preConfirm: () => {
-                  const police_number = this.$swal.getPopup().querySelector('#police_number').value
-                  const driver_name = this.$swal.getPopup().querySelector('#driver_name').value
-                  const man_power_name = this.$swal.getPopup().querySelector('#man_power_name').value
-                  const shipping_date = this.$swal.getPopup().querySelector('#date').value
+                  const police_number = this.$swal
+                    .getPopup()
+                    .querySelector('#police_number').value
+                  const driver_name = this.$swal
+                    .getPopup()
+                    .querySelector('#driver_name').value
+                  const man_power_name = this.$swal
+                    .getPopup()
+                    .querySelector('#man_power_name').value
+                  const shipping_date = this.$swal
+                    .getPopup()
+                    .querySelector('#date').value
 
                   const value = {
                     police_number: police_number,
@@ -616,11 +829,13 @@ export default {
                     man_power_name: man_power_name,
                     shipping_date: shipping_date,
                   }
-                  return this.productionOrderStore.shippingProductionOrder(value).then((resp) => {
-                    if (resp.status == 200) {
-                      return resp
-                    }
-                  })
+                  return this.productionOrderStore
+                    .shippingProductionOrder(value)
+                    .then((resp) => {
+                      if (resp.status == 200) {
+                        return resp
+                      }
+                    })
                 },
               })
               .then((result) => {
@@ -668,9 +883,11 @@ export default {
           allowOutsideClick: () => this.productionOrderStore.isUpdateLoading,
           showLoaderOnConfirm: true,
           preConfirm: () => {
-            return this.productionOrderStore.returProductionOrder().then((resp) => {
-              return resp
-            })
+            return this.productionOrderStore
+              .returProductionOrder()
+              .then((resp) => {
+                return resp
+              })
           },
         })
         .then((result) => {
@@ -715,9 +932,11 @@ export default {
           allowOutsideClick: () => this.productionOrderStore.isUpdateLoading,
           showLoaderOnConfirm: true,
           preConfirm: () => {
-            return this.productionOrderStore.receiveProductionOrder().then((resp) => {
-              return resp
-            })
+            return this.productionOrderStore
+              .receiveProductionOrder()
+              .then((resp) => {
+                return resp
+              })
           },
         })
         .then((result) => {

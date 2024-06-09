@@ -44,27 +44,24 @@
       Gaji
     </button>
 
-    <button
+    <a
       class="btn btn-lg btn-wide hover:scale-110"
-      @click="
-        router.push({
-          name: 'gudang-barang-mutasi',
-        })
-      "
+      :href="linkBisnis"
+      target="_blank"
     >
-      Laporan Bisnis
-    </button>
+      Laporan Laba Rugi
+    </a>
   </div>
 </template>
 
-<script>
+<script setup>
 import { useRouter } from 'vue-router'
-export default {
-  setup() {
-    const router = useRouter()
-    return {
-      router,
-    }
-  },
-}
+
+import { baseUrlLink } from '@/services/axios'
+import { useItemStore } from '@/stores/store'
+
+const linkBisnis = baseUrlLink + 'report/bisnis'
+const router = useRouter()
+
+const itemStore = useItemStore()
 </script>
