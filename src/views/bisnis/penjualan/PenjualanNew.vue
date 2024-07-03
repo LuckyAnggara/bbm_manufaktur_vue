@@ -163,6 +163,7 @@
                 <th>Nama Item</th>
                 <th>Kuantitas</th>
                 <th>Satuan</th>
+                <th>Harga Pokok</th>
                 <th>Harga Jual</th>
                 <th>Discount</th>
                 <th>Total (IDR)</th>
@@ -172,7 +173,7 @@
 
             <tbody>
               <tr v-if="penjualanStore.form.cart.length == 0">
-                <td colspan="8" class="text-center">Tidak ada data</td>
+                <td colspan="9" class="text-center">Tidak ada data</td>
               </tr>
               <tr v-else v-for="(item, index) in penjualanStore.form.cart" :key="index">
                 <td class="text-center">
@@ -184,6 +185,9 @@
                 </td>
                 <td>
                   {{ item.unit?.name }}
+                </td>
+                <td>
+                  <InputCurrency v-model="item.cogs" :options="{ currency: 'IDR' }" />
                 </td>
                 <td>
                   <InputCurrency v-model="item.harga" :options="{ currency: 'IDR' }" />
@@ -208,7 +212,7 @@
 
             <tfoot>
               <tr>
-                <th colspan="6" class="text-right text-xl">Total</th>
+                <th colspan="7" class="text-right text-xl">Total</th>
                 <th class="text-xl">
                   {{ numeral(penjualanStore.cartTotal).format('0,0') }}
                 </th>

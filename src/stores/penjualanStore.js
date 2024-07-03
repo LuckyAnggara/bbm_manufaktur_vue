@@ -70,11 +70,7 @@ export const usePenjualanStore = defineStore('penjualanStore', {
       return this.cartTotal * (state.tipePajak / 100)
     },
     grandTotal(state) {
-      return (
-        parseFloat(this.cartTotal) +
-        parseFloat(state.form.ongkir) +
-        parseFloat(this.pajakTotal)
-      )
+      return parseFloat(this.cartTotal) + parseFloat(state.form.ongkir) + parseFloat(this.pajakTotal)
     },
     currentPage(state) {
       return state.responses?.current_page
@@ -101,18 +97,10 @@ export const usePenjualanStore = defineStore('penjualanStore', {
       return '&page=' + state.filter.page
     },
     dateQuery(state) {
-      if (
-        state.filter.date.fromDate == null ||
-        state.filter.date.toDate == null
-      ) {
+      if (state.filter.date.fromDate == null || state.filter.date.toDate == null) {
         return ''
       }
-      return (
-        '&start-date=' +
-        state.filter.date.fromDate +
-        '&end-date=' +
-        state.filter.date.toDate
-      )
+      return '&start-date=' + state.filter.date.fromDate + '&end-date=' + state.filter.date.toDate
     },
     searchQuery(state) {
       if (state.filter.searchQuery == '' || state.filter.searchQuery == null) {
@@ -125,9 +113,7 @@ export const usePenjualanStore = defineStore('penjualanStore', {
     async getData() {
       this.isLoading = true
       try {
-        const response = await axiosIns.get(
-          `/penjualan?limit=${this.filter.currentLimit}${this.searchQuery}${this.pageQuery}${this.dateQuery}`
-        )
+        const response = await axiosIns.get(`/penjualan?limit=${this.filter.currentLimit}${this.searchQuery}${this.pageQuery}${this.dateQuery}`)
         this.responses = response.data.data
       } catch (error) {
         alert(error.message)
@@ -166,9 +152,7 @@ export const usePenjualanStore = defineStore('penjualanStore', {
       try {
         const response = await axiosIns.get(`/penjualan/${id}`)
         this.singleResponses = JSON.parse(JSON.stringify(response.data.data))
-        this.originalSingleResponses = JSON.parse(
-          JSON.stringify(response.data.data)
-        )
+        this.originalSingleResponses = JSON.parse(JSON.stringify(response.data.data))
       } catch (error) {
         toast.error('Data not found', {
           position: 'bottom-right',
@@ -212,9 +196,7 @@ export const usePenjualanStore = defineStore('penjualanStore', {
       try {
         const response = await axiosIns.get(`/verifikasi/penjualan/${id}`)
         this.singleResponses = JSON.parse(JSON.stringify(response.data.data))
-        this.originalSingleResponses = JSON.parse(
-          JSON.stringify(response.data.data)
-        )
+        this.originalSingleResponses = JSON.parse(JSON.stringify(response.data.data))
       } catch (error) {
         toast.error('Data not found', {
           position: 'bottom-right',
@@ -245,38 +227,14 @@ export const usePenjualanStore = defineStore('penjualanStore', {
         this.isVerifikasiLoading = false
       }
     },
-    // async update() {
-    //   this.isUpdateLoading = true
-    //   try {
-    //     const response = await axiosIns.put(
-    //       `/penjualan/${this.singleResponses.id}`,
-    //       this.singleResponses
-    //     )
-    //     if (response.status == 200) {
-    //       toast.success(response.data.message, {
-    //         timeout: 2000,
-    //       })
-    //       this.originalSingleResponses = JSON.parse(
-    //         JSON.stringify(response.data.data)
-    //       )
-    //       return true
-    //     } else {
-    //       return false
-    //     }
-    //   } catch (error) {
-    //     toast.error(error.message, {
-    //       timeout: 2000,
-    //     })
-    //   } finally {
-    //     this.isUpdateLoading = false
-    //   }
-    // },
+
     addCart(item) {
       if (!this.checkItem(item.id)) {
         const newItem = {
           id: item.id,
           unit: item.unit,
           name: item.name,
+          cogs: item.cogs,
           harga: 0,
           discount: 0,
           jumlah: 0,
