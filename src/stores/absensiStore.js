@@ -32,19 +32,36 @@ export const useAbsensiStore = defineStore('absensiStore', {
     items(state) {
       return state.responses?.data ?? []
     },
+    from(state) {
+      return state.responses?.from
+    },
+    to(state) {
+      return state.responses?.to
+    },
+    total(state) {
+      return state.responses?.total
+    },
     dateQuery(state) {
-      if (state.filter.date.fromDate == null || state.filter.date.toDate == null) {
+      if (
+        state.filter.date.fromDate == null ||
+        state.filter.date.toDate == null
+      ) {
         return ''
       }
-      return '&start-date=' + state.filter.date.fromDate + '&end-date=' + state.filter.date.toDate
+      return (
+        '&start-date=' +
+        state.filter.date.fromDate +
+        '&end-date=' +
+        state.filter.date.toDate
+      )
     },
   },
   actions: {
     async getData(page = '') {
       this.isLoading = true
       try {
-        const response = await axiosIns.get(`/absensi/get-absen?${this.dateQuery}`)
-        this.responses = response.data
+        const response = await axiosIns.get(`/absensi?${this.dateQuery}`)
+        this.responses = response.data.data
       } catch (error) {
         alert(error.message)
       } finally {

@@ -3,20 +3,39 @@
     <div class="card-body shadow-xl rounded-xl">
       <h2 class="card-title mb-2 text-2xl">Daftar Produksi</h2>
       <div class="md:flex py-2">
-        <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4 flex flex-row space-x-4">
+        <div
+          class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4 flex flex-row space-x-4"
+        >
           <div>
             <label class="mr-4">Jumlah Data </label>
-            <select v-model="productionOrderStore.currentLimit" class="select select-bordered max-w-xs">
-              <option :selected="productionOrderStore.currentLimit == length ? true : false" v-for="length in length" :key="length">
+            <select
+              v-model="productionOrderStore.currentLimit"
+              class="select select-bordered max-w-xs"
+            >
+              <option
+                :selected="
+                  productionOrderStore.currentLimit == length ? true : false
+                "
+                v-for="length in length"
+                :key="length"
+              >
                 {{ length }}
               </option>
             </select>
           </div>
           <div>
             <label class="mr-4">Tipe </label>
-            <select v-model="productionOrderStore.filter.tipe" class="select select-bordered max-w-xs" @change="getData()">
+            <select
+              v-model="productionOrderStore.filter.tipe"
+              class="select select-bordered max-w-xs"
+              @change="getData()"
+            >
               <option value="0">Semua</option>
-              <option :value="tipe.id" v-for="(tipe, index) in mainStore.jenisHasil" :key="index">
+              <option
+                :value="tipe.id"
+                v-for="(tipe, index) in mainStore.jenisHasil"
+                :key="index"
+              >
                 {{ tipe.name }}
               </option>
             </select>
@@ -26,7 +45,13 @@
         <div class="justify-end mx-1 md:w-1/2 w-full">
           <div class="form-control">
             <div class="input-group">
-              <input v-model="productionOrderStore.searchName" @keyup="searchData" type="text" placeholder="Search…" class="input input-bordered w-full" />
+              <input
+                v-model="productionOrderStore.searchName"
+                @keyup="searchData"
+                type="text"
+                placeholder="Search…"
+                class="input input-bordered w-full"
+              />
             </div>
           </div>
         </div>
@@ -76,13 +101,20 @@
               <tr v-if="productionOrderStore.listData.length == 0">
                 <td colspan="8" class="text-center">Tidak ada data</td>
               </tr>
-              <tr v-else v-for="(data, index) in productionOrderStore.listData" :key="data">
+              <tr
+                v-else
+                v-for="(data, index) in productionOrderStore.listData"
+                :key="data"
+              >
                 <td class="text-center">
                   {{ productionOrderStore.from + index }}
                 </td>
                 <td>{{ data.sequence }}</td>
                 <td>
-                  <div v-if="data.jenis" class="badge badge-secondary badge-outline">
+                  <div
+                    v-if="data.jenis"
+                    class="badge badge-secondary badge-outline"
+                  >
                     {{ data.jenis?.name }}
                   </div>
                 </td>
@@ -117,7 +149,10 @@
                         ></path>
                       </svg>
                     </button>
-                    <ul tabindex="0" class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52 z-50">
+                    <ul
+                      tabindex="0"
+                      class="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-200 rounded-box w-52 z-50"
+                    >
                       <li>
                         <a @click="onDetail(data.id)"> Detail </a>
                       </li>
@@ -134,14 +169,28 @@
                   </div>
                 </td>
                 <td class="lg:hidden">
-                  <button class="btn btn-sm btn-square btn-ghost" @click="onDetail(data.id)">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" width="36" height="36" class="inline-block w-5 h-5 stroke-current">
+                  <button
+                    class="btn btn-sm btn-square btn-ghost"
+                    @click="onDetail(data.id)"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      width="36"
+                      height="36"
+                      class="inline-block w-5 h-5 stroke-current"
+                    >
                       <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
                         d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
                       />
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
                     </svg>
                   </button>
                 </td>
@@ -150,10 +199,29 @@
           </tbody>
         </table>
       </div>
-      <div class="btn-group mx-auto mt-4 mb-20 justify-center" v-if="!productionOrderStore.isLoading">
-        <button class="btn btn-outline" @click="getData(previousPage)" :disabled="productionOrderStore.currentPage == 1 ? true : false">«</button>
-        <button class="btn btn-outline">Page {{ productionOrderStore.currentPage }}</button>
-        <button class="btn btn-outline" @click="getData(nextPage)" :disabled="productionOrderStore.lastPage == productionOrderStore.currentPage ? true : false">
+      <div
+        class="btn-group mx-auto mt-4 mb-20 justify-center"
+        v-if="!productionOrderStore.isLoading"
+      >
+        <button
+          class="btn btn-outline"
+          @click="getData(previousPage)"
+          :disabled="productionOrderStore.currentPage == 1 ? true : false"
+        >
+          «
+        </button>
+        <button class="btn btn-outline">
+          Page {{ productionOrderStore.currentPage }}
+        </button>
+        <button
+          class="btn btn-outline"
+          @click="getData(nextPage)"
+          :disabled="
+            productionOrderStore.lastPage == productionOrderStore.currentPage
+              ? true
+              : false
+          "
+        >
           »
         </button>
       </div>
@@ -222,7 +290,11 @@ export default {
         return {
           'NEW ORDER': 'NEW ORDER',
         }
-      if (this.dataOrder.status == 'DONE' || this.dataOrder.status == 'WAREHOUSE' || this.dataOrder.status == 'SHIPPING')
+      if (
+        this.dataOrder.status == 'DONE' ||
+        this.dataOrder.status == 'WAREHOUSE' ||
+        this.dataOrder.status == 'SHIPPING'
+      )
         return {
           DONE: 'DONE',
           WAREHOUSE: 'WAREHOUSE',
@@ -290,12 +362,14 @@ export default {
         confirmButtonText: 'Ya, Hapus!',
         showLoaderOnConfirm: true,
         preConfirm: (value) => {
-          return this.productionOrderStore.deleteProductionOrderData(id, index).then((resp) => {
-            if (resp.status == 200) {
-              return resp
-            }
-            throw new Error(resp)
-          })
+          return this.productionOrderStore
+            .deleteProductionOrderData(id, index)
+            .then((resp) => {
+              if (resp.status == 200) {
+                return resp
+              }
+              throw new Error(resp)
+            })
         },
       })
     },

@@ -1,17 +1,45 @@
 <template>
   <div class="card flex flex-col h-5/6">
-    <div>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text">Tanggal Data</span>
-        </label>
-        <div class="flex justify-between items-center">
-          <input v-model="absensiStore.fromDate" id="date" type="date" placeholder="Type here" class="input input-bordered w-auto" />
-          <label class="">s.d</label>
-          <input v-model="absensiStore.toDate" id="date" type="date" placeholder="Type here" class="input input-bordered w-auto" />
+    <div class="card-body shadow-xl rounded-xl">
+      <div
+        class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4 flex flex-row space-x-4 items-end"
+      >
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">Tanggal Data</span>
+          </label>
+          <div class="flex justify-between items-center space-x-6">
+            <input
+              v-model="absensiStore.filter.date.fromDate"
+              id="date"
+              type="date"
+              placeholder="Type here"
+              class="input input-bordered w-auto"
+            />
+            <label class="">s.d</label>
+            <input
+              v-model="absensiStore.filter.date.toDate"
+              id="date"
+              type="date"
+              placeholder="Type here"
+              class="input input-bordered w-auto"
+            />
+          </div>
+        </div>
+        <div class="w-1/5">
+          <button
+            @click="absensiStore.getData()"
+            class="btn w-32 btn-primary modal-button shadow-md"
+          >
+            <span class="text-md">Submit</span>
+          </button>
         </div>
       </div>
-
+      <h2 class="card-title mb-2 text-2xl mt-5">
+        Tanggal Data
+        {{ $moment(absensiStore.filter.date.fromDate).format('d MMMM Y') }} s.d
+        {{ $moment(absensiStore.filter.date.toDate).format('d MMMM Y') }}
+      </h2>
       <div class="flex mt-2 lg:overflow-visible overflow-x-auto">
         <table class="table table-compact lg:w-full">
           <!-- head -->
@@ -19,6 +47,7 @@
             <tr>
               <th></th>
               <th>Nama Pegawai</th>
+              <th>Tanggal Data</th>
               <th>Jam Masuk</th>
               <th>Jam Keluar</th>
               <th>Keterangan</th>
@@ -53,18 +82,41 @@
               <tr v-if="absensiStore.items.length == 0">
                 <td colspan="6" class="text-center">Tidak ada data</td>
               </tr>
-              <tr v-else v-for="(data, index) in absensiStore.items" :key="data">
-                <td>{{ +index }}</td>
+              <tr
+                v-else
+                v-for="(data, index) in absensiStore.items"
+                :key="data"
+              >
+                <td>{{ absensiStore.from + index }}</td>
                 <td>{{ data.pin }}</td>
+                <td>{{ $moment(data.tanggal_data).format('d MMMM YYYY') }}</td>
                 <td>
-                  {{ $moment(data.scan_date).format('HH:mm:ss') }}
+                  {{
+                    data.jam_masuk
+                      ? $moment(data.jam_masuk).format('HH:mm:ss')
+                      : '-'
+                  }}
                 </td>
                 <td>
-                  {{ $moment(data.target_date).format('DD MMMM YYYY') }}
+                  {{
+                    data.jam_pulang
+                      ? $moment(data.jam_pulang).format('HH:mm:ss')
+                      : '-'
+                  }}
                 </td>
-                <td>
-                  <div class="badge badge-primary badge-outline">
-                    {{ data.status }}
+                <td v-if="data.jam_masuk == null">
+                  <div class="badge badge-info badge-outline">
+                    Tidak Absen Masuk
+                  </div>
+                </td>
+                <td v-else-if="data.jam_pulang == null">
+                  <div class="badge badge-error badge-outline">
+                    Tidak Absen Masuk
+                  </div>
+                </td>
+                <td v-else>
+                  <div class="badge badge-success badge-outline">
+                    Masuk Tepat Waktu
                   </div>
                 </td>
               </tr>
@@ -72,10 +124,29 @@
           </tbody>
         </table>
       </div>
-      <div class="btn-group mx-auto mt-4 mb-20 justify-center" v-if="!absensiStore.isLoading">
-        <button class="btn btn-outline" @click="getData(previousPage)" :disabled="absensiStore.currentPage == 1 ? true : false">«</button>
-        <button class="btn btn-outline">Page {{ absensiStore.currentPage }}</button>
-        <button class="btn btn-outline" @click="getData(nextPage)" :disabled="absensiStore.lastPage == absensiStore.currentPage ? true : false">»</button>
+      <div
+        class="btn-group mx-auto mt-4 mb-20 justify-center"
+        v-if="!absensiStore.isLoading"
+      >
+        <button
+          class="btn btn-outline"
+          @click="getData(previousPage)"
+          :disabled="absensiStore.currentPage == 1 ? true : false"
+        >
+          «
+        </button>
+        <button class="btn btn-outline">
+          Page {{ absensiStore.currentPage }}
+        </button>
+        <button
+          class="btn btn-outline"
+          @click="getData(nextPage)"
+          :disabled="
+            absensiStore.lastPage == absensiStore.currentPage ? true : false
+          "
+        >
+          »
+        </button>
       </div>
     </div>
   </div>
