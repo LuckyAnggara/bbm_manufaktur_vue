@@ -117,6 +117,11 @@
             </tbody>
           </table>
         </div>
+        <div class="btn-group mx-auto mt-4 mb-20 justify-center" v-if="!pegawaiStore.isLoading">
+          <button class="btn btn-outline" @click="getData(previousPage)" :disabled="pegawaiStore.currentPage == 1 ? true : false">«</button>
+          <button class="btn btn-outline">Page {{ pegawaiStore.currentPage }}</button>
+          <button class="btn btn-outline" @click="getData(nextPage)" :disabled="pegawaiStore.lastPage == pegawaiStore.currentPage ? true : false">»</button>
+        </div>
       </div>
     </div>
   </section>
@@ -128,7 +133,7 @@
 </template>
 
 <script setup>
-import { onMounted, inject, ref } from 'vue'
+import { onMounted, inject, ref, computed } from 'vue'
 import { usePegawaiStore } from '@/stores/pegawaiStore'
 import ModalNewPegawai from './component/ModalNewPegawai.vue'
 import numeral from 'numeral'
@@ -234,7 +239,18 @@ function onNew() {
   showModal.value = !showModal.value
 }
 
+function getData(page = '') {
+  pegawaiStore.getData(page)
+}
+
+const previousPage = computed(() => {
+  return '&page=' + (pegawaiStore.currentPage - 1)
+})
+const nextPage = computed(() => {
+  return '&page=' + (pegawaiStore.currentPage + 1)
+})
+
 onMounted(() => {
-  pegawaiStore.getData()
+  getData()
 })
 </script>

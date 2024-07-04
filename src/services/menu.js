@@ -16,6 +16,10 @@ export default [
     route: 'bisnis',
   },
   {
+    title: 'Kepegawaian',
+    route: 'kepegawaian',
+  },
+  {
     title: 'Data',
     route: 'data',
   },

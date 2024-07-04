@@ -60,8 +60,8 @@
   </div>
 </template>
 <script>
-import navMenu from '../../services/menu'
-import { useAuthStore } from '../../stores/store'
+import navMenu from '@/services/menu'
+import { useAuthStore } from '@/stores/store'
 import { useRouter } from 'vue-router'
 
 export default {

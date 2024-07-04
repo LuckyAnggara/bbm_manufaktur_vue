@@ -6,6 +6,7 @@ import MutationScreen from '../views/mutation/MutationScreen.vue'
 import LoginScreen from '../views/LoginScreen.vue'
 import { getUserData, isUserLoggedIn } from './auth'
 import { bisnisRoutes } from './router/BisnisRoute'
+import { kepegawaianRoutes } from './router/KepegawaianRoute'
 
 export const routes = [
   {
@@ -33,6 +34,7 @@ export const routes = [
   ...dashboardRoutes,
   ...dataRoutes,
   ...bisnisRoutes,
+  ...kepegawaianRoutes,
 ]
 
 export const getNavigation = () => {
