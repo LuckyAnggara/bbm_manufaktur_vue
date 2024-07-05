@@ -1,36 +1,19 @@
 <template>
   <div class="card flex flex-col h-5/6">
     <div class="card-body shadow-xl rounded-xl">
-      <div
-        class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4 flex flex-row space-x-4 items-end"
-      >
+      <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4 flex flex-row space-x-4 items-end">
         <div class="form-control">
           <label class="label">
             <span class="label-text">Tanggal Data</span>
           </label>
           <div class="flex justify-between items-center space-x-6">
-            <input
-              v-model="absensiStore.filter.date.fromDate"
-              id="date"
-              type="date"
-              placeholder="Type here"
-              class="input input-bordered w-auto"
-            />
+            <input v-model="absensiStore.filter.date.fromDate" id="date" type="date" placeholder="Type here" class="input input-bordered w-auto" />
             <label class="">s.d</label>
-            <input
-              v-model="absensiStore.filter.date.toDate"
-              id="date"
-              type="date"
-              placeholder="Type here"
-              class="input input-bordered w-auto"
-            />
+            <input v-model="absensiStore.filter.date.toDate" id="date" type="date" placeholder="Type here" class="input input-bordered w-auto" />
           </div>
         </div>
         <div class="w-1/5">
-          <button
-            @click="absensiStore.getData()"
-            class="btn w-32 btn-primary modal-button shadow-md"
-          >
+          <button @click="absensiStore.getData()" class="btn w-32 btn-primary modal-button shadow-md">
             <span class="text-md">Submit</span>
           </button>
         </div>
@@ -82,71 +65,34 @@
               <tr v-if="absensiStore.items.length == 0">
                 <td colspan="6" class="text-center">Tidak ada data</td>
               </tr>
-              <tr
-                v-else
-                v-for="(data, index) in absensiStore.items"
-                :key="data"
-              >
+              <tr v-else v-for="(data, index) in absensiStore.items" :key="data">
                 <td>{{ absensiStore.from + index }}</td>
-                <td>{{ data.pin }}</td>
+                <td>{{ data.pegawai?.name ?? '-' }}</td>
                 <td>{{ $moment(data.tanggal_data).format('d MMMM YYYY') }}</td>
                 <td>
-                  {{
-                    data.jam_masuk
-                      ? $moment(data.jam_masuk).format('HH:mm:ss')
-                      : '-'
-                  }}
+                  {{ data.jam_masuk ? $moment(data.jam_masuk).format('HH:mm:ss') : '-' }}
                 </td>
                 <td>
-                  {{
-                    data.jam_pulang
-                      ? $moment(data.jam_pulang).format('HH:mm:ss')
-                      : '-'
-                  }}
+                  {{ data.jam_pulang ? $moment(data.jam_pulang).format('HH:mm:ss') : '-' }}
                 </td>
                 <td v-if="data.jam_masuk == null">
-                  <div class="badge badge-info badge-outline">
-                    Tidak Absen Masuk
-                  </div>
+                  <div class="badge badge-info badge-outline">Tidak Absen Masuk</div>
                 </td>
                 <td v-else-if="data.jam_pulang == null">
-                  <div class="badge badge-error badge-outline">
-                    Tidak Absen Masuk
-                  </div>
+                  <div class="badge badge-error badge-outline">Tidak Absen Keluar</div>
                 </td>
                 <td v-else>
-                  <div class="badge badge-success badge-outline">
-                    Masuk Tepat Waktu
-                  </div>
+                  <div class="badge badge-success badge-outline">Masuk Tepat Waktu</div>
                 </td>
               </tr>
             </template>
           </tbody>
         </table>
       </div>
-      <div
-        class="btn-group mx-auto mt-4 mb-20 justify-center"
-        v-if="!absensiStore.isLoading"
-      >
-        <button
-          class="btn btn-outline"
-          @click="getData(previousPage)"
-          :disabled="absensiStore.currentPage == 1 ? true : false"
-        >
-          «
-        </button>
-        <button class="btn btn-outline">
-          Page {{ absensiStore.currentPage }}
-        </button>
-        <button
-          class="btn btn-outline"
-          @click="getData(nextPage)"
-          :disabled="
-            absensiStore.lastPage == absensiStore.currentPage ? true : false
-          "
-        >
-          »
-        </button>
+      <div class="btn-group mx-auto mt-4 mb-20 justify-center" v-if="!absensiStore.isLoading">
+        <button class="btn btn-outline" @click="getData(previousPage)" :disabled="absensiStore.currentPage == 1 ? true : false">«</button>
+        <button class="btn btn-outline">Page {{ absensiStore.currentPage }}</button>
+        <button class="btn btn-outline" @click="getData(nextPage)" :disabled="absensiStore.lastPage == absensiStore.currentPage ? true : false">»</button>
       </div>
     </div>
   </div>
