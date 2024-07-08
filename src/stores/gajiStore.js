@@ -16,6 +16,7 @@ export const useGajiStore = defineStore('gajiStore', {
       responses: null,
       singleResponses: null,
       isLoading: false,
+      jamKerjaLoading: false,
       isStoreLoading: false,
       isDestroyLoading: false,
       pegawai: [],
@@ -25,7 +26,7 @@ export const useGajiStore = defineStore('gajiStore', {
       },
       filter: {
         page: 1,
-        currentLimit: 10,
+        currentLimit: 1000,
         searchQuery: '',
         date: {
           fromDate: moment().format('yyyy-MM-DD'),
@@ -49,12 +50,7 @@ export const useGajiStore = defineStore('gajiStore', {
     gajiTotal(state) {
       let sum = state.pegawai.reduce((accumulator, item) => {
         if (item.bayarkan === true) {
-          return (
-            accumulator +
-            parseFloat(item.gaji) +
-            parseFloat(item.uang_makan) +
-            parseFloat(item.bonus)
-          )
+          return accumulator + parseFloat(item.gaji) + parseFloat(item.uang_makan) + parseFloat(item.bonus)
         } else {
           return accumulator
         }
@@ -63,12 +59,7 @@ export const useGajiStore = defineStore('gajiStore', {
     },
     totalBayar(state) {
       let sum = state.items.reduce((accumulator, item) => {
-        return (
-          accumulator +
-          parseFloat(item.total_gaji) +
-          parseFloat(item.total_uang_makan) +
-          parseFloat(item.total_bonus)
-        )
+        return accumulator + parseFloat(item.total_gaji) + parseFloat(item.total_uang_makan) + parseFloat(item.total_bonus)
       }, 0)
       return sum
     },
@@ -97,18 +88,10 @@ export const useGajiStore = defineStore('gajiStore', {
       return '&page=' + state.filter.page
     },
     dateQuery(state) {
-      if (
-        state.filter.date.fromDate == null ||
-        state.filter.date.toDate == null
-      ) {
+      if (state.filter.date.fromDate == null || state.filter.date.toDate == null) {
         return ''
       }
-      return (
-        '&start-date=' +
-        state.filter.date.fromDate +
-        '&end-date=' +
-        state.filter.date.toDate
-      )
+      return '&start-date=' + state.filter.date.fromDate + '&end-date=' + state.filter.date.toDate
     },
     searchQuery(state) {
       if (state.filter.searchQuery == '' || state.filter.searchQuery == null) {
@@ -121,9 +104,7 @@ export const useGajiStore = defineStore('gajiStore', {
     async getData() {
       this.isLoading = true
       try {
-        const response = await axiosIns.get(
-          `/gaji?limit=${this.filter.currentLimit}${this.searchQuery}${this.pageQuery}${this.dateQuery}`
-        )
+        const response = await axiosIns.get(`/gaji?limit=${this.filter.currentLimit}${this.searchQuery}${this.pageQuery}${this.dateQuery}`)
         this.responses = response.data.data
       } catch (error) {
         alert(error.message)
@@ -135,9 +116,24 @@ export const useGajiStore = defineStore('gajiStore', {
     async getPegawai() {
       this.isLoading = true
       const pegawaiStore = usePegawaiStore()
+      pegawaiStore.$patch((state) => {
+        state.filter.currentLimit = 1000
+      })
       await pegawaiStore.getData()
       this.pegawai = pegawaiStore.items
       this.isLoading = false
+    },
+    async getJamKerja() {
+      this.jamKerjaLoading = true
+      try {
+        const response = await axiosIns.get(`/tarik-jam-kerja?${this.dateQuery}`)
+        this.pegawai = response.data.data
+      } catch (error) {
+        alert(error.message)
+      } finally {
+        this.jamKerjaLoading = false
+      }
+      return false
     },
     async store() {
       this.isStoreLoading = true
@@ -164,9 +160,7 @@ export const useGajiStore = defineStore('gajiStore', {
     async showGaji(created_at) {
       this.isLoadingDownload = true
       try {
-        const response = await axiosIns.get(
-          `/report/gaji/${moment(created_at).format('yyyy-MM-DD')}`
-        )
+        const response = await axiosIns.get(`/report/gaji/${moment(created_at).format('yyyy-MM-DD')}`)
         let responseHtml = response.data
         // console.log(responseHtml, 'Faktur penjualan')
         var myWindow = window.open('response')
