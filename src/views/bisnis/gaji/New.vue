@@ -11,6 +11,9 @@
                   <label for="tanggal" class="label">
                     <span class="label-text">Tarik data Jam Kerja</span>
                   </label>
+                  <label for="tanggal" class="label">
+                    <span class="label-text text-red-500">Jam Kerja tidak boleh sampai dengan Hari ini</span>
+                  </label>
                   <div class="flex justify-between items-center space-x-6">
                     <input v-model="gajiStore.filter.date.fromDate" id="date" type="date" placeholder="Type here" class="input input-bordered w-auto" />
                     <label class="">s.d</label>

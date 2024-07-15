@@ -13,15 +13,21 @@
           </div>
         </div>
         <div class="w-1/5">
-          <button @click="absensiStore.getData()" class="btn w-32 btn-primary modal-button shadow-md">
+          <button @click="getData()" class="btn w-32 btn-primary modal-button shadow-md">
             <span class="text-md">Submit</span>
+          </button>
+        </div>
+
+        <div class="w-1/5">
+          <button @click="isiAbsenKosong()" class="btn w-32 btn-secondary modal-button shadow-md">
+            <span class="text-md">Isi Absen Kosong</span>
           </button>
         </div>
       </div>
       <h2 class="card-title mb-2 text-2xl mt-5">
         Tanggal Data
-        {{ $moment(absensiStore.filter.date.fromDate).format('d MMMM Y') }} s.d
-        {{ $moment(absensiStore.filter.date.toDate).format('d MMMM Y') }}
+        {{ $moment(absensiStore.filter.date.fromDate).format('DD MMMM Y') }} s.d
+        {{ $moment(absensiStore.filter.date.toDate).format('DD MMMM Y') }}
       </h2>
       <div class="flex mt-2 lg:overflow-visible overflow-x-auto">
         <table class="table table-compact lg:w-full">
@@ -30,7 +36,7 @@
             <tr>
               <th></th>
               <th>Nama Pegawai</th>
-              <th>Tanggal Data</th>
+              <th>Pin Absensi</th>
               <th>Jam Masuk</th>
               <th>Jam Keluar</th>
               <th>Keterangan</th>
@@ -67,40 +73,71 @@
               </tr>
               <tr v-else v-for="(data, index) in absensiStore.items" :key="data">
                 <td>{{ absensiStore.from + index }}</td>
+                <td>{{ data.pin }}</td>
                 <td>{{ data.pegawai?.name ?? '-' }}</td>
-                <td>{{ $moment(data.tanggal_data).format('d MMMM YYYY') }}</td>
+                <td>{{ data.start_time ?? '-' }}</td>
+                <td>{{ data.end_time ?? '-' }}</td>
                 <td>
-                  {{ data.jam_masuk ? $moment(data.jam_masuk).format('HH:mm:ss') : '-' }}
-                </td>
-                <td>
-                  {{ data.jam_pulang ? $moment(data.jam_pulang).format('HH:mm:ss') : '-' }}
-                </td>
-                <td v-if="data.jam_masuk == null">
-                  <div class="badge badge-info badge-outline">Tidak Absen Masuk</div>
-                </td>
-                <td v-else-if="data.jam_pulang == null">
-                  <div class="badge badge-error badge-outline">Tidak Absen Keluar</div>
-                </td>
-                <td v-else>
-                  <div class="badge badge-success badge-outline">Masuk Tepat Waktu</div>
+                  <div v-if="data.shift_type == 'PAGI'" class="badge badge-primary badge-outline">
+                    {{ data.shift_type ?? '-' }}
+                  </div>
+                  <div v-else-if="data.shift_type == 'MALAM'" class="badge badge-secondary badge-outline">
+                    {{ data.shift_type ?? '-' }}
+                  </div>
+                  <div v-else class="badge badge-danger badge-outline">
+                    {{ data.shift_type ?? '-' }}
+                  </div>
                 </td>
               </tr>
             </template>
           </tbody>
         </table>
       </div>
-      <div class="btn-group mx-auto mt-4 mb-20 justify-center" v-if="!absensiStore.isLoading">
-        <button class="btn btn-outline" @click="getData(previousPage)" :disabled="absensiStore.currentPage == 1 ? true : false">«</button>
-        <button class="btn btn-outline">Page {{ absensiStore.currentPage }}</button>
-        <button class="btn btn-outline" @click="getData(nextPage)" :disabled="absensiStore.lastPage == absensiStore.currentPage ? true : false">»</button>
-      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from 'vue'
+import { inject, onMounted, ref, watch } from 'vue'
 import { useAbsensiStore } from '@/stores/absensiStore'
+const swal = inject('$swal')
+const showIndex = ref(0)
+const showNested = ref(false)
+
+function show(index, absen) {
+  showNested.value = true
+  showIndex.value = index
+  absensiStore.$patch((state) => {
+    state.absenToDisplay = absen
+  })
+}
+
+function getData() {
+  showNested.value = false
+  showIndex.value = 0
+  absensiStore.$patch((state) => {
+    state.absenToDisplay = []
+  })
+  absensiStore.getData()
+}
+
+function isiAbsenKosong() {
+  swal
+    .fire({
+      title: 'Absen',
+      text: 'Absen Kosong akan di Isi Default!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Lanjutkan',
+    })
+    .then((result) => {
+      if (result.isConfirmed) {
+        absensiStore.absenKosong()
+      }
+    })
+}
 
 const absensiStore = useAbsensiStore()
 

@@ -29,8 +29,8 @@ export const useGajiStore = defineStore('gajiStore', {
         currentLimit: 1000,
         searchQuery: '',
         date: {
-          fromDate: moment().format('yyyy-MM-DD'),
-          toDate: moment().format('yyyy-MM-DD'),
+          fromDate: moment().subtract(7, 'days').format('yyyy-MM-DD'),
+          toDate: moment().subtract(1, 'days').format('yyyy-MM-DD'),
         },
         currentMonth: new Date().getMonth() + 1,
         currentYear: new Date().getFullYear(),

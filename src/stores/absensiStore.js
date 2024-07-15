@@ -20,6 +20,7 @@ export const useAbsensiStore = defineStore('absensiStore', {
       resultId: null,
       isUpdateLoading: false,
       isDestroyLoading: false,
+      absenToDisplay: [],
       filter: {
         date: {
           fromDate: moment().format('yyyy-MM-DD'),
@@ -42,18 +43,10 @@ export const useAbsensiStore = defineStore('absensiStore', {
       return state.responses?.total
     },
     dateQuery(state) {
-      if (
-        state.filter.date.fromDate == null ||
-        state.filter.date.toDate == null
-      ) {
+      if (state.filter.date.fromDate == null || state.filter.date.toDate == null) {
         return ''
       }
-      return (
-        '&start-date=' +
-        state.filter.date.fromDate +
-        '&end-date=' +
-        state.filter.date.toDate
-      )
+      return '&start-date=' + state.filter.date.fromDate + '&end-date=' + state.filter.date.toDate
     },
   },
   actions: {
@@ -61,6 +54,18 @@ export const useAbsensiStore = defineStore('absensiStore', {
       this.isLoading = true
       try {
         const response = await axiosIns.get(`/absensi?${this.dateQuery}`)
+        this.responses = response.data.data
+      } catch (error) {
+        alert(error.message)
+      } finally {
+        this.isLoading = false
+      }
+      return false
+    },
+    async absenKosong() {
+      this.isLoading = true
+      try {
+        const response = await axiosIns.get(`/absensi-missing?${this.dateQuery}`)
         this.responses = response.data.data
       } catch (error) {
         alert(error.message)
