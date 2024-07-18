@@ -175,6 +175,8 @@ export const useGajiStore = defineStore('gajiStore', {
       this.isStoreLoading = true
       try {
         this.form.detail = this.pegawai
+        this.form.startDate = this.filter.date.fromDate
+        this.form.endDate = this.filter.date.toDate
         const response = await axiosIns.post(`/gaji`, this.form)
         if (response.status == 200) {
           this.reset()
