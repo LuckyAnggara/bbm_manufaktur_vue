@@ -116,15 +116,11 @@
                       :key="item.id"
                     >
                       <td class="text-center">{{ gajiStore.from + index }}</td>
-                      <td>{{ item.created_at }}</td>
                       <td>
-                        {{
-                          numeralFormat(
-                            item.total_bonus +
-                              item.total_gaji +
-                              item.total_uang_makan
-                          )
-                        }}
+                        {{ $moment(item.tanggal).format('DD MMMM YYYY') }}
+                      </td>
+                      <td>
+                        {{ numeralFormat(item.total_gaji) }}
                       </td>
 
                       <td class="before:hidden lg:w-1 whitespace-nowrap">
@@ -246,7 +242,7 @@
 <script setup>
 import { useGajiStore } from '@/stores/gajiStore'
 import { useMainStore } from '@/stores/mainStore'
-import { inject, onMounted, ref, watch } from 'vue'
+import { inject, onBeforeMount, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import {
@@ -323,6 +319,12 @@ watch(
   },
   { deep: true }
 )
+onBeforeMount(() => {
+  gajiStore.$patch((state) => {
+    state.filter.date.fromDate = moment().format('yyyy-MM-DD')
+    state.filter.date.toDate = moment().format('yyyy-MM-DD')
+  })
+})
 
 onMounted(() => {
   gajiStore.getData()

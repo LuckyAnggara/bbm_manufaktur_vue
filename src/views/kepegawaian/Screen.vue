@@ -4,7 +4,7 @@
       class="btn btn-lg btn-wide hover:scale-110"
       @click="
         router.push({
-          name: 'data-unit',
+          name: 'daftar-pegawai',
         })
       "
     >

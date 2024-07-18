@@ -12,17 +12,38 @@
                     <span class="label-text">Tarik data Jam Kerja</span>
                   </label>
                   <label for="tanggal" class="label">
-                    <span class="label-text text-red-500">Jam Kerja tidak boleh sampai dengan Hari ini</span>
+                    <span class="label-text text-red-500"
+                      >Jam Kerja tidak boleh sampai dengan Hari ini</span
+                    >
                   </label>
                   <div class="flex justify-between items-center space-x-6">
-                    <input v-model="gajiStore.filter.date.fromDate" id="date" type="date" placeholder="Type here" class="input input-bordered w-auto" />
+                    <input
+                      v-model="gajiStore.filter.date.fromDate"
+                      id="date"
+                      type="date"
+                      placeholder="Type here"
+                      class="input input-bordered w-auto"
+                    />
                     <label class="">s.d</label>
-                    <input v-model="gajiStore.filter.date.toDate" id="date" type="date" placeholder="Type here" class="input input-bordered w-auto" />
+                    <input
+                      v-model="gajiStore.filter.date.toDate"
+                      id="date"
+                      type="date"
+                      placeholder="Type here"
+                      class="input input-bordered w-auto"
+                    />
                   </div>
                 </div>
                 <div>
-                  <button class="btn w-32 btn-primary modal-button shadow-md" @click="gajiStore.getJamKerja()">
-                    <ArrowPathIcon v-if="gajiStore.jamKerjaLoading" class="animate-spin h-5 w-5 text-black dark:text-gray-400" aria-hidden="true" />
+                  <button
+                    class="btn w-32 btn-primary modal-button shadow-md"
+                    @click="gajiStore.getJamKerja()"
+                  >
+                    <ArrowPathIcon
+                      v-if="gajiStore.jamKerjaLoading"
+                      class="animate-spin h-5 w-5 text-black dark:text-gray-400"
+                      aria-hidden="true"
+                    />
                     <span v-else>Tarik Data</span>
                   </button>
                 </div>
@@ -49,9 +70,21 @@
                 </button> -->
 
                   <div class="flex space-x-4">
-                    <button class="text-white w-32 btn bg-red-500 modal-button shadow-md" @click="onCancel()">Cancel</button>
-                    <button class="btn w-32 btn-primary modal-button shadow-md" @click="onSubmit()">
-                      <ArrowPathIcon v-if="gajiStore.isStoreLoading" class="animate-spin h-5 w-5 text-black dark:text-gray-400" aria-hidden="true" />
+                    <button
+                      class="text-white w-32 btn bg-red-500 modal-button shadow-md"
+                      @click="onCancel()"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      class="btn w-32 btn-primary modal-button shadow-md"
+                      @click="onSubmit()"
+                    >
+                      <ArrowPathIcon
+                        v-if="gajiStore.isStoreLoading"
+                        class="animate-spin h-5 w-5 text-black dark:text-gray-400"
+                        aria-hidden="true"
+                      />
                       <span v-else>Proses</span>
                     </button>
                   </div>
@@ -59,7 +92,8 @@
               </div>
             </div>
             <p v-if="gajiStore.pegawaiList.length > 0" class="text-red-500">
-              *Perhatikan sebelum melakukan proses, data jam kerja adalah dari tanggal {{ gajiStore.filter.date.fromDate }} s.d
+              *Perhatikan sebelum melakukan proses, data jam kerja adalah dari
+              tanggal {{ gajiStore.filter.date.fromDate }} s.d
               {{ gajiStore.filter.date.toDate }}
             </p>
             <div class="flex mt-2 md:overflow-visible overflow-y-auto">
@@ -74,6 +108,7 @@
                     <th>Gaji Dasar</th>
                     <th>Uang Makan</th>
                     <th>Bonus</th>
+                    <th>Potongan</th>
                     <th>Total</th>
                     <th>Action</th>
                   </tr>
@@ -81,7 +116,7 @@
 
                 <tbody>
                   <tr v-if="gajiStore.isLoading">
-                    <td colspan="6" class="text-center">
+                    <td colspan="7" class="text-center">
                       <div role="status">
                         <svg
                           class="inline mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600"
@@ -104,15 +139,29 @@
                   </tr>
                   <template v-else>
                     <tr v-if="gajiStore.pegawaiList.length == 0">
-                      <td colspan="6" class="text-center">Tidak ada data</td>
+                      <td colspan="7" class="text-center">Tidak ada data</td>
                     </tr>
-                    <tr v-else v-for="(item, index) in gajiStore.pegawaiList" :key="item.id">
+                    <tr
+                      v-else
+                      v-for="(item, index) in gajiStore.pegawaiList"
+                      :key="item.id"
+                    >
                       <td class="text-center">{{ index + 1 }}</td>
                       <td>
-                        <input v-model="item.bayarkan" type="checkbox" checked="checked" class="checkbox" />
+                        <input
+                          v-model="item.bayarkan"
+                          type="checkbox"
+                          checked="checked"
+                          class="checkbox"
+                        />
                       </td>
                       <td>
-                        <span :class="item.bayarkan ? '' : 'line-through text-gray-500'">{{ item.name }}</span>
+                        <span
+                          :class="
+                            item.bayarkan ? '' : 'line-through text-gray-500'
+                          "
+                          >{{ item.name }}</span
+                        >
                       </td>
                       <td>
                         <input
@@ -161,9 +210,26 @@
                       </td>
                       <td>
                         <input
+                          :disabled="!item.bayarkan"
+                          required
+                          :min="0"
+                          v-model="item.potongan"
+                          type="number"
+                          placeholder="Potongan"
+                          class="input input-bordered w-full bg-red-200"
+                        />
+                      </td>
+                      <td>
+                        <input
                           disabled
                           :value="
-                            numeralFormat(parseFloat(item.gaji) * parseFloat(item.total_jam_kerja) + parseFloat(item.uang_makan) + parseFloat(item.bonus))
+                            numeralFormat(
+                              parseFloat(item.gaji) *
+                                parseFloat(item.total_jam_kerja) +
+                                parseFloat(item.uang_makan) +
+                                parseFloat(item.bonus) -
+                                parseFloat(item.potongan)
+                            )
                           "
                           type="text"
                           placeholder="Nama Biaya"
@@ -171,10 +237,16 @@
                         />
                       </td>
                       <td>
-                        <button class="btn btn-sm btn-square btn-ghost hover:scale-110" @click="onDelete(item, index)">
+                        <button
+                          class="btn btn-sm btn-square btn-ghost hover:scale-110"
+                          @click="onDelete(item, index)"
+                        >
                           <span>
                             <ArrowPathIcon
-                              v-if="gajiStore.isDestroyLoading && indexDestroy == item.id"
+                              v-if="
+                                gajiStore.isDestroyLoading &&
+                                indexDestroy == item.id
+                              "
                               class="animate-spin h-5 w-5 text-black dark:text-gray-400"
                               aria-hidden="true"
                             />
@@ -200,7 +272,9 @@
                   </template>
                 </tbody>
                 <tfoot>
-                  <td colspan="5" class="text-end text-lg text-white">Total Bayar</td>
+                  <td colspan="5" class="text-end text-lg text-white">
+                    Total Bayar
+                  </td>
                   <td class="text-lg text-white">
                     {{ numeralFormat(gajiStore.gajiTotal) }}
                   </td>
@@ -217,9 +291,9 @@
 <script setup>
 import { useGajiStore } from '@/stores/gajiStore'
 import { ArrowPathIcon } from '@heroicons/vue/24/solid'
-import { onUnmounted, ref } from 'vue'
+import { onBeforeMount, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-
+import moment from 'moment'
 const gajiStore = useGajiStore()
 const router = useRouter()
 
@@ -254,6 +328,15 @@ function onDelete(item, index) {
 
   indexDestroy.value = item.id
 }
+
+onBeforeMount(() => {
+  gajiStore.$patch((state) => {
+    state.filter.date.fromDate = moment()
+      .subtract(7, 'days')
+      .format('yyyy-MM-DD')
+    state.filter.date.toDate = moment().subtract(1, 'days').format('yyyy-MM-DD')
+  })
+})
 
 onUnmounted(() => {
   gajiStore.$reset()

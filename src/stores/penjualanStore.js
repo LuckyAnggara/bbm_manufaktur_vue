@@ -14,6 +14,7 @@ export const usePenjualanStore = defineStore('penjualanStore', {
       responses: null,
       singleResponses: null,
       originalSingleResponses: null,
+      dataSales: [],
       isUpdateLoading: false,
       isVerifikasiLoading: false,
       isLoading: false,
@@ -34,6 +35,7 @@ export const usePenjualanStore = defineStore('penjualanStore', {
         pajak: 0,
         diskon: 0,
         ongkir: 0,
+        sales_id: 0,
         pelanggan_tetap: false,
         pelanggan: {},
       },
@@ -70,7 +72,11 @@ export const usePenjualanStore = defineStore('penjualanStore', {
       return this.cartTotal * (state.tipePajak / 100)
     },
     grandTotal(state) {
-      return parseFloat(this.cartTotal) + parseFloat(state.form.ongkir) + parseFloat(this.pajakTotal)
+      return (
+        parseFloat(this.cartTotal) +
+        parseFloat(state.form.ongkir) +
+        parseFloat(this.pajakTotal)
+      )
     },
     currentPage(state) {
       return state.responses?.current_page
@@ -97,10 +103,18 @@ export const usePenjualanStore = defineStore('penjualanStore', {
       return '&page=' + state.filter.page
     },
     dateQuery(state) {
-      if (state.filter.date.fromDate == null || state.filter.date.toDate == null) {
+      if (
+        state.filter.date.fromDate == null ||
+        state.filter.date.toDate == null
+      ) {
         return ''
       }
-      return '&start-date=' + state.filter.date.fromDate + '&end-date=' + state.filter.date.toDate
+      return (
+        '&start-date=' +
+        state.filter.date.fromDate +
+        '&end-date=' +
+        state.filter.date.toDate
+      )
     },
     searchQuery(state) {
       if (state.filter.searchQuery == '' || state.filter.searchQuery == null) {
@@ -113,12 +127,24 @@ export const usePenjualanStore = defineStore('penjualanStore', {
     async getData() {
       this.isLoading = true
       try {
-        const response = await axiosIns.get(`/penjualan?limit=${this.filter.currentLimit}${this.searchQuery}${this.pageQuery}${this.dateQuery}`)
+        const response = await axiosIns.get(
+          `/penjualan?limit=${this.filter.currentLimit}${this.searchQuery}${this.pageQuery}${this.dateQuery}`
+        )
         this.responses = response.data.data
       } catch (error) {
         alert(error.message)
       } finally {
         this.isLoading = false
+      }
+      return false
+    },
+    async getDataSales() {
+      try {
+        const response = await axiosIns.get(`/sales`)
+        this.dataSales = response.data.data
+      } catch (error) {
+        alert(error.message)
+      } finally {
       }
       return false
     },
@@ -152,7 +178,9 @@ export const usePenjualanStore = defineStore('penjualanStore', {
       try {
         const response = await axiosIns.get(`/penjualan/${id}`)
         this.singleResponses = JSON.parse(JSON.stringify(response.data.data))
-        this.originalSingleResponses = JSON.parse(JSON.stringify(response.data.data))
+        this.originalSingleResponses = JSON.parse(
+          JSON.stringify(response.data.data)
+        )
       } catch (error) {
         toast.error('Data not found', {
           position: 'bottom-right',
@@ -196,7 +224,9 @@ export const usePenjualanStore = defineStore('penjualanStore', {
       try {
         const response = await axiosIns.get(`/verifikasi/penjualan/${id}`)
         this.singleResponses = JSON.parse(JSON.stringify(response.data.data))
-        this.originalSingleResponses = JSON.parse(JSON.stringify(response.data.data))
+        this.originalSingleResponses = JSON.parse(
+          JSON.stringify(response.data.data)
+        )
       } catch (error) {
         toast.error('Data not found', {
           position: 'bottom-right',

@@ -4,7 +4,7 @@ export const useMainStore = defineStore('main', {
   state: () => ({
     limitDataOptions: [10, 50, 100, 100000],
     kategoriBiaya: ['Operasional', 'Produksi', 'Lainnya'],
-    tahunOptions: [2023, 2024, 2025],
+    tahunOptions: [2023, 2024, 2025, 2026, 2027],
     bulanOptions: [
       { id: 1, label: 'Januari' },
       { id: 2, label: 'Februari' },

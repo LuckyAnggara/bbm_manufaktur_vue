@@ -1,32 +1,35 @@
 <template>
   <section>
-    <div class="card flex flex-col lg:w-fit w-full">
-      <div class="card-body shadow-xl rounded-xl">
-        <h2 class="card-title mb-2 text-2xl">Data Pegawai</h2>
+    <div class="card flex flex-col w-full">
+      <div class="card-body shadow-xl rounded-xl w-full">
+        <h2 class="card-title mb-2 text-xl">Data Pegawai</h2>
         <div class="md:flex py-2">
           <div class="w-full">
-            <button class="btn w-32 btn-secondary modal-button shadow-md" @click="onNew()">Tambah</button>
+            <button
+              class="btn w-32 btn-secondary modal-button shadow-md"
+              @click="onNew()"
+            >
+              Tambah
+            </button>
           </div>
         </div>
 
-        <div class="flex mt-2 md:overflow-visible overflow-y-auto">
+        <div class="mt-2 md:overflow-visible overflow-y-auto w-full">
           <table class="table table-compact w-full">
             <!-- head -->
             <thead>
               <tr>
                 <th></th>
                 <th>Nama</th>
+                <th>Pin Absen</th>
                 <th>Jabatan</th>
-                <th>Gaji (IDR)</th>
-                <th>Uang Makan (IDR)</th>
-                <th>Bonus (IDR)</th>
                 <th>Action</th>
               </tr>
             </thead>
 
             <tbody>
               <tr v-if="pegawaiStore.isLoading">
-                <td colspan="7" class="text-center">
+                <td colspan="5" class="text-center">
                   <div role="status">
                     <svg
                       class="inline mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600"
@@ -49,17 +52,24 @@
               </tr>
               <template v-else>
                 <tr v-if="pegawaiStore.items.length == 0">
-                  <td colspan="7" class="text-center">Tidak ada data</td>
+                  <td colspan="5" class="text-center">Tidak ada data</td>
                 </tr>
-                <tr v-else v-for="(item, index) in pegawaiStore.items" :key="item.id">
+                <tr
+                  v-else
+                  v-for="(item, index) in pegawaiStore.items"
+                  :key="item.id"
+                >
                   <td class="text-center">{{ from + index }}</td>
                   <td>
                     {{ item.name.toUpperCase() }}
                   </td>
                   <td>
-                    {{ item.jabatan }}
+                    {{ item.pin }}
                   </td>
                   <td>
+                    {{ item.jabatan }}
+                  </td>
+                  <!-- <td>
                     {{ numeral(item.gaji).format('0,0') }}
                   </td>
                   <td>
@@ -67,18 +77,30 @@
                   </td>
                   <td>
                     {{ numeral(item.bonus).format('0,0') }}
-                  </td>
+                  </td> -->
                   <td class="before:hidden lg:w-1 whitespace-nowrap">
                     <div>
                       <Menu as="div" class="relative inline-block text-left">
                         <div>
                           <MenuButton
                             :disabled="indexDestroy == item.id"
-                            :class="indexDestroy == item.id ? '' : 'hover:scale-125 ease-in-out duration-300'"
+                            :class="
+                              indexDestroy == item.id
+                                ? ''
+                                : 'hover:scale-125 ease-in-out duration-300'
+                            "
                             class="flex w-full rounded-md font-medium text-black dark:text-gray-400"
                           >
-                            <ArrowPathIcon v-if="indexDestroy == item.id" class="animate-spin h-5 w-5 text-black dark:text-gray-400" aria-hidden="true" />
-                            <EllipsisVerticalIcon v-else class="h-5 w-5 text-black dark:text-gray-400" aria-hidden="true" />
+                            <ArrowPathIcon
+                              v-if="indexDestroy == item.id"
+                              class="animate-spin h-5 w-5 text-black dark:text-gray-400"
+                              aria-hidden="true"
+                            />
+                            <EllipsisVerticalIcon
+                              v-else
+                              class="h-5 w-5 text-black dark:text-gray-400"
+                              aria-hidden="true"
+                            />
                           </MenuButton>
                         </div>
 
@@ -94,15 +116,23 @@
                             class="z-50 py-1 absolute right-0 mt-2 w-40 origin-top-right divide-y divide-gray-100 rounded-md bg-white dark:bg-gray-800 dark:text-gray-100 shadow-lg ring-1 ring-black dark:ring-gray-700 ring-opacity-5 focus:outline-none"
                           >
                             <div class="px-2 py-1">
-                              <MenuItem v-for="menu in itemMenu" v-slot="{ active }">
+                              <MenuItem
+                                v-for="menu in itemMenu"
+                                v-slot="{ active }"
+                              >
                                 <button
                                   @click="menu.function(item)"
                                   :class="[
-                                    active ? 'bg-blue-500 text-white' : 'text-gray-900 dark:text-gray-400',
+                                    active
+                                      ? 'bg-blue-500 text-white'
+                                      : 'text-gray-900 dark:text-gray-400',
                                     'group flex w-full items-center rounded-md px-2 py-2 text-sm',
                                   ]"
                                 >
-                                  <component :is="menu.icon" class="w-5 h-5 mr-3" />
+                                  <component
+                                    :is="menu.icon"
+                                    class="w-5 h-5 mr-3"
+                                  />
                                   {{ menu.label }}
                                 </button>
                               </MenuItem>
@@ -117,10 +147,29 @@
             </tbody>
           </table>
         </div>
-        <div class="btn-group mx-auto mt-4 mb-20 justify-center" v-if="!pegawaiStore.isLoading">
-          <button class="btn btn-outline" @click="getData(previousPage)" :disabled="pegawaiStore.currentPage == 1 ? true : false">«</button>
-          <button class="btn btn-outline">Page {{ pegawaiStore.currentPage }}</button>
-          <button class="btn btn-outline" @click="getData(nextPage)" :disabled="pegawaiStore.lastPage == pegawaiStore.currentPage ? true : false">»</button>
+        <div
+          class="btn-group mx-auto mt-4 mb-20 justify-center"
+          v-if="!pegawaiStore.isLoading"
+        >
+          <button
+            class="btn btn-outline"
+            @click="getData(previousPage)"
+            :disabled="pegawaiStore.currentPage == 1 ? true : false"
+          >
+            «
+          </button>
+          <button class="btn btn-outline">
+            Page {{ pegawaiStore.currentPage }}
+          </button>
+          <button
+            class="btn btn-outline"
+            @click="getData(nextPage)"
+            :disabled="
+              pegawaiStore.lastPage == pegawaiStore.currentPage ? true : false
+            "
+          >
+            »
+          </button>
         </div>
       </div>
     </div>
@@ -128,21 +177,57 @@
   <!-- Modal -->
   <Teleport to="body">
     <!-- use the modal component, pass in the prop -->
-    <ModalNewPegawai :show-modal="showModal" :is-edit="isEdit" @updateStore="onEdit()" @submitStore="onSubmit()" @close="showModal = !showModal" />
+    <ModalNewPegawai
+      :show-modal="showModal"
+      :is-edit="isEdit"
+      @updateStore="onEdit()"
+      @submitStore="onSubmit()"
+      @close="showModal = !showModal"
+    />
+  </Teleport>
+
+  <Teleport to="body">
+    <!-- use the modal component, pass in the prop -->
+    <ModalAbsenPegawai
+      :show-modal="showModalAbsen"
+      @close="showModalAbsen = !showModalAbsen"
+    />
+  </Teleport>
+
+  <Teleport to="body">
+    <!-- use the modal component, pass in the prop -->
+    <ModalGajiPegawai
+      :show-modal="showModalGaji"
+      @close="showModalGaji = !showModalGaji"
+    />
   </Teleport>
 </template>
 
 <script setup>
 import { onMounted, inject, ref, computed } from 'vue'
 import { usePegawaiStore } from '@/stores/pegawaiStore'
+import { useGajiStore } from '@/stores/gajiStore'
+
 import ModalNewPegawai from './component/ModalNewPegawai.vue'
+import ModalAbsenPegawai from './component/ModalAbsen.vue'
+import ModalGajiPegawai from './component/ModalGaji.vue'
 import numeral from 'numeral'
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
-import { PencilSquareIcon, TrashIcon, EllipsisVerticalIcon, ArrowPathIcon } from '@heroicons/vue/24/solid'
+import {
+  PencilSquareIcon,
+  TrashIcon,
+  EllipsisVerticalIcon,
+  ArrowPathIcon,
+  CircleStackIcon,
+  PrinterIcon,
+} from '@heroicons/vue/24/solid'
 
 const pegawaiStore = usePegawaiStore()
+const gajiStore = useGajiStore()
 const from = 1
 const showModal = ref(false)
+const showModalAbsen = ref(false)
+const showModalGaji = ref(false)
 const isEdit = ref(false)
 const indexDestroy = ref(null)
 const indexId = ref(null)
@@ -150,12 +235,22 @@ const indexId = ref(null)
 const itemMenu = [
   {
     function: edit,
-    label: 'Edit',
+    label: 'Edit Data',
     icon: PencilSquareIcon,
   },
   {
+    function: onAbsen,
+    label: 'Cek Absen',
+    icon: CircleStackIcon,
+  },
+  {
+    function: onGaji,
+    label: 'Cetak Struk Gaji',
+    icon: PrinterIcon,
+  },
+  {
     function: onDelete,
-    label: 'Hapus',
+    label: 'Hapus Pegawai',
     icon: TrashIcon,
   },
 ]
@@ -237,6 +332,25 @@ function onNew() {
   pegawaiStore.clearForm()
   isEdit.value = false
   showModal.value = !showModal.value
+}
+
+async function onAbsen(item) {
+  indexDestroy.value = item.id
+  const result = await pegawaiStore.showData(item.id)
+  if (result) {
+    indexDestroy.value = null
+    showModalAbsen.value = true
+  }
+}
+
+async function onGaji(item) {
+  indexDestroy.value = item.id
+  const result = await pegawaiStore.showData(item.id)
+  if (result) {
+    await gajiStore.getTanggalGaji(pegawaiStore.singleResponses.id)
+    indexDestroy.value = null
+    showModalGaji.value = true
+  }
 }
 
 function getData(page = '') {

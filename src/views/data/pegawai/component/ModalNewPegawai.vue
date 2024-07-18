@@ -46,36 +46,12 @@
             </div>
             <div class="form-control w-full">
               <div class="label">
-                <span class="">Gaji Pokok </span>
+                <span class="">Pin Absen </span>
               </div>
               <input
                 type="number"
                 required
-                v-model="pegawaiStore.singleResponses.gaji"
-                class="input input-bordered w-full"
-              />
-            </div>
-
-            <div class="form-control w-full">
-              <div class="label">
-                <span class="">Uang Makan </span>
-              </div>
-              <input
-                type="number"
-                required
-                v-model="pegawaiStore.singleResponses.uang_makan"
-                class="input input-bordered w-full"
-              />
-            </div>
-
-            <div class="form-control w-full">
-              <div class="label">
-                <span class="">Bonus </span>
-              </div>
-              <input
-                type="number"
-                required
-                v-model="pegawaiStore.singleResponses.bonus"
+                v-model="pegawaiStore.singleResponses.pin"
                 class="input input-bordered w-full"
               />
             </div>
@@ -125,36 +101,12 @@
             </div>
             <div class="form-control w-full">
               <div class="label">
-                <span class="">Gaji Pokok </span>
+                <span class="">Pin Absen </span>
               </div>
               <input
                 type="number"
                 required
-                v-model="pegawaiStore.form.gaji"
-                class="input input-bordered w-full"
-              />
-            </div>
-
-            <div class="form-control w-full">
-              <div class="label">
-                <span class="">Uang Makan </span>
-              </div>
-              <input
-                type="number"
-                required
-                v-model="pegawaiStore.form.uang_makan"
-                class="input input-bordered w-full"
-              />
-            </div>
-
-            <div class="form-control w-full">
-              <div class="label">
-                <span class="">Bonus </span>
-              </div>
-              <input
-                type="number"
-                required
-                v-model="pegawaiStore.form.bonus"
+                v-model="pegawaiStore.form.pin"
                 class="input input-bordered w-full"
               />
             </div>

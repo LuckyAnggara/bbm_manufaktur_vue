@@ -1,25 +1,45 @@
 <template>
   <div class="card flex flex-col h-5/6">
     <div class="card-body shadow-xl rounded-xl">
-      <div class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4 flex flex-row space-x-4 items-end">
+      <div
+        class="w-full mx-1 md:self-center my-4 md:my-0 md:ml-4 flex flex-row space-x-4 items-end"
+      >
         <div class="form-control">
           <label class="label">
             <span class="label-text">Tanggal Data</span>
           </label>
           <div class="flex justify-between items-center space-x-6">
-            <input v-model="absensiStore.filter.date.fromDate" id="date" type="date" placeholder="Type here" class="input input-bordered w-auto" />
+            <input
+              v-model="absensiStore.filter.date.fromDate"
+              id="date"
+              type="date"
+              placeholder="Type here"
+              class="input input-bordered w-auto"
+            />
             <label class="">s.d</label>
-            <input v-model="absensiStore.filter.date.toDate" id="date" type="date" placeholder="Type here" class="input input-bordered w-auto" />
+            <input
+              v-model="absensiStore.filter.date.toDate"
+              id="date"
+              type="date"
+              placeholder="Type here"
+              class="input input-bordered w-auto"
+            />
           </div>
         </div>
         <div class="w-1/5">
-          <button @click="getData()" class="btn w-32 btn-primary modal-button shadow-md">
+          <button
+            @click="getData()"
+            class="btn w-32 btn-primary modal-button shadow-md"
+          >
             <span class="text-md">Submit</span>
           </button>
         </div>
 
         <div class="w-1/5">
-          <button @click="isiAbsenKosong()" class="btn w-32 btn-secondary modal-button shadow-md">
+          <button
+            @click="isiAbsenKosong()"
+            class="btn w-32 btn-secondary modal-button shadow-md"
+          >
             <span class="text-md">Isi Absen Kosong</span>
           </button>
         </div>
@@ -71,17 +91,27 @@
               <tr v-if="absensiStore.items.length == 0">
                 <td colspan="6" class="text-center">Tidak ada data</td>
               </tr>
-              <tr v-else v-for="(data, index) in absensiStore.items" :key="data">
+              <tr
+                v-else
+                v-for="(data, index) in absensiStore.items"
+                :key="data"
+              >
                 <td>{{ absensiStore.from + index }}</td>
-                <td>{{ data.pin }}</td>
                 <td>{{ data.pegawai?.name ?? '-' }}</td>
+                <td>{{ data.pin }}</td>
                 <td>{{ data.start_time ?? '-' }}</td>
                 <td>{{ data.end_time ?? '-' }}</td>
                 <td>
-                  <div v-if="data.shift_type == 'PAGI'" class="badge badge-primary badge-outline">
+                  <div
+                    v-if="data.shift_type == 'PAGI'"
+                    class="badge badge-primary badge-outline"
+                  >
                     {{ data.shift_type ?? '-' }}
                   </div>
-                  <div v-else-if="data.shift_type == 'MALAM'" class="badge badge-secondary badge-outline">
+                  <div
+                    v-else-if="data.shift_type == 'MALAM'"
+                    class="badge badge-secondary badge-outline"
+                  >
                     {{ data.shift_type ?? '-' }}
                   </div>
                   <div v-else class="badge badge-danger badge-outline">
@@ -100,9 +130,11 @@
 <script setup>
 import { inject, onMounted, ref, watch } from 'vue'
 import { useAbsensiStore } from '@/stores/absensiStore'
+
 const swal = inject('$swal')
 const showIndex = ref(0)
 const showNested = ref(false)
+const absensiStore = useAbsensiStore()
 
 function show(index, absen) {
   showNested.value = true
@@ -138,8 +170,6 @@ function isiAbsenKosong() {
       }
     })
 }
-
-const absensiStore = useAbsensiStore()
 
 onMounted(() => {
   absensiStore.getData()

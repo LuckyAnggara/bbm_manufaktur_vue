@@ -11,7 +11,9 @@ export const useAbsensiStore = defineStore('absensiStore', {
   state: () => {
     return {
       responses: null,
+      isLoadingDownload: false,
       singleResponses: null,
+      singleAbsensi: [],
       originalSingleResponses: null,
       isUpdateLoading: false,
       isLoading: false,
@@ -26,6 +28,8 @@ export const useAbsensiStore = defineStore('absensiStore', {
           fromDate: moment().format('yyyy-MM-DD'),
           toDate: moment().format('yyyy-MM-DD'),
         },
+        month: moment().month() + 1,
+        year: moment().year(),
       },
     }
   },
@@ -43,17 +47,33 @@ export const useAbsensiStore = defineStore('absensiStore', {
       return state.responses?.total
     },
     dateQuery(state) {
-      if (state.filter.date.fromDate == null || state.filter.date.toDate == null) {
+      if (
+        state.filter.date.fromDate == null ||
+        state.filter.date.toDate == null
+      ) {
         return ''
       }
-      return '&start-date=' + state.filter.date.fromDate + '&end-date=' + state.filter.date.toDate
+      return (
+        '&start-date=' +
+        state.filter.date.fromDate +
+        '&end-date=' +
+        state.filter.date.toDate
+      )
+    },
+    absensiMonthQuery(state) {
+      return '&month=' + state.filter.month
+    },
+    absensiYearQuery(state) {
+      return '&year=' + state.filter.year
     },
   },
   actions: {
     async getData(page = '') {
       this.isLoading = true
       try {
-        const response = await axiosIns.get(`/absensi?${this.dateQuery}`)
+        const response = await axiosIns.get(
+          `/absensi?${this.dateQuery}${this.dateQuery}`
+        )
         this.responses = response.data.data
       } catch (error) {
         alert(error.message)
@@ -65,7 +85,9 @@ export const useAbsensiStore = defineStore('absensiStore', {
     async absenKosong() {
       this.isLoading = true
       try {
-        const response = await axiosIns.get(`/absensi-missing?${this.dateQuery}`)
+        const response = await axiosIns.get(
+          `/absensi-missing?${this.dateQuery}`
+        )
         this.responses = response.data.data
       } catch (error) {
         alert(error.message)
@@ -73,6 +95,35 @@ export const useAbsensiStore = defineStore('absensiStore', {
         this.isLoading = false
       }
       return false
+    },
+    async getDataSingle(id) {
+      this.isLoading = true
+      try {
+        const response = await axiosIns.get(
+          `/absensi/${id}?${this.absensiMonthQuery}${this.absensiYearQuery}`
+        )
+        this.singleAbsensi = response.data.data
+      } catch (error) {
+        alert(error.message)
+      } finally {
+        this.isLoading = false
+      }
+      return false
+    },
+    async downloadAbsen(id) {
+      this.isLoadingDownload = true
+      try {
+        const response = await axiosIns.get(
+          `/report/absensi/${id}?${this.absensiMonthQuery}${this.absensiYearQuery}`
+        )
+        let responseHtml = response.data
+        // console.log(responseHtml, 'Faktur penjualan')
+        var myWindow = window.open('response')
+        myWindow.document.write(responseHtml)
+      } catch (error) {
+        console.info(error)
+      }
+      this.isLoadingDownload = false
     },
   },
 })
