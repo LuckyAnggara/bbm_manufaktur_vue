@@ -1,9 +1,9 @@
-import PersediaanScreen from '../../views/gudang/Persediaan/PersediaanScreen.vue'
-import GudangScreen from '../../views/gudang/GudangScreen.vue'
-import MasukScreen from '../../views/gudang/Mutasi/Masuk/MasukScreen.vue'
-import KeluarScreen from '../../views/gudang/Mutasi/Keluar/KeluarScreen.vue'
-import MutasiScreen from '../../views/gudang/Mutasi/MutasiScreen.vue'
-import MutasiDetailScreen from '../../views/gudang/Mutasi/MutasiDetailScreen.vue'
+import PersediaanScreen from '@/views/gudang/Persediaan/PersediaanScreen.vue'
+import GudangScreen from '@/views/gudang/GudangScreen.vue'
+import MasukScreen from '@/views/gudang/mutasi/masuk/MasukScreen.vue'
+import KeluarScreen from '@/views/gudang/mutasi/keluar/KeluarScreen.vue'
+import MutasiScreen from '@/views/gudang/mutasi/MutasiScreen.vue'
+import MutasiDetailScreen from '@/views/gudang/mutasi/MutasiDetailScreen.vue'
 
 export const gudangRoutes = [
   {
