@@ -46,8 +46,8 @@
       </div>
       <h2 class="card-title mb-2 text-2xl mt-5">
         Tanggal Data
-        {{ $moment(absensiStore.filter.date.fromDate).format('DD MMMM Y') }} s.d
-        {{ $moment(absensiStore.filter.date.toDate).format('DD MMMM Y') }}
+        {{ moment(absensiStore.filter.date.fromDate).format('DD MMMM Y') }} s.d
+        {{ moment(absensiStore.filter.date.toDate).format('DD MMMM Y') }}
       </h2>
       <div class="flex mt-2 lg:overflow-visible overflow-x-auto">
         <table class="table table-compact lg:w-full">
@@ -59,14 +59,16 @@
               <th>Pin Absensi</th>
               <th>Jam Masuk</th>
               <th>Jam Keluar</th>
+              <th>Shift</th>
               <th>Keterangan</th>
+              <th>Jam Kerja</th>
               <th>Action</th>
             </tr>
           </thead>
 
           <tbody>
             <tr v-if="absensiStore.isLoading">
-              <td colspan="6" class="text-center">
+              <td colspan="7" class="text-center">
                 <div role="status">
                   <svg
                     class="inline mr-2 w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-pink-600"
@@ -89,33 +91,99 @@
             </tr>
             <template v-else>
               <tr v-if="absensiStore.items.length == 0">
-                <td colspan="6" class="text-center">Tidak ada data</td>
+                <td colspan="7" class="text-center">Tidak ada data</td>
               </tr>
               <tr
                 v-else
-                v-for="(data, index) in absensiStore.items"
-                :key="data"
+                v-for="(item, index) in absensiStore.items"
+                :key="index"
               >
                 <td>{{ absensiStore.from + index }}</td>
-                <td>{{ data.pegawai?.name ?? '-' }}</td>
-                <td>{{ data.pin }}</td>
-                <td>{{ data.start_time ?? '-' }}</td>
-                <td>{{ data.end_time ?? '-' }}</td>
+                <td>{{ item.pegawai?.name ?? '-' }}</td>
+                <td>{{ item.pin }}</td>
+                <td>{{ item.start_time ?? '-' }}</td>
+                <td>{{ item.end_time ?? '-' }}</td>
                 <td>
                   <div
-                    v-if="data.shift_type == 'PAGI'"
+                    v-if="item.shift_type == 'PAGI'"
                     class="badge badge-primary badge-outline"
                   >
-                    {{ data.shift_type ?? '-' }}
+                    {{ item.shift_type ?? '-' }}
                   </div>
                   <div
-                    v-else-if="data.shift_type == 'MALAM'"
+                    v-else-if="item.shift_type == 'MALAM'"
                     class="badge badge-secondary badge-outline"
                   >
-                    {{ data.shift_type ?? '-' }}
+                    {{ item.shift_type ?? '-' }}
                   </div>
                   <div v-else class="badge badge-danger badge-outline">
-                    {{ data.shift_type ?? '-' }}
+                    {{ item.shift_type ?? '-' }}
+                  </div>
+                </td>
+                <td>{{ item.missing ?? '-' }}</td>
+                <td>{{ item.jamKerja }} JAM</td>
+                <td class="before:hidden lg:w-1 whitespace-nowrap">
+                  <div>
+                    <Menu as="div" class="relative inline-block text-left">
+                      <div>
+                        <MenuButton
+                          :disabled="indexDestroy == item.id"
+                          :class="
+                            indexDestroy == item.id
+                              ? ''
+                              : 'hover:scale-125 ease-in-out duration-300'
+                          "
+                          class="flex w-full rounded-md font-medium text-black dark:text-gray-400"
+                        >
+                          <ArrowPathIcon
+                            v-if="indexDestroy == item.id"
+                            class="animate-spin h-5 w-5 text-black dark:text-gray-400"
+                            aria-hidden="true"
+                          />
+                          <EllipsisVerticalIcon
+                            v-else
+                            class="h-5 w-5 text-black dark:text-gray-400"
+                            aria-hidden="true"
+                          />
+                        </MenuButton>
+                      </div>
+
+                      <transition
+                        enter-active-class="transition duration-100 ease-out"
+                        enter-from-class="transform scale-95 opacity-0"
+                        enter-to-class="transform scale-100 opacity-100"
+                        leave-active-class="transition duration-75 ease-in"
+                        leave-from-class="transform scale-100 opacity-100"
+                        leave-to-class="transform scale-95 opacity-0"
+                      >
+                        <MenuItems
+                          class="z-50 py-1 absolute right-0 mt-2 w-40 origin-top-right divide-y divide-gray-100 rounded-md bg-white dark:bg-gray-800 dark:text-gray-100 shadow-lg ring-1 ring-black dark:ring-gray-700 ring-opacity-5 focus:outline-none"
+                        >
+                          <div class="px-2 py-1">
+                            <MenuItem
+                              v-for="menu in itemMenu"
+                              v-slot="{ active }"
+                            >
+                              <button
+                                @click="menu.function(item)"
+                                :class="[
+                                  active
+                                    ? 'bg-blue-500 text-white'
+                                    : 'text-gray-900 dark:text-gray-400',
+                                  'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                                ]"
+                              >
+                                <component
+                                  :is="menu.icon"
+                                  class="w-5 h-5 mr-3"
+                                />
+                                {{ menu.label }}
+                              </button>
+                            </MenuItem>
+                          </div>
+                        </MenuItems>
+                      </transition>
+                    </Menu>
                   </div>
                 </td>
               </tr>
@@ -125,32 +193,72 @@
       </div>
     </div>
   </div>
+
+  <Teleport to="body">
+    <!-- use the modal component, pass in the prop -->
+    <ModalGantiAbsen
+      :show-modal="showModalGantiAbsen"
+      @close="showModalGantiAbsen = !showModalGantiAbsen"
+      @update="updateData"
+    />
+  </Teleport>
 </template>
 
 <script setup>
 import { inject, onMounted, ref, watch } from 'vue'
 import { useAbsensiStore } from '@/stores/absensiStore'
+import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
+import ModalGantiAbsen from './ModalGantiAbsen.vue'
+import {
+  TrashIcon,
+  PencilSquareIcon,
+  ArrowPathIcon,
+  EllipsisVerticalIcon,
+} from '@heroicons/vue/24/solid'
+import moment from 'moment'
 
+const showModalGantiAbsen = ref(false)
 const swal = inject('$swal')
-const showIndex = ref(0)
-const showNested = ref(false)
 const absensiStore = useAbsensiStore()
+const indexDestroy = ref(0)
 
-function show(index, absen) {
-  showNested.value = true
-  showIndex.value = index
-  absensiStore.$patch((state) => {
-    state.absenToDisplay = absen
-  })
+const itemMenu = [
+  {
+    function: onEdit,
+    label: 'Edit Absen',
+    icon: PencilSquareIcon,
+  },
+  {
+    function: onDelete,
+    label: 'Hapus Absen',
+    icon: TrashIcon,
+  },
+]
+
+async function onEdit(item) {
+  indexDestroy.value = item.id
+  const result = await absensiStore.getDataSingle(item.id)
+  if (result) {
+    indexDestroy.value = 0
+    showModalGantiAbsen.value = true
+  }
 }
+function onDelete() {}
 
 function getData() {
-  showNested.value = false
-  showIndex.value = 0
   absensiStore.$patch((state) => {
     state.absenToDisplay = []
   })
   absensiStore.getData()
+}
+
+async function updateData() {
+  const result = await absensiStore.update()
+  if (result) {
+    indexDestroy.value = 0
+
+    showModalGantiAbsen.value = false
+  }
 }
 
 function isiAbsenKosong() {
@@ -172,6 +280,12 @@ function isiAbsenKosong() {
 }
 
 onMounted(() => {
+  absensiStore.$patch((state) => {
+    state.filter.date.fromDate = moment()
+      .subtract(2, 'days')
+      .format('yyyy-MM-DD')
+    state.filter.date.toDate = moment().subtract(1, 'days').format('yyyy-MM-DD')
+  })
   absensiStore.getData()
 })
 </script>

@@ -1,9 +1,9 @@
-import ProductionScreen from '../../views/produksi/ProductionScreen.vue'
-import UpdateScreen from '../../views/produksi/ProductionOrder/Update/UpdateScreen.vue'
-import NewScreen from '../../views/produksi/ProductionOrder/New/NewScreen.vue'
-import EditScreen from '../../views/produksi/ProductionOrder/Edit/EditScreen.vue'
-import FinishScreen from '../../views/produksi/ProductionOrder/FinishScreen.vue'
-import ProductionListScreen from '../../views/produksi/ProductionOrder/Daftar/ProductionListScreen.vue'
+import ProductionScreen from '@/views/produksi/ProductionScreen.vue'
+import UpdateScreen from '@/views/produksi/productionorder/update/UpdateScreen.vue'
+import NewScreen from '@/views/produksi/productionorder/new/NewScreen.vue'
+import EditScreen from '@/views/produksi/productionorder/edit/EditScreen.vue'
+import FinishScreen from '@/views/produksi/productionorder/FinishScreen.vue'
+import ProductionListScreen from '@/views/produksi/productionorder/daftar/ProductionListScreen.vue'
 
 export const productionOrderRoutes = [
   {

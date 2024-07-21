@@ -213,6 +213,7 @@
                           :disabled="!item.bayarkan"
                           required
                           :min="0"
+                          :value="0"
                           v-model="item.potongan"
                           type="number"
                           placeholder="Potongan"

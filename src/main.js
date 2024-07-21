@@ -4,7 +4,11 @@ import './index.css'
 import './style.css'
 import App from './App.vue'
 import axiosIns from './services/axios'
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
+import {
+  createRouter,
+  createWebHashHistory,
+  createWebHistory,
+} from 'vue-router'
 import { routes } from './services/router'
 import Toast from 'vue-toastification'
 import VueSweetalert2 from 'vue-sweetalert2'
@@ -14,13 +18,40 @@ import 'vue-toastification/dist/index.css'
 import VueNumerals from 'vue-numerals'
 import { isUserLoggedIn } from './services/auth'
 import { useAuthStore } from './stores/store'
+import '@vuepic/vue-datepicker/dist/main.css'
 
 import VueQrcode from '@chenfengyuan/vue-qrcode'
 
 moment.tz.setDefault('Asia/Jakarta')
 moment.updateLocale('en', {
-  months: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'],
-  monthsShort: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agus', 'Sep', 'Okt', 'Nov', 'Des'],
+  months: [
+    'Januari',
+    'Februari',
+    'Maret',
+    'April',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Agustus',
+    'September',
+    'Oktober',
+    'November',
+    'Desember',
+  ],
+  monthsShort: [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'Mei',
+    'Jun',
+    'Jul',
+    'Agus',
+    'Sep',
+    'Okt',
+    'Nov',
+    'Des',
+  ],
   weekdays: ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', "Jum'at", 'Sabtu'],
   weekdaysShort: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
 })

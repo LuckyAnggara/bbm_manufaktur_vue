@@ -1,19 +1,32 @@
 <template>
   <section>
     <template v-if="productionOrderStore.isLoading">
-      <div wire:loading class="top-0 left-0 right-0 bottom-0 overflow-hidden opacity-75 flex flex-col items-center justify-center">
-        <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+      <div
+        wire:loading
+        class="top-0 left-0 right-0 bottom-0 overflow-hidden opacity-75 flex flex-col items-center justify-center"
+      >
+        <div
+          class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"
+        ></div>
         <h2 class="text-center text-white text-xl font-semibold">Loading...</h2>
-        <p class="w-1/3 text-center text-white">Sedang mencari data, tolong jangan tutup halaman ini.</p>
+        <p class="w-1/3 text-center text-white">
+          Sedang mencari data, tolong jangan tutup halaman ini.
+        </p>
       </div>
     </template>
     <template v-else>
       <div class="card flex flex-col">
         <div class="card-body shadow-xl rounded-xl">
-          <h2 class="card-title mb-2 text-2xl">Data Production Oder Nomor : #{{ productionOrderStore.currentData.sequence }}</h2>
+          <h2 class="card-title mb-2 text-2xl">
+            Data Production Oder Nomor : #{{
+              productionOrderStore.currentData.sequence
+            }}
+          </h2>
 
           <div class="mt-2 md:overflow-visible overflow-y-auto mb-5">
-            <div class="badge badge-lg badge-primary badge-outline mb-2">Hasil Produksi</div>
+            <div class="badge badge-lg badge-primary badge-outline mb-2">
+              Hasil Produksi
+            </div>
             <table class="table table-compact w-full">
               <!-- head -->
               <thead>
@@ -34,7 +47,11 @@
                     <span>Tidak ada data.</span>
                   </td>
                 </tr>
-                <tr v-else v-for="item in productionOrderStore.currentData.output" :key="item.id">
+                <tr
+                  v-else
+                  v-for="item in productionOrderStore.currentData.output"
+                  :key="item.id"
+                >
                   <td class="text-center"></td>
                   <td>{{ item.item.name.toUpperCase() }}</td>
                   <td>{{ item.item.unit.name.toUpperCase() }}</td>
@@ -67,11 +84,15 @@
           </div>
 
           <hr />
-          <div class="badge badge-lg badge-secondary badge-outline mt-4">Hasil Lainnya</div>
+          <div class="badge badge-lg badge-secondary badge-outline mt-4">
+            Hasil Lainnya
+          </div>
 
           <div class="flex flex-row-reverse">
             <div>
-              <label for="my-modal-barang-jadi" class="btn w-32 btn-secondary modal-button shadow-md hover:scale-110"
+              <label
+                for="my-modal-barang-jadi"
+                class="btn w-32 btn-secondary modal-button shadow-md hover:scale-110"
                 ><span class="text-xs">New Item</span></label
               >
             </div>
@@ -97,7 +118,11 @@
                     <span>Tidak ada data.</span>
                   </td>
                 </tr>
-                <tr v-else v-for="(item, index) in productionOrderStore.outputDataUpdate" :key="item">
+                <tr
+                  v-else
+                  v-for="(item, index) in productionOrderStore.outputDataUpdate"
+                  :key="item"
+                >
                   <td class="text-center"></td>
                   <td>{{ item.name.toUpperCase() }}</td>
                   <td>{{ item.unit.name.toUpperCase() }}</td>
@@ -119,7 +144,15 @@
                       class="btn btn-sm btn-square btn-outline hover:scale-125"
                       @click="deleteOutputData(index)"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24" stroke="currentColor">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        width="24"
+                        height="24"
+                        stroke="currentColor"
+                      >
                         <path
                           stroke-linecap="round"
                           stroke-linejoin="round"
@@ -134,7 +167,9 @@
           </div>
 
           <hr />
-          <div class="badge badge-lg badge-primary badge-outline mt-4">Sisa Bahan Baku</div>
+          <div class="badge badge-lg badge-primary badge-outline mt-4">
+            Sisa Bahan Baku
+          </div>
 
           <div class="mt-2 md:overflow-visible overflow-y-auto mb-5">
             <table class="table table-compact w-full">
@@ -156,7 +191,11 @@
                     <span>Tidak ada data.</span>
                   </td>
                 </tr>
-                <tr v-else v-for="item in productionOrderStore.currentData.input" :key="item">
+                <tr
+                  v-else
+                  v-for="item in productionOrderStore.currentData.input"
+                  :key="item"
+                >
                   <td class="text-center"></td>
                   <td>{{ item.item.name.toUpperCase() }}</td>
                   <td>{{ item.item.unit.name.toUpperCase() }}</td>
@@ -180,11 +219,17 @@
           <hr />
 
           <div class="flex flex-row-reverse py-2">
-            <button v-if="!productionOrderStore.isUpdateLoading" class="btn gap-2 btn-primary hover:btn-secondary w-32 mb-4 hover:scale-110" @click="onSubmit">
+            <button
+              v-if="!productionOrderStore.isUpdateLoading"
+              class="btn gap-2 btn-primary hover:btn-secondary w-32 mb-4 hover:scale-110"
+              @click="onSubmit"
+            >
               Submit
             </button>
 
-            <button v-else class="btn btn-accent text-white loading">Prosesing</button>
+            <button v-else class="btn btn-accent text-white loading">
+              Prosesing
+            </button>
           </div>
         </div>
       </div>
@@ -196,9 +241,9 @@
 <script>
 import { inject, ref } from 'vue'
 import { useToast } from 'vue-toastification'
-import { useItemStore, useProductionOrderStore } from '../../../../stores/store'
+import { useItemStore, useProductionOrderStore } from '@/stores/store'
 import { useRouter } from 'vue-router'
-import ModalItemBarangJadi from './Component/ModalItemBarangJadi.vue'
+import ModalItemBarangJadi from './component/ModalItemBarangJadi.vue'
 
 export default {
   setup() {
@@ -237,12 +282,14 @@ export default {
           confirmButtonText: 'Proses!',
           showLoaderOnConfirm: true,
           preConfirm: (value) => {
-            return productionOrderStore.storeUpdateProductionOrder().then((resp) => {
-              if (resp.status == 200) {
-                return resp
-              }
-              throw new Error(resp)
-            })
+            return productionOrderStore
+              .storeUpdateProductionOrder()
+              .then((resp) => {
+                if (resp.status == 200) {
+                  return resp
+                }
+                throw new Error(resp)
+              })
           },
         })
         .then((result) => {
