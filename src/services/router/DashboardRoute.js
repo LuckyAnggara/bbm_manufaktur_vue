@@ -1,4 +1,4 @@
-import MainScreen from '../../views/dashboard/MainScreen.vue'
+import MainScreen from '@/views/dashboard/MainScreen.vue'
 
 export const dashboardRoutes = [
   {
