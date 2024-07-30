@@ -1,19 +1,20 @@
 <template>
-  <section>
-    <input
-      type="checkbox"
-      id="my-modal"
-      v-model="itemStore.modalToggle"
-      class="modal-toggle"
-    />
-    <div class="modal">
-      <div class="modal-box">
+  <div
+    v-if="showModal"
+    aria-hidden="true"
+    class="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-modal md:h-full modal-mask"
+  >
+    <!-- Modal content -->
+    <div class="relative p-4 w-full max-w-2xl h-full md:h-auto">
+      <!-- Modal content -->
+
+      <div class="modal-box relative overflow-hidden">
         <label
-          for="my-modal"
-          class="btn btn-sm btn-circle btn-primary absolute right-2 top-2"
+          @click="emit('close')"
+          class="btn btn-sm btn-circle absolute right-2 top-2"
           >✕</label
         >
-        <h3 class="text-2xl font-bold">Item Baru</h3>
+        <h3 class="text-2xl font-bold">Detail Item</h3>
         <section class="py-2">
           <form @submit.prevent="onSubmit">
             <div class="form-control my-2">
@@ -22,20 +23,8 @@
               </label>
               <input
                 :disabled="itemStore.modalSubmitLoading"
-                v-model="dataForm.name"
+                v-model="itemStore.singleResponses.name"
                 type="text"
-                placeholder="Type here"
-                class="input input-bordered w-full"
-              />
-            </div>
-            <div class="form-control my-2">
-              <label class="label">
-                <span class="label-text">Harga Pokok</span>
-              </label>
-              <input
-                :disabled="itemStore.modalSubmitLoading"
-                v-model="dataForm.cogs"
-                type="number"
                 placeholder="Type here"
                 class="input input-bordered w-full"
               />
@@ -46,10 +35,14 @@
               </label>
               <select
                 :disabled="itemStore.modalSubmitLoading"
-                v-model="dataForm.unit_id"
+                v-model="itemStore.singleResponses.unit_id"
                 class="select select-bordered"
               >
-                <option :value="unit.id" v-for="unit in itemUnits" :key="unit">
+                <option
+                  :value="unit.id"
+                  v-for="unit in itemStore.itemUnits"
+                  :key="unit"
+                >
                   {{ unit.name.toUpperCase() }}
                 </option>
               </select>
@@ -60,13 +53,29 @@
               </label>
               <select
                 :disabled="itemStore.modalSubmitLoading"
-                v-model="dataForm.type_id"
+                v-model="itemStore.singleResponses.type_id"
                 class="select select-bordered"
               >
-                <option :value="type.id" v-for="type in itemTypes" :key="type">
+                <option
+                  :value="type.id"
+                  v-for="type in itemStore.itemTypes"
+                  :key="type.id"
+                >
                   {{ type.name.toUpperCase() }}
                 </option>
               </select>
+            </div>
+            <div class="form-control my-2">
+              <label class="label">
+                <span class="label-text">Harga Pokok (Rp.)</span>
+              </label>
+              <input
+                :disabled="itemStore.modalSubmitLoading"
+                v-model="itemStore.singleResponses.cogs"
+                type="number"
+                placeholder="Type here"
+                class="input input-bordered w-full"
+              />
             </div>
             <div class="form-control my-2">
               <label class="label">
@@ -74,7 +83,7 @@
               </label>
               <select
                 :disabled="itemStore.modalSubmitLoading"
-                v-model="dataForm.warehouse_id"
+                v-model="itemStore.singleResponses.warehouse_id"
                 class="select select-bordered"
               >
                 <option
@@ -111,54 +120,34 @@
                   </svg>
                   Loading...
                 </template>
-                <template v-else><span>Submit</span></template>
+                <template v-else><span>Update</span></template>
               </button>
             </div>
           </form>
         </section>
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
-<script>
-import { mapState } from 'pinia'
+<script setup>
 import { ref } from 'vue'
 import { useItemStore } from '@/stores/store'
 
-export default {
-  setup() {
-    const itemStore = useItemStore()
-    const dataForm = ref({
-      name: null,
-      unit_id: 1,
-      cogs: 0,
-      type_id: 1,
-      warehouse_id: 1,
-    })
+const emit = defineEmits(['close', 'submitStore', 'submitUpdate'])
+const itemStore = useItemStore()
 
-    function onSubmit() {
-      itemStore.storeItemData(dataForm.value)
-      reset()
-    }
-
-    function reset() {
-      dataForm.value.name = null
-      dataForm.value.cogs = 0
-      dataForm.value.unit_id = 1
-      dataForm.value.type_id = 1
-      dataForm.value.warehouse_id = 1
-    }
-
-    // expose to template and other options API hooks
-    return {
-      itemStore,
-      onSubmit,
-      dataForm,
-    }
-  },
-  computed: {
-    ...mapState(useItemStore, ['itemTypes', 'itemUnits', 'warehouses']),
-  },
+async function onSubmit() {
+  const result = await itemStore.updateItem()
+  if (result) {
+    emit('close')
+  }
 }
+
+const props = defineProps({
+  showModal: {
+    type: Boolean,
+    default: false,
+  },
+})
 </script>

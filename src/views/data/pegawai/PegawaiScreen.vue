@@ -21,6 +21,7 @@
               <tr>
                 <th></th>
                 <th>Nama</th>
+                <th>Nomor Induk Pegawai</th>
                 <th>Pin Absen</th>
                 <th>Jabatan</th>
                 <th>Action</th>
@@ -62,6 +63,9 @@
                   <td class="text-center">{{ from + index }}</td>
                   <td>
                     {{ item.name.toUpperCase() }}
+                  </td>
+                  <td>
+                    {{ item.nip }}
                   </td>
                   <td>
                     {{ item.pin }}
