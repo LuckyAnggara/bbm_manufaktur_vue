@@ -97,18 +97,54 @@ export const useAbsensiStore = defineStore('absensiStore', {
       return false
     },
     async getDataSingle(id) {
-      this.isLoading = true
+      this.isSingleLoading = true
       try {
-        const response = await axiosIns.get(
-          `/absensi/${id}?${this.absensiMonthQuery}${this.absensiYearQuery}`
-        )
-        this.singleAbsensi = response.data.data
+        // const response = await axiosIns.get(
+        //   `/absensi/${id}?${this.absensiMonthQuery}${this.absensiYearQuery}`
+        // )
+        const response = await axiosIns.get(`/absensi/${id}`)
+        this.singleResponses = response.data.data
+        if (response.status == 200) return true
       } catch (error) {
         alert(error.message)
       } finally {
-        this.isLoading = false
+        this.isSingleLoading = false
       }
       return false
+    },
+    async update() {
+      this.isUpdateLoading = true
+      try {
+        const response = await axiosIns.put(
+          `/absensi/${this.singleResponses.id}`,
+          {
+            start_time: moment(this.singleResponses.start_time).format(
+              'YYYY-MM-DD HH:mm:ss'
+            ),
+            end_time: moment(this.singleResponses.end_time).format(
+              'YYYY-MM-DD HH:mm:ss'
+            ),
+          }
+        )
+        if (response.status == 200) {
+          toast.success(response.data.message, {
+            timeout: 2000,
+          })
+          this.originalSingleResponses = JSON.parse(
+            JSON.stringify(response.data.data)
+          )
+          this.getData()
+          return true
+        } else {
+          return false
+        }
+      } catch (error) {
+        toast.error(error.message, {
+          timeout: 2000,
+        })
+      } finally {
+        this.isUpdateLoading = false
+      }
     },
     async downloadAbsen(id) {
       this.isLoadingDownload = true

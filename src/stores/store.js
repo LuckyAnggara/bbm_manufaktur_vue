@@ -152,6 +152,8 @@ export const useItemStore = defineStore('itemStore', {
       itemUnits: [],
       itemMachines: [],
       itemOverheads: [],
+      singleResponse: null,
+      originalSingleResponses: null,
       warehouses: [],
       currentWarehouse: 1,
       currentType: 0,
@@ -277,6 +279,54 @@ export const useItemStore = defineStore('itemStore', {
           name: data,
         })
         return response
+      } catch (error) {
+        alert(error)
+      } finally {
+        this.modalSubmitLoading = false
+      }
+    },
+    async showData(id = '') {
+      this.isShowLoading = true
+      try {
+        const response = await axiosIns.get(`/items/${id}`)
+        this.singleResponses = JSON.parse(JSON.stringify(response.data.data))
+        this.originalSingleResponses = JSON.parse(
+          JSON.stringify(response.data.data)
+        )
+        return true
+      } catch (error) {
+        toast.error('Data not found', {
+          position: 'bottom-right',
+        })
+        return false
+      }
+    },
+    async updateItem() {
+      this.modalSubmitLoading = true
+      try {
+        const response = await axiosIns.put(
+          `/items/${this.singleResponses.id}`,
+          this.singleResponses
+        )
+        console.info(response)
+        if (response.status == 200) {
+          toast.success(response.data.message, {
+            timeout: 2000,
+          })
+          this.originalSingleResponses = JSON.parse(
+            JSON.stringify(response.data.data)
+          )
+          const index = this.responsItem.data.findIndex(
+            (x) => (x.id = this.singleResponses.id)
+          )
+          console.info(index)
+          console.info(response.data.data)
+
+          this.responsItem.data[index] = response.data.data
+          return true
+        } else {
+          return false
+        }
       } catch (error) {
         alert(error)
       } finally {

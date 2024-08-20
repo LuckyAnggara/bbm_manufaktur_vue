@@ -26,6 +26,7 @@ export const useGajiStore = defineStore('gajiStore', {
         created_at: moment().format('yyyy-MM-DD'),
         detail: [],
       },
+      checkAll: true,
       filter: {
         page: 1,
         currentLimit: 50,
@@ -43,6 +44,7 @@ export const useGajiStore = defineStore('gajiStore', {
     pegawaiList(state) {
       state.pegawai.forEach((x) => {
         x.bayarkan = true
+        x.potongan = 0
       })
       return state.pegawai
     },
@@ -175,8 +177,8 @@ export const useGajiStore = defineStore('gajiStore', {
       this.isStoreLoading = true
       try {
         this.form.detail = this.pegawai
-        this.form.startDate = this.filter.date.fromDate
-        this.form.endDate = this.filter.date.toDate
+        this.form.start_date = this.filter.date.fromDate
+        this.form.end_date = this.filter.date.toDate
         const response = await axiosIns.post(`/gaji`, this.form)
         if (response.status == 200) {
           this.reset()
@@ -241,6 +243,17 @@ export const useGajiStore = defineStore('gajiStore', {
         })
       } finally {
         this.isDestroyLoading = false
+      }
+    },
+    checkAllBayarkan() {
+      if (this.checkAll == true) {
+        this.pegawai.forEach((x) => {
+          x.bayarkan = false
+        })
+      } else {
+        this.pegawai.forEach((x) => {
+          x.bayarkan = true
+        })
       }
     },
     reset() {

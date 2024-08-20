@@ -102,11 +102,18 @@
                 <thead>
                   <tr>
                     <th></th>
-                    <th>Bayarkan</th>
+                    <th>
+                      <input
+                        @click="gajiStore.checkAllBayarkan"
+                        type="checkbox"
+                        v-model="gajiStore.checkAll"
+                        class="checkbox"
+                      />
+                    </th>
                     <th>Nama Pegawai</th>
                     <th>Jam Kerja</th>
                     <th>Gaji Dasar</th>
-                    <th>Uang Makan</th>
+                    <!-- <th>Uang Makan</th> -->
                     <th>Bonus</th>
                     <th>Potongan</th>
                     <th>Total</th>
@@ -160,7 +167,7 @@
                           :class="
                             item.bayarkan ? '' : 'line-through text-gray-500'
                           "
-                          >{{ item.name }}</span
+                          >{{ item.name.toUpperCase() }}</span
                         >
                       </td>
                       <td>
@@ -186,7 +193,7 @@
                           class="input input-bordered w-full"
                         />
                       </td>
-                      <td>
+                      <!-- <td>
                         <input
                           :disabled="!item.bayarkan"
                           required
@@ -196,7 +203,7 @@
                           placeholder="Uang Makan"
                           class="input input-bordered w-full"
                         />
-                      </td>
+                      </td> -->
                       <td>
                         <input
                           :disabled="!item.bayarkan"
@@ -213,6 +220,7 @@
                           :disabled="!item.bayarkan"
                           required
                           :min="0"
+                          :value="0"
                           v-model="item.potongan"
                           type="number"
                           placeholder="Potongan"

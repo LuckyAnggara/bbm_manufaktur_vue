@@ -14,6 +14,7 @@
     "@heroicons/vue": "^2.1.1",
     "@sweetalert2/theme-dark": "^5.0.11",
     "@sweetalert2/themes": "^5.0.11",
+    "@vuepic/vue-datepicker": "^9.0.1",
     "@vueuse/core": "^10.7.1",
     "axios": "^0.27.2",
     "moment": "^2.30.1",
