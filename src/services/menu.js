@@ -35,6 +35,13 @@ export default [
     },
   },
   {
+    title: 'Laporan',
+    route: 'laporan',
+    meta: {
+      role: 'all',
+    },
+  },
+  {
     title: 'Data',
     route: 'data',
     meta: {

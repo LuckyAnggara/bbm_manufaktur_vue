@@ -4,45 +4,34 @@
       class="btn btn-lg btn-wide hover:scale-110"
       @click="
         router.push({
-          name: 'data-unit',
+          name: 'daftar-pegawai',
         })
       "
     >
-      Data Unit
+      Laporan Bisnis
     </button>
 
     <button
       class="btn btn-lg btn-wide hover:scale-110"
       @click="
         router.push({
-          name: 'data-machine',
+          name: 'data-absensi',
         })
       "
     >
-      Data Mesin
+      Laporan Persediaan
     </button>
 
     <button
       class="btn btn-lg btn-wide hover:scale-110"
       @click="
         router.push({
-          name: 'data-overhead',
+          name: 'produksi-order-list',
         })
       "
     >
-      Data Overhead
+      Laporan Produksi
     </button>
-    <!-- 
-    <button
-      class="btn btn-lg btn-wide hover:scale-110"
-      @click="
-        router.push({
-          name: 'data-pegawai',
-        })
-      "
-    >
-      Data Pegawai
-    </button> -->
   </div>
 </template>
 

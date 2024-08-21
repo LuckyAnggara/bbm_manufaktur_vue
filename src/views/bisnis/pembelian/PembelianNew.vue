@@ -57,35 +57,19 @@
               </div>
               <input v-model="pembelianStore.form.nomor_rekening" type="text" class="input input-bordered w-full" placeholder="BNI - 04xxxxxx" />
             </div>
+
+            <div class="form-control w-full">
+              <div class="label">
+                <span class="">Catatan</span>
+              </div>
+              <textarea v-model="pembelianStore.form.notes" type="text" class="textarea textarea-bordered w-full" placeholder="Catatan jika ada"> </textarea>
+            </div>
             <div class="form-control w-full">
               <div class="label">
                 <span class="">Total (IDR) </span>
               </div>
               <input required readonly type="text" :value="numeral(pembelianStore.cartTotal).format('0,0')" class="input input-bordered w-full" />
             </div>
-
-            <div class="form-control w-full">
-              <div class="label">
-                <span class="">Pajak</span>
-              </div>
-              <InputCurrency v-model="pembelianStore.form.pajak" :options="{ currency: 'IDR' }" />
-            </div>
-            <div class="form-control w-full">
-              <div class="label">
-                <span class="">Ongkos Kirim</span>
-              </div>
-              <InputCurrency v-model="pembelianStore.form.ongkir" :options="{ currency: 'IDR' }" />
-            </div>
-            <div class="form-control w-full">
-              <div class="label">
-                <span class="">Grand Total (IDR)</span>
-              </div>
-              <input required readonly :value="numeral(pembelianStore.grandTotal).format('0,0')" type="text" class="input input-bordered w-full" />
-            </div>
-            <button type="submit" :disabled="pembelianStore.isStoreLoading" class="mt-6 btn btn-accent w-32 hover:btn-primary my-2">
-              <span v-if="pembelianStore.isStoreLoading" class="loading loading-infinity loading-lg"></span>
-              <span v-else>Submit</span>
-            </button>
           </form>
         </div>
       </div>
@@ -157,6 +141,33 @@
             </tfoot>
           </table>
         </div>
+      </div>
+
+      <div class="card-body shadow-xl rounded-xl">
+        <h2 class="card-title mb-2">Detail Pembayaran</h2>
+
+        <div class="form-control w-full">
+          <div class="label">
+            <span class="">Pajak</span>
+          </div>
+          <InputCurrency v-model="pembelianStore.form.pajak" :options="{ currency: 'IDR' }" />
+        </div>
+        <div class="form-control w-full">
+          <div class="label">
+            <span class="">Ongkos Kirim</span>
+          </div>
+          <InputCurrency v-model="pembelianStore.form.ongkir" :options="{ currency: 'IDR' }" />
+        </div>
+        <div class="form-control w-full">
+          <div class="label">
+            <span class="">Grand Total (IDR)</span>
+          </div>
+          <input required readonly :value="numeral(pembelianStore.grandTotal).format('0,0')" type="text" class="input input-bordered w-full" />
+        </div>
+        <button @click="proses" :disabled="pembelianStore.isStoreLoading" class="mt-6 btn btn-accent w-32 hover:btn-primary my-2">
+          <span v-if="pembelianStore.isStoreLoading" class="loading loading-infinity loading-lg"></span>
+          <span v-else>Submit</span>
+        </button>
       </div>
     </div>
   </div>

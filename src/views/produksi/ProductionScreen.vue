@@ -21,17 +21,6 @@
     >
       Daftar Produksi
     </button>
-
-    <!-- <button
-      class="btn btn-lg btn-wide hover:scale-110"
-      @click="
-        router.push({
-          name: 'produksi-order-list',
-        })
-      "
-    >
-      Laporan Produksi
-    </button> -->
   </div>
 </template>
 

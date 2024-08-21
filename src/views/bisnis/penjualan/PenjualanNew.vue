@@ -118,6 +118,12 @@
             </div>
             <MagnifyingGlassIcon class="h-4 w-4 opacity-70" />
           </label>
+
+          <h2 class="card-title my-2">Catatan</h2>
+
+          <label class="textarea textarea-bordered flex items-center gap-2">
+            <textarea v-model="penjualanStore.form.notes" class="grow textarea-sm" placeholder="Catatan jika ada"></textarea>
+          </label>
         </div>
       </div>
     </div>

@@ -7,6 +7,7 @@ import LoginScreen from '../views/LoginScreen.vue'
 import { getUserData, isUserLoggedIn } from './auth'
 import { bisnisRoutes } from './router/BisnisRoute'
 import { kepegawaianRoutes } from './router/KepegawaianRoute'
+import { LaporanRoute } from './router/LaporanRoute'
 
 export const routes = [
   {
@@ -35,6 +36,7 @@ export const routes = [
   ...dataRoutes,
   ...bisnisRoutes,
   ...kepegawaianRoutes,
+  ...LaporanRoute,
 ]
 
 export const getNavigation = () => {
