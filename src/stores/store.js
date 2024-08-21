@@ -10,6 +10,7 @@ const toast = useToast()
 export const useAuthStore = defineStore('authStore', {
   state: () => {
     return {
+      user: {},
       username: null,
       password: null,
       isLoading: false,
@@ -28,6 +29,17 @@ export const useAuthStore = defineStore('authStore', {
     },
   },
   actions: {
+    async getAuthUser() {
+      try {
+        const respo = await axiosIns.get(`/auth/user`)
+        this.user = respo.data
+        return respo.data
+      } catch (error) {
+      } finally {
+        this.isLoading = false
+      }
+      return false
+    },
     async login() {
       this.isLoading = true
       try {
@@ -290,9 +302,7 @@ export const useItemStore = defineStore('itemStore', {
       try {
         const response = await axiosIns.get(`/items/${id}`)
         this.singleResponses = JSON.parse(JSON.stringify(response.data.data))
-        this.originalSingleResponses = JSON.parse(
-          JSON.stringify(response.data.data)
-        )
+        this.originalSingleResponses = JSON.parse(JSON.stringify(response.data.data))
         return true
       } catch (error) {
         toast.error('Data not found', {
@@ -304,21 +314,14 @@ export const useItemStore = defineStore('itemStore', {
     async updateItem() {
       this.modalSubmitLoading = true
       try {
-        const response = await axiosIns.put(
-          `/items/${this.singleResponses.id}`,
-          this.singleResponses
-        )
+        const response = await axiosIns.put(`/items/${this.singleResponses.id}`, this.singleResponses)
         console.info(response)
         if (response.status == 200) {
           toast.success(response.data.message, {
             timeout: 2000,
           })
-          this.originalSingleResponses = JSON.parse(
-            JSON.stringify(response.data.data)
-          )
-          const index = this.responsItem.data.findIndex(
-            (x) => (x.id = this.singleResponses.id)
-          )
+          this.originalSingleResponses = JSON.parse(JSON.stringify(response.data.data))
+          const index = this.responsItem.data.findIndex((x) => (x.id = this.singleResponses.id))
           console.info(index)
           console.info(response.data.data)
 

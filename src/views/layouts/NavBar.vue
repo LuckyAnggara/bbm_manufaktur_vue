@@ -5,7 +5,7 @@
     </div>
     <div class="flex-none hidden px-2 mx-2 md:flex">
       <ul class="text-md menu menu-horizontal p-0" v-for="item in navMenu" :key="item">
-        <li class="mx-1">
+        <li class="mx-1" v-if="item.meta.role == authStore.user.role">
           <router-link :active-class="'bg-base-200'" :to="{ name: item.route }">
             <a>{{ item.title }}</a>
           </router-link>
