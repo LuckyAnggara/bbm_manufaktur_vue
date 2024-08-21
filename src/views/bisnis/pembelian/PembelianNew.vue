@@ -53,9 +53,9 @@
             </div>
             <div class="form-control w-full">
               <div class="label">
-                <span class="">Nomor Rekening</span>
+                <span class="">Nomor Rekening dan Nama BANK</span>
               </div>
-              <input v-model="pembelianStore.form.nomor_rekening" type="text" class="input input-bordered w-full" />
+              <input v-model="pembelianStore.form.nomor_rekening" type="text" class="input input-bordered w-full" placeholder="BNI - 04xxxxxx" />
             </div>
             <div class="form-control w-full">
               <div class="label">
