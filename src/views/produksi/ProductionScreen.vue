@@ -22,7 +22,7 @@
       Daftar Produksi
     </button>
 
-    <button
+    <!-- <button
       class="btn btn-lg btn-wide hover:scale-110"
       @click="
         router.push({
@@ -31,7 +31,7 @@
       "
     >
       Laporan Produksi
-    </button>
+    </button> -->
   </div>
 </template>
 

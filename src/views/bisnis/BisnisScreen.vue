@@ -44,13 +44,13 @@
       Gaji
     </button>
 
-    <a
+    <!-- <a
       class="btn btn-lg btn-wide hover:scale-110"
       :href="linkBisnis"
       target="_blank"
     >
       Laporan Laba Rugi
-    </a>
+    </a> -->
   </div>
 </template>
 
