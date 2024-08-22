@@ -54,7 +54,7 @@
 import { useRouter } from 'vue-router'
 import { baseUrlLink } from '@/services/axios'
 
-const linkPersediaan = baseUrlLink + 'report/persediaan/produksi'
+const linkPersediaan = baseUrlLink + 'report/persediaan'
 const linkProduction = baseUrlLink + 'report/produksi'
 const linkBisnis = baseUrlLink + 'report/bisnis'
 const router = useRouter()
