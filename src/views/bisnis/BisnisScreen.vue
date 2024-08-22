@@ -60,7 +60,6 @@ import { useRouter } from 'vue-router'
 import { baseUrlLink } from '@/services/axios'
 import { useItemStore } from '@/stores/store'
 
-const linkBisnis = baseUrlLink + 'report/bisnis'
 const router = useRouter()
 
 const itemStore = useItemStore()

@@ -4,34 +4,47 @@
       class="btn btn-lg btn-wide hover:scale-110"
       @click="
         router.push({
-          name: 'daftar-pegawai',
+          name: 'pembelian-list',
         })
       "
     >
-      Laporan Bisnis
+      Pembelian
     </button>
 
     <button
       class="btn btn-lg btn-wide hover:scale-110"
       @click="
         router.push({
-          name: 'data-absensi',
+          name: 'penjualan-list',
         })
       "
     >
-      Laporan Persediaan
+      Penjualan
     </button>
 
-    <!-- <button
+    <button
       class="btn btn-lg btn-wide hover:scale-110"
       @click="
         router.push({
-          name: 'produksi-order-list',
+          name: 'biaya-list',
         })
       "
     >
-      Laporan Produksi
-    </button> -->
+      Biaya
+    </button>
+
+    <button
+      class="btn btn-lg btn-wide hover:scale-110"
+      @click="
+        router.push({
+          name: 'gaji-list',
+        })
+      "
+    >
+      Gaji
+    </button>
+
+    <a class="btn btn-lg btn-wide hover:scale-110" :href="linkBisnis" target="_blank"> Laporan Bisnis </a>
     <a class="btn btn-lg btn-wide hover:scale-110" :href="linkProduction" target="_blank"> Laporan Produksi </a>
     <a class="btn btn-lg btn-wide hover:scale-110" :href="linkPersediaan" target="_blank"> Laporan Persediaan </a>
   </div>
@@ -43,5 +56,6 @@ import { baseUrlLink } from '@/services/axios'
 
 const linkPersediaan = baseUrlLink + 'report/persediaan/produksi'
 const linkProduction = baseUrlLink + 'report/produksi'
+const linkBisnis = baseUrlLink + 'report/bisnis'
 const router = useRouter()
 </script>
