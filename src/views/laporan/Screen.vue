@@ -32,9 +32,7 @@
     >
       Laporan Produksi
     </button> -->
-
-    <a class="btn btn-lg btn-wide hover:scale-110" :href="linkProduction" target="_blank"> Laporan Persediaan </a>
-
+    <a class="btn btn-lg btn-wide hover:scale-110" :href="linkProduction" target="_blank"> Laporan Produksi </a>
     <a class="btn btn-lg btn-wide hover:scale-110" :href="linkPersediaan" target="_blank"> Laporan Persediaan </a>
   </div>
 </template>
