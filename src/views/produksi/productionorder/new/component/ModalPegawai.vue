@@ -3,11 +3,7 @@
     <input type="checkbox" id="my-modal-pegawai" class="modal-toggle" />
     <div class="modal">
       <div class="modal-box relative overflow-hidden">
-        <label
-          for="my-modal-pegawai"
-          class="btn btn-sm btn-circle absolute right-2 top-2"
-          >✕</label
-        >
+        <label for="my-modal-pegawai" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
         <h3 class="text-lg font-bold">Tambah Data</h3>
 
         <div class="md:flex py-2">
@@ -69,11 +65,7 @@
                   <td class="text-center">
                     <label class="swap">
                       <!-- this hidden checkbox controls the state -->
-                      <input
-                        type="checkbox"
-                        v-model.lazy="productionOrderStore.dataOrder.pegawai"
-                        :value="item"
-                      />
+                      <input type="checkbox" v-model.lazy="productionOrderStore.dataOrder.pegawai" :value="item" />
 
                       <!-- volume on icon -->
                       <svg
@@ -86,11 +78,7 @@
                         stroke="green"
                         stroke-width="2"
                       >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M12 4v16m8-8H4"
-                        />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
                       </svg>
 
                       <!-- volume off icon -->
@@ -105,11 +93,7 @@
                         stroke="red"
                         stroke-width="2"
                       >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          d="M4.5 19.5l15-15m-15 0l15 15"
-                        />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 19.5l15-15m-15 0l15 15" />
                       </svg>
                     </label>
                   </td>
@@ -118,27 +102,10 @@
             </tbody>
           </table>
         </div>
-        <div
-          class="btn-group mx-auto mt-4 mb-1 justify-center"
-          v-if="!pegawaiStore.isLoading"
-        >
-          <button
-            class="btn btn-outline"
-            @click="getData(previousPage)"
-            :disabled="pegawaiStore.currentPage == 1 ? true : false"
-          >
-            «
-          </button>
-          <button class="btn btn-outline">
-            Page {{ pegawaiStore.currentPage }}
-          </button>
-          <button
-            class="btn btn-outline"
-            @click="getData(nextPage)"
-            :disabled="
-              pegawaiStore.lastPage == pegawaiStore.currentPage ? true : false
-            "
-          >
+        <div class="btn-group mx-auto mt-4 mb-1 justify-center" v-if="!pegawaiStore.isLoading">
+          <button class="btn btn-outline" @click="pegawaiStore.getData(previousPage)" :disabled="pegawaiStore.currentPage == 1 ? true : false">«</button>
+          <button class="btn btn-outline">Page {{ pegawaiStore.currentPage }}</button>
+          <button class="btn btn-outline" @click="pegawaiStore.getData(nextPage)" :disabled="pegawaiStore.lastPage == pegawaiStore.currentPage ? true : false">
             »
           </button>
         </div>
@@ -148,7 +115,7 @@
 </template>
 
 <script>
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useToast } from 'vue-toastification'
 import { useProductionOrderStore } from '@/stores/store'
 import { usePegawaiStore } from '@/stores/pegawaiStore'
@@ -161,27 +128,21 @@ export default {
     const productionOrderStore = useProductionOrderStore()
 
     const previousPage = computed(() => {
-      return '&page=' + (this.pegawaiStore.currentPage - 1)
+      return '&page=' + (pegawaiStore.currentPage - 1)
     })
 
     const nextPage = computed(() => {
-      return '&page=' + (this.pegawaiStore.currentPage + 1)
+      return '&page=' + (pegawaiStore.currentPage + 1)
     })
 
     productionOrderStore.$subscribe((mutation, state) => {
-      if (
-        mutation.events.key == 'pegawai' &&
-        mutation.events.newValue.length > mutation.events.oldValue.length
-      ) {
+      if (mutation.events.key == 'pegawai' && mutation.events.newValue.length > mutation.events.oldValue.length) {
         toast.success('Data pegawai baru ditambahkan', {
           timeout: 1000,
         })
       }
 
-      if (
-        mutation.events.key == 'pegawai' &&
-        mutation.events.newValue.length < mutation.events.oldValue.length
-      ) {
+      if (mutation.events.key == 'pegawai' && mutation.events.newValue.length < mutation.events.oldValue.length) {
         toast.warning('Data pegawai di hapus', {
           timeout: 1000,
         })
@@ -195,6 +156,12 @@ export default {
     const searchData = useDebounceFn(() => {
       getData()
     }, 800)
+
+    onMounted(() => {
+      pegawaiStore.$patch((state) => {
+        state.filter.currentLimit = 10
+      })
+    })
 
     return {
       // pushData,

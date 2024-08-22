@@ -32,17 +32,15 @@
     >
       Laporan Produksi
     </button>
+
+    <a class="btn btn-lg btn-wide hover:scale-110" :href="linkPersediaan" target="_blank"> Laporan Persediaan </a>
   </div>
 </template>
 
-<script>
+<script setup>
 import { useRouter } from 'vue-router'
-export default {
-  setup() {
-    const router = useRouter()
-    return {
-      router,
-    }
-  },
-}
+import { baseUrlLink } from '@/services/axios'
+
+const linkPersediaan = baseUrlLink + 'report/persediaan/produksi'
+const router = useRouter()
 </script>

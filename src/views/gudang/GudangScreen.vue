@@ -22,14 +22,6 @@
       Stock Opname
     </button>
 
-    <a
-      class="btn btn-lg btn-wide hover:scale-110"
-      :href="linkPersediaan"
-      target="_blank"
-    >
-      Laporan Persediaan
-    </a>
-
     <!-- <button
       class="btn btn-lg btn-wide hover:scale-110"
       @click="itemStore.showLaporanProduksi()"
@@ -42,10 +34,8 @@
 <script setup>
 import { useRouter } from 'vue-router'
 
-import { baseUrlLink } from '@/services/axios'
 import { useItemStore } from '@/stores/store'
 
-const linkPersediaan = baseUrlLink + 'report/persediaan/produksi'
 const router = useRouter()
 
 const itemStore = useItemStore()

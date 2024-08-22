@@ -29,6 +29,7 @@ export const usePegawaiStore = defineStore('pegawaiStore', {
       },
       filter: {
         page: 1,
+        searchName: null,
         currentLimit: 10,
         searchQuery: '',
         date: {
@@ -69,33 +70,23 @@ export const usePegawaiStore = defineStore('pegawaiStore', {
       return '&page=' + state.filter.page
     },
     dateQuery(state) {
-      if (
-        state.filter.date.fromDate == null ||
-        state.filter.date.toDate == null
-      ) {
+      if (state.filter.date.fromDate == null || state.filter.date.toDate == null) {
         return ''
       }
-      return (
-        '&start-date=' +
-        state.filter.date.fromDate +
-        '&end-date=' +
-        state.filter.date.toDate
-      )
+      return '&start-date=' + state.filter.date.fromDate + '&end-date=' + state.filter.date.toDate
     },
     searchQuery(state) {
-      if (state.filter.searchQuery == '' || state.filter.searchQuery == null) {
+      if (state.filter.searchName == '' || state.filter.searchName == null) {
         return ''
       }
-      return '&query=' + state.filter.searchQuery
+      return '&query=' + state.filter.searchName
     },
   },
   actions: {
     async getData(page = '') {
       this.isLoading = true
       try {
-        const response = await axiosIns.get(
-          `/pegawai?limit=${this.filter.currentLimit}${this.searchQuery}${page}${this.dateQuery}`
-        )
+        const response = await axiosIns.get(`/pegawai?limit=${this.filter.currentLimit}${this.searchQuery}${page}${this.dateQuery}`)
         this.responses = response.data.data
       } catch (error) {
         alert(error.message)
@@ -133,9 +124,7 @@ export const usePegawaiStore = defineStore('pegawaiStore', {
       try {
         const response = await axiosIns.get(`/pegawai/${id}`)
         this.singleResponses = JSON.parse(JSON.stringify(response.data.data))
-        this.originalSingleResponses = JSON.parse(
-          JSON.stringify(response.data.data)
-        )
+        this.originalSingleResponses = JSON.parse(JSON.stringify(response.data.data))
         return true
       } catch (error) {
         toast.error('Data not found', {
@@ -147,17 +136,12 @@ export const usePegawaiStore = defineStore('pegawaiStore', {
     async update() {
       this.isUpdateLoading = true
       try {
-        const response = await axiosIns.put(
-          `/pegawai/${this.singleResponses.id}`,
-          this.singleResponses
-        )
+        const response = await axiosIns.put(`/pegawai/${this.singleResponses.id}`, this.singleResponses)
         if (response.status == 200) {
           toast.success(response.data.message, {
             timeout: 2000,
           })
-          this.originalSingleResponses = JSON.parse(
-            JSON.stringify(response.data.data)
-          )
+          this.originalSingleResponses = JSON.parse(JSON.stringify(response.data.data))
           this.getData()
           return true
         } else {
