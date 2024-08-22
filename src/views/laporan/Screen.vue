@@ -22,7 +22,7 @@
       Laporan Persediaan
     </button>
 
-    <button
+    <!-- <button
       class="btn btn-lg btn-wide hover:scale-110"
       @click="
         router.push({
@@ -31,7 +31,9 @@
       "
     >
       Laporan Produksi
-    </button>
+    </button> -->
+
+    <a class="btn btn-lg btn-wide hover:scale-110" :href="linkProduction" target="_blank"> Laporan Persediaan </a>
 
     <a class="btn btn-lg btn-wide hover:scale-110" :href="linkPersediaan" target="_blank"> Laporan Persediaan </a>
   </div>
@@ -42,5 +44,6 @@ import { useRouter } from 'vue-router'
 import { baseUrlLink } from '@/services/axios'
 
 const linkPersediaan = baseUrlLink + 'report/persediaan/produksi'
+const linkProduction = baseUrlLink + 'report/produksi'
 const router = useRouter()
 </script>
