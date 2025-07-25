@@ -19,6 +19,7 @@ export const usePenjualanStore = defineStore('penjualanStore', {
       isVerifikasiLoading: false,
       isLoading: false,
       isStoreLoading: false,
+      isLoadingDownload: false,
       resultId: null,
       isUpdateLoading: false,
       isDestroyLoading: false,
@@ -284,6 +285,18 @@ export const usePenjualanStore = defineStore('penjualanStore', {
     },
     checkCartExisting() {
       return this.form.cart.length > 0 && this.cartTotal > 0
+    },
+    async getDownloadData() {
+      this.isLoadingDownload = true
+      try {
+        const response = await axiosIns.get(`/report/sales?${this.dateQuery}`)
+        let responseHtml = response.data
+        var myWindow = window.open('response')
+        myWindow.document.write(responseHtml)
+      } catch (error) {
+        console.info(error)
+      }
+      this.isLoadingDownload = false
     },
   },
 })
