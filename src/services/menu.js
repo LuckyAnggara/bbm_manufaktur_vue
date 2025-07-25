@@ -14,6 +14,13 @@ export default [
     },
   },
   {
+    title: 'Gudang',
+    route: 'gudang',
+    meta: {
+      role: 'kasir',
+    },
+  },
+  {
     title: 'Produksi',
     route: 'produksi',
     meta: {
